@@ -8234,3 +8234,4 @@ ul.comment-list li ul.children {
 }
 
 .onoffswitch.readonly { opacity: .6; }
+:root .custom-file-input { z-index: 99 }

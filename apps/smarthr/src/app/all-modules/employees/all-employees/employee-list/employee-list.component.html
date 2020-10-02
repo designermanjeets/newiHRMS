@@ -18,6 +18,32 @@
     </div>
     <!-- /Page Header -->
 
+
+    <div class="row m-b-10">
+      <div class="col-6">
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="inputGroupFileAddon01">Upload</span>
+          </div>
+          <div class="custom-file">
+            <input
+              class="custom-file-input"
+              aria-describedby="inputGroupFileAddon01"
+              #uploader
+              id="inputGroupFile01"
+              type="file"
+              ngFileSelect
+              [options]="options"
+              (uploadOutput)="onUploadOutput($event)"
+              [uploadInput]="uploadInput"
+              (click)="uploader.value = null"
+            >
+            <label class="custom-file-label" for="inputGroupFile01">Upload Bulk Records - Choose file</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Search Filter -->
     <div class="row filter-row">
         <div class="col-sm-6 col-md-3">
@@ -49,21 +75,6 @@
         </div>
     </div>
     <!-- /Search Filter -->
-
-    <label class="btn btn-default m-r-10" for="inputGroupFile01">
-      <span class="glyphicon glyphicon-upload"></span>
-      <span>Import Data</span>
-      <input
-        #uploader
-        id="inputGroupFile01"
-        type="file"
-        ngFileSelect
-        [options]="options"
-        (uploadOutput)="onUploadOutput($event)"
-        [uploadInput]="uploadInput"
-        (click)="uploader.value = null"
-    >
-  </label>
 
     <div class="row">
         <div class="col-md-12">

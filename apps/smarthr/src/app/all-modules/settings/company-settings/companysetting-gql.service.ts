@@ -45,14 +45,14 @@ export class UpdateCompanyGQL extends Mutation {
       $cityid: String
       $zipcode: String
       $email: String
-      $financialbegindate: String
-      $booksbegindate: String
+      $financialbegindate: ISODate
+      $booksbegindate: ISODate
       $cinno: String
       $panno: String
       $gstin: String
       $currencyid: String,
       $modifiedby: String,
-      $modifiedon: String,
+      $modifiedon: ISODate,
       $modifiedip: String,
     ) {
     updateCompany(
@@ -142,6 +142,8 @@ export const GET_COMPANY_QUERY = gql`
         modifiedon
         modifiedip
         createdon
+        createdby
+        createdip
       }
   }
 `;

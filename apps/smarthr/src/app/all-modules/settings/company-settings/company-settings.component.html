@@ -152,7 +152,7 @@
                      [class.has-success]="companyForm.controls['zipcode'].valid"
                 >
                   <label class="control-label">ZIP Code <span class="text-danger m-l-5">*</span></label>
-                  <input class="form-control" type="number" pattern="(^\d{6}$)" formControlName="zipcode">
+                  <input class="form-control" type="text" pattern="(^\d{6}$)" formControlName="zipcode">
                   <span class="help-block" *ngIf="companyForm.controls['zipcode'].errors && companyForm.controls['zipcode'].touched">
                   ZIP Code is invalid
               </span>
@@ -252,7 +252,7 @@
                      [class.has-success]="companyForm.controls['cinno'].valid"
                 >
                   <label class="control-label">CIN No. <span class="text-danger m-l-5">*</span></label>
-                  <input type="number" class="form-control" formControlName="cinno">
+                  <input type="text" class="form-control" formControlName="cinno">
                   <span class="help-block" *ngIf="companyForm.controls['cinno'].errors && companyForm.controls['cinno'].touched">
                   CIN No. Date is invalid
               </span>
@@ -266,7 +266,7 @@
                      [class.has-success]="companyForm.controls['panno'].valid"
                 >
                   <label class="control-label">PAN No. <span class="text-danger m-l-5">*</span></label>
-                  <input type="number" class="form-control" formControlName="panno">
+                  <input type="text" class="form-control" formControlName="panno">
                   <span class="help-block" *ngIf="companyForm.controls['panno'].errors && companyForm.controls['panno'].touched">
                   PAN No. is invalid
               </span>
@@ -280,7 +280,7 @@
                      [class.has-success]="companyForm.controls['gstin'].valid"
                 >
                   <label class="control-label">GST-IN No. <span class="text-danger m-l-5">*</span></label>
-                  <input type="number" class="form-control" formControlName="gstin">
+                  <input type="text" class="form-control" formControlName="gstin">
                   <span class="help-block" *ngIf="companyForm.controls['gstin'].errors && companyForm.controls['gstin'].touched">
                   GST-IN No. is invalid
               </span>
@@ -342,11 +342,6 @@
                 <div class="form-group pos-rel">
                   <label class="control-label">Alias</label>
                   <input type="text" class="form-control" formControlName="alias">
-                </div>
-              </div>
-              <div class="col-sm-4">
-                <div *ngIf="uptCompany" class="alert alert-info m-t-10" style="text-align: center;">
-                  <strong class="text-center">Saved Successfully</strong>
                 </div>
               </div>
             </div>

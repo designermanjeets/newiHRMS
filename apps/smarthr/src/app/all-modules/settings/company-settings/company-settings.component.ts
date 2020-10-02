@@ -16,6 +16,7 @@ import {
 import { Apollo } from 'apollo-angular';
 import { GET_USER_QUERY } from '../../employees/all-employees/employee-gql.service';
 import { Router } from '@angular/router';
+import { timeInterval, timeout } from 'rxjs/operators';
 
 @Component({
   selector: 'app-company-settings',
@@ -78,7 +79,7 @@ export class CompanySettingsComponent implements OnInit {
       if (response.data.user) {
         this.getCompany(response.data.user.corporateid);
       }
-    });
+    }, error => this.toastr.error(error, 'Error'));
   }
 
   updateCompany() {
@@ -101,17 +102,19 @@ export class CompanySettingsComponent implements OnInit {
         panno: form.panno,
         gstin: form.gstin,
         currencyid: form.currencyid,
-        modifiedby: form.modifiedby,
-        modifiedon: form.modifiedon,
-        modifiedip: form.modifiedip
+        modifiedby: JSON.parse(sessionStorage.getItem('user')).username,
+        modifiedon: Date.now(), // Static for now
+        modifiedip: '1.1.1.1' // Static
       })
       .subscribe( val => {
         if (val.data) {
-          console.log(val);
           this.uptCompany = true;
-          this.toastr.success('Company deleted sucessfully..!', 'Success');
+          this.getCompany(this.companyForm.value.corporateid);
+          this.toastr.success('Company Updated sucessfully..!', 'Success');
         }
-      }, error => console.log(error));
+      }, error =>
+        this.toastr.error(error, 'Error')
+      );
 
   }
 
@@ -141,6 +144,6 @@ export class CompanySettingsComponent implements OnInit {
       },
     }).valueChanges.subscribe((response) => {
       console.log(response);
-    });
+    }, error => this.toastr.error(error, 'Error'));
   }
 }

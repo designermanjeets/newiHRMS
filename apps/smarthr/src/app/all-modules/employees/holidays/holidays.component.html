@@ -1,0 +1,219 @@
+<!-- Page Content -->
+<div class="content container-fluid">
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="row align-items-center">
+            <div class="col">
+                <h3 class="page-title">Holidays 2019</h3>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
+                    <li class="breadcrumb-item active">Holidays</li>
+                </ul>
+            </div>
+            <div class="col-auto float-right ml-auto">
+                <a  class="btn add-btn" data-toggle="modal" data-target="#add_holiday"><i
+                        class="fa fa-plus"></i> Add Holiday</a>
+            </div>
+        </div>
+    </div>
+    <!-- /Page Header -->
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="table-responsive">
+                <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+                    class="table table-striped custom-table mb-0">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Title </th>
+                            <th>Holiday Date</th>
+                            <th>Day</th>
+                            <th class="text-right">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let row of lstHolidays; index as i">
+                            <td>{{i + 1}}</td>
+                            <td>{{row.title}}</td>
+                            <td>{{row.date | date}}</td>
+                            <td>{{row.day}}</td>
+                            <td class="text-right">
+                                <div class="dropdown dropdown-action">
+                                    <a  class="action-icon dropdown-toggle" data-toggle="dropdown"
+                                        aria-expanded="false"><i class="material-icons">more_vert</i></a>
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                        <a class="dropdown-item"  data-toggle="modal"
+                                            data-target="#edit_holiday" (click)="edit(row._id)"><i
+                                                class="fa fa-pencil m-r-5"></i> Edit</a>
+                                        <a class="dropdown-item"  data-toggle="modal"
+                                            data-target="#delete_holiday" (click)="tempId = row._id"><i
+                                                class="fa fa-trash-o m-r-5"></i> Delete</a>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Page Content -->
+
+<!-- Add Holiday Modal -->
+<div class="modal custom-modal fade" id="add_holiday" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Holiday</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" data-target="#add_holiday">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+              <form [formGroup]="addForm" (ngSubmit)="addholidays(addForm)" novalidate>
+                <input id="lid" type="hidden" formControlName="_id">
+                <div class="form-group"
+                     [class.has-error]="
+                addForm.controls['title'].invalid &&
+                addForm.controls['title'].touched"
+                     [class.has-success]="addForm.controls['title'].valid"
+                >
+                  <label for="title" class="control-label">Holiday Name <span class="text-danger">*</span></label>
+                  <input id="title" class="form-control" required type="text" formControlName="title">
+                  <span class="help-block" *ngIf="addForm.controls['title'].errors && addForm.controls['title'].touched">
+                  Holiday Name is invalid
+              </span>
+                </div>
+                <div class="form-group"
+                     [class.has-error]="
+                  addForm.controls['paid'].invalid &&
+                  addForm.controls['paid'].touched"
+                     [class.has-success]="addForm.controls['paid'].valid"
+                >
+                  <label for="paid" class="control-label">Paid <span class="text-danger">*</span></label>
+                  <select id="paid" class="form-control" formControlName="paid">
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                  </select>
+                  <span class="help-block" *ngIf="addForm.controls['paid'].errors && addForm.controls['paid'].touched">
+                  Field Paid is invalid
+              </span>
+                </div>
+                <div class="form-group pos-rel"
+                     [class.has-error]="
+                addForm.controls['date'].invalid &&
+                addForm.controls['date'].touched"
+                     [class.has-success]="addForm.controls['date'].valid"
+                >
+                  <label for="date" class="control-label">Holiday Date <span class="text-danger">*</span></label>
+                  <input id="date" readonly type="text" class="form-control datecolor" formControlName="date" [matDatepicker]="picker1" required>
+                  <mat-datepicker-toggle class="formpicker" matSuffix [for]="picker1"></mat-datepicker-toggle>
+                  <mat-datepicker #picker1></mat-datepicker>
+                  <span class="help-block" *ngIf="addForm.controls['date'].errors && addForm.controls['date'].touched">
+                  Holiday Date is invalid
+              </span>
+                </div>
+                <div class="m-t-20 text-center">
+                  <button class="btn btn-primary" type="submit" [disabled]="addForm.invalid">Save Holiday</button>
+                </div>
+              </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Add Holiday Modal -->
+
+
+<!-- Edit Holiday Modal -->
+<div class="modal custom-modal fade" id="edit_holiday" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Holiday</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+              <form [formGroup]="addForm" (ngSubmit)="editHolidays(addForm)" novalidate>
+                <input id="lid1" type="hidden" formControlName="_id">
+                <div class="form-group"
+                     [class.has-error]="
+                addForm.controls['title'].invalid &&
+                addForm.controls['title'].touched"
+                     [class.has-success]="addForm.controls['title'].valid"
+                >
+                  <label for="title1" class="control-label">Holiday Name <span class="text-danger">*</span></label>
+                  <input id="title1" class="form-control" required type="text" formControlName="title">
+                  <span class="help-block" *ngIf="addForm.controls['title'].errors && addForm.controls['title'].touched">
+                  Holiday Name is invalid
+              </span>
+                </div>
+                <div class="form-group"
+                     [class.has-error]="
+                  addForm.controls['paid'].invalid &&
+                  addForm.controls['paid'].touched"
+                     [class.has-success]="addForm.controls['paid'].valid"
+                >
+                  <label for="paid1" class="control-label">Paid <span class="text-danger">*</span></label>
+                  <select id="paid1" class="form-control" formControlName="paid">
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                  </select>
+                  <span class="help-block" *ngIf="addForm.controls['paid'].errors && addForm.controls['paid'].touched">
+                  Field Paid is invalid
+              </span>
+                </div>
+                <div class="form-group pos-rel"
+                     [class.has-error]="
+                addForm.controls['date'].invalid &&
+                addForm.controls['date'].touched"
+                     [class.has-success]="addForm.controls['date'].valid"
+                >
+                  <label for="date1" class="control-label">Holiday Date <span class="text-danger">*</span></label>
+                  <input id="date1" readonly type="text" class="form-control datecolor" formControlName="date" [matDatepicker]="picker2" required>
+                  <mat-datepicker-toggle class="formpicker" matSuffix [for]="picker2"></mat-datepicker-toggle>
+                  <mat-datepicker #picker2></mat-datepicker>
+                  <span class="help-block" *ngIf="addForm.controls['date'].errors && addForm.controls['date'].touched">
+                  Holiday Date is invalid
+              </span>
+                </div>
+                <div class="m-t-20 text-center">
+                  <button class="btn btn-primary" type="submit" [disabled]="addForm.invalid">Save Holiday</button>
+                </div>
+              </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Edit Holiday Modal -->
+
+<!-- Delete Holiday Modal -->
+<div class="modal custom-modal fade" id="delete_holiday" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="form-header">
+                    <h3>Delete Holiday</h3>
+                    <p>Are you sure want to delete?</p>
+                </div>
+                <div class="modal-btn delete-action">
+                    <div class="row">
+                        <div class="col-6">
+                            <a  class="btn btn-primary continue-btn"
+                                (click)="deleteHolidays()">Delete</a>
+                        </div>
+                        <div class="col-6">
+                            <a  data-dismiss="modal"
+                                class="btn btn-primary cancel-btn">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Delete Holiday Modal -->

@@ -1,0 +1,56 @@
+<div class="account-content">
+    <a routerLink = "/login/joblist" class="btn btn-primary apply-btn">Apply Job</a>
+    <div class="container">
+
+        <!-- Account Logo -->
+        <div class="account-logo">
+            <a href="javascript:"><img src="assets/img/logo2.png" alt="Focus Technologies"></a>
+        </div>
+        <!-- /Account Logo -->
+
+
+      <div *ngIf="ispwdreset" class="alert alert-danger m-t-10" style="text-align: center;">
+        <strong class="text-center">Password Changed! Please Login Again!</strong>
+      </div>
+
+      <div *ngIf="isloggedin" class="alert alert-danger m-t-10" style="text-align: center;">
+        <strong class="text-center">Incorrect Email or Password!</strong>
+      </div>
+
+        <div class="account-box">
+            <div class="account-wrapper">
+                <h3 class="account-title">Login</h3>
+                <p class="account-subtitle">Access to our dashboard</p>
+
+                <!-- Account Form -->
+                <form [formGroup]="loginForm" (ngSubmit)="login()">
+                    <div class="form-group">
+                      <label for="email">Email Address</label>
+                      <input id="email" class="form-control" type="text" placeholder="Email or Username" formControlName="email">
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col">
+                                <label for="pwd">Password</label>
+                            </div>
+                            <div class="col-auto">
+                                <a class="text-muted" routerLink = "/login/forgot">
+                                    Forgot password?
+                                </a>
+                            </div>
+                        </div>
+                      <input id="pwd" class="form-control" type="password" placeholder="password" formControlName="password">
+                    </div>
+                    <div class="form-group text-center">
+                        <button class="btn btn-primary account-btn" type="submit" [disabled]="!loginForm.valid">Login</button>
+                    </div>
+                    <div class="account-footer">
+                        <p>Don't have an account yet? <a routerLink = "/login/register">Register</a></p>
+                    </div>
+                </form>
+                <!-- /Account Form -->
+
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,203 @@
+<!-- Page Content -->
+<div class="content container-fluid">
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="row align-items-center">
+            <div class="col">
+                <h3 class="page-title">Designations</h3>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
+                    <li class="breadcrumb-item active">Designations</li>
+                </ul>
+            </div>
+            <div class="col-auto float-right ml-auto">
+                <a  class="btn add-btn" data-toggle="modal" data-target="#add_designation" (click)="addModel()"><i
+                        class="fa fa-plus"></i> Add Designation</a>
+            </div>
+        </div>
+    </div>
+    <!-- /Page Header -->
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="table-responsive">
+                <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+                    class="table table-striped custom-table mb-0 datatable">
+                    <thead>
+                        <tr>
+                            <th style="width: 30px;">#</th>
+                            <th>Designation </th>
+                            <th>Department </th>
+                            <th class="text-right">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of lstDesignation">
+                            <td>{{item.id}}</td>
+                            <td>{{item.designation}}</td>
+                            <td>{{item.department}}</td>
+                            <td class="text-right">
+                                <div class="dropdown dropdown-action">
+                                    <a  class="action-icon dropdown-toggle" data-toggle="dropdown"
+                                        aria-expanded="false"><i class="material-icons">more_vert</i></a>
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                        <a class="dropdown-item"  data-toggle="modal"
+                                            data-target="#edit_designation" (click)="edit(item._id)"><i
+                                                class="fa fa-pencil m-r-5"></i> Edit</a>
+                                        <a class="dropdown-item"  data-toggle="modal"
+                                            data-target="#delete_designation" (click)="tempId = item._id"><i
+                                                class="fa fa-trash-o m-r-5"></i>
+                                            Delete</a>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Page Content -->
+
+<!-- Add Designation Modal -->
+<div id="add_designation" class="modal custom-modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Designation</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" *ngIf="isAddModel">
+              <form [formGroup]="editForm" (ngSubmit)="addDesignation(editForm)" novalidate>
+                <input id="_id" type="hidden" formControlName="_id">
+                <div class="form-group"
+                     [class.has-error]="
+                editForm.controls['designation'].invalid &&
+                editForm.controls['designation'].touched"
+                     [class.has-success]="editForm.controls['designation'].valid"
+                >
+                  <label for="designation">Designation Name <span class="text-danger">*</span></label>
+                  <input id="designation" class="form-control" type="text" formControlName="designation">
+                  <span class="help-block" *ngIf="editForm.controls['designation'].errors && editForm.controls['designation'].touched">
+                  Designation Name is invalid
+            </span>
+                </div>
+                <div class="form-group"
+                     [class.has-error]="
+                  editForm.controls['department'].invalid &&
+                  editForm.controls['department'].touched"
+                       [class.has-success]="editForm.controls['department'].valid"
+                  >
+                    <label for="department">Departments <span class="text-danger">*</span></label>
+                    <select id="department" class="select floating form-control" formControlName="department">
+                      <option *ngFor="let opt of departments" [value]="opt._id">{{opt.department}}</option>
+                    </select>
+                    <span class="help-block" *ngIf="editForm.controls['department'].errors && editForm.controls['department'].touched">
+                    Departments Name is invalid
+                </span>
+                  </div>
+                  <label>Assign Leave Types</label>
+                  <div formArrayName="leavetype" *ngFor="let creds of editForm?.controls?.leavetype?.value; let i = index">
+                    <ng-container [formGroupName]="i">
+                      <div>
+                        <input aria-label="checkbox" [id]=i type="checkbox" formControlName="leavechecked">&nbsp;{{creds.leavetype}}
+                      </div>
+                    </ng-container>
+                  </div>
+                  <div class="m-t-20 text-center">
+                    <button class="btn btn-primary" type="submit" [disabled]="editForm.invalid">Save Designation</button>
+                  </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Add Designation Modal -->
+
+<!-- Edit Designation Modal -->
+<div id="edit_designation" class="modal custom-modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Designation</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" *ngIf="isEditModel">
+              <form [formGroup]="editForm" (ngSubmit)="editDesignation(editForm)" novalidate>
+                <input id="_id" type="hidden" formControlName="_id">
+                <div class="form-group"
+                     [class.has-error]="
+                editForm.controls['designation'].invalid &&
+                editForm.controls['designation'].touched"
+                     [class.has-success]="editForm.controls['designation'].valid"
+                >
+                  <label for="designation1">Designation Name <span class="text-danger">*</span></label>
+                  <input id="designation1" class="form-control" type="text" formControlName="designation">
+                  <span class="help-block" *ngIf="editForm.controls['designation'].errors && editForm.controls['designation'].touched">
+                  Designation Name is invalid
+            </span>
+                </div>
+                <div class="form-group"
+                     [class.has-error]="
+                  editForm.controls['department'].invalid &&
+                  editForm.controls['department'].touched"
+                     [class.has-success]="editForm.controls['department'].valid"
+                >
+                  <label for="department1">Departments <span class="text-danger">*</span></label>
+                  <select id="department1" class="select floating form-control" formControlName="department">
+                    <option *ngFor="let opt of departments" [value]="opt._id">{{opt.department}}</option>
+                  </select>
+                  <span class="help-block" *ngIf="editForm.controls['department'].errors && editForm.controls['department'].touched">
+                    Departments Name is invalid
+                </span>
+                </div>
+                <label>Assign Leave Types</label>
+                <div formArrayName="leavetype" *ngFor="let creds of editForm.controls.leavetype?.value; let i = index">
+                  <ng-container [formGroupName]="i">
+                    <div>
+                      <input aria-label="checkbox" [id]=i type="checkbox" formControlName="leavechecked">{{creds.leavetype}}
+                    </div>
+                  </ng-container>
+                </div>
+                <div class="m-t-20 text-center">
+                  <button class="btn btn-primary" type="submit" [disabled]="editForm.invalid">Save Designation</button>
+                </div>
+              </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Edit Designation Modal -->
+
+<!-- Delete Designation Modal -->
+<div class="modal custom-modal fade" id="delete_designation" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="form-header">
+                    <h3>Delete Designation</h3>
+                    <p>Are you sure want to delete?</p>
+                </div>
+                <div class="modal-btn delete-action">
+                    <div class="row">
+                        <div class="col-6">
+                            <a  class="btn btn-primary continue-btn"
+                                (click)="deleteDesignation()">Delete</a>
+                        </div>
+                        <div class="col-6">
+                            <a  data-dismiss="modal"
+                                class="btn btn-primary cancel-btn">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Delete Designation Modal -->

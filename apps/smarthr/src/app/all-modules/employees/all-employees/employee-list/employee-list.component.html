@@ -1,0 +1,716 @@
+<!-- Page Content -->
+<div class="content container-fluid">
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="row align-items-center">
+            <div class="col">
+                <h3 class="page-title">Employee</h3>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
+                    <li class="breadcrumb-item active">Employee</li>
+                </ul>
+            </div>
+            <div class="col-auto float-right ml-auto">
+                <a  class="btn add-btn" (click)="add()"><i class="fa fa-plus"></i> Add Employee</a>
+            </div>
+        </div>
+    </div>
+    <!-- /Page Header -->
+
+    <!-- Search Filter -->
+    <div class="row filter-row">
+        <div class="col-sm-6 col-md-3">
+            <div class="form-group form-focus">
+                <input type="text" class="form-control floating" (input)="searchId($event.target.value)" (focusout)="rerender()">
+                <label class="focus-label">Employee ID</label>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-3">
+            <div class="form-group form-focus">
+                <input type="text" class="form-control floating" (input)="searchName($event.target.value)"
+                    (focusout)="rerender()">
+                <label class="focus-label">Employee Name</label>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-3">
+            <div class="form-group form-focus select-focus">
+                <select class="select form-control" (input)="searchByDesignation($event.target.value)" (focusout)="rerender()">
+                    <option value = "">Select Designation</option>
+                    <option>Web Developer</option>
+                    <option>Web Designer</option>
+                    <option>Android Developer</option>
+                    <option>Ios Developer</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-3">
+            <a  class="btn btn-success btn-block"> Search </a>
+        </div>
+    </div>
+    <!-- /Search Filter -->
+
+    <label class="btn btn-default m-r-10" for="inputGroupFile01">
+      <span class="glyphicon glyphicon-upload"></span>
+      <span>Import Data</span>
+      <input
+        #uploader
+        id="inputGroupFile01"
+        type="file"
+        ngFileSelect
+        [options]="options"
+        (uploadOutput)="onUploadOutput($event)"
+        [uploadInput]="uploadInput"
+        (click)="uploader.value = null"
+    >
+  </label>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="table-responsive">
+                <table class="table table-striped custom-table datatable" datatable [dtOptions]="dtOptions"
+                    [dtTrigger]="dtTrigger">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Employee ID</th>
+                            <th>Email</th>
+                            <th>Mobile</th>
+                            <th class="text-nowrap">Join Date</th>
+                            <th>Role</th>
+                            <th class="text-right no-sort">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let row of lstEmployee;let i = index">
+                            <td>
+                                <h2 class="table-avatar">
+                                    <a routerLink="/employees/employeeprofile" class="avatar"><img alt=""
+                                            src="assets/img/profiles/avatar-0{{i+ 1}}.jpg"></a>
+                                    <a routerLink="/employees/employeeprofile">{{row.firstname}}
+                                        <span>{{row.designation?.designation}} </span></a>
+                                </h2>
+                            </td>
+                            <td>{{row.emmpid}}</td>
+                            <td>{{row.email}}</td>
+                            <td>{{row.mobile}}</td>
+                            <td>{{row.joiningdate | date}}</td>
+                            <td>
+                                <div class="dropdown">
+                                    <a class="btn btn-block btn-white btn-sm btn-rounded dropdown-toggle">{{row.role}}</a>
+                                </div>
+                            </td>
+                            <td class="text-right">
+                                <div class="dropdown dropdown-action">
+                                    <a  class="action-icon dropdown-toggle" data-toggle="dropdown"
+                                        aria-expanded="false"><i class="material-icons">more_vert</i></a>
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                        <a class="dropdown-item"  data-toggle="modal"
+                                            data-target="#edit_employee" (click)="edit(row)"><i
+                                                class="fa fa-pencil m-r-5"></i> Edit</a>
+                                        <a class="dropdown-item"  data-toggle="modal"
+                                            data-target="#delete_employee" (click)="deleteparams = row"><i
+                                                class="fa fa-trash-o m-r-5"></i>
+                                            Delete</a>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Page Content -->
+
+<!-- Add Employee Modal -->
+<div id="add_employee" class="modal custom-modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Employee</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" *ngIf="editForm">
+              <form class="m-b-30" [formGroup]="editForm" (ngSubmit)="createSubmit(editForm)" novalidate>
+                <input type="hidden" formControlName="_id">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <div class="form-group"
+                         [class.has-error]="
+                          editForm.controls['username'].invalid &&
+                          editForm.controls['username'].touched"
+                         [class.has-success]="editForm.controls['username'].valid"
+                    >
+                      <label class="control-label">Username <span class="text-danger m-l-5">*</span></label>
+                      <input class="form-control" type="text" formControlName="username" required>
+                      <span class="help-block" *ngIf="editForm.controls['username'].errors && editForm.controls['username'].touched">
+                    Username is invalid
+                </span>
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group">
+                      <label class="control-label">First Name</label>
+                      <input class="form-control" type="text" formControlName="firstname">
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group">
+                      <label class="control-label">Last Name</label>
+                      <input class="form-control" type="text" formControlName="lastname">
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group" [class.has-error]="editForm.controls['email'].invalid && editForm.controls['email'].touched" [class.has-success]="editForm.controls['email'].valid">
+                      <label class="control-label">Email <span class="text-danger m-l-5">*</span></label>
+                      <input class="form-control" type="email" pattern="([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})" formControlName="email" required>
+                      <span class="help-block" *ngIf="editForm.controls['email'].errors && editForm.controls['email'].touched">
+                        Email is invalid
+                </span>
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group"
+                         [class.has-error]="
+                    editForm.controls['password'].invalid &&
+                    editForm.controls['password'].touched"
+                         [class.has-success]="editForm.controls['password'].valid"
+                    >
+                      <label class="control-label">Password<span class="text-danger m-l-5">*</span></label>
+                      <input class="form-control" type="password" formControlName="password" required>
+                      <span class="help-block" *ngIf="editForm.controls['password'].errors && editForm.controls['password'].touched">
+                    Password is invalid
+                </span>
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group" [class.has-error]="editForm.hasError('notSame') || (editForm.controls['password'].invalid &&
+                    editForm.controls['password'].touched)">
+                      <label class="control-label">Confirm Password<span class="text-danger m-l-5">*</span></label>
+                      <input class="form-control" type="password" formControlName="password2">
+                      <span class="help-block" *ngIf="editForm.controls['password2'].errors && editForm.controls['password2'].touched">
+                        Confirm Password is invalid
+                      </span>
+                      <span class="help-block" *ngIf="editForm.hasError('notSame')">
+                          Passwords do not match
+                      </span>
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group"
+                         [class.has-error]="
+                    editForm.controls['emmpid'].invalid &&
+                    editForm.controls['emmpid'].touched"
+                         [class.has-success]="editForm.controls['emmpid'].valid"
+                    >
+                      <label class="control-label">Employee ID <span class="text-danger m-l-5">*</span></label>
+                      <input type="text" class="form-control" formControlName="emmpid" required>
+                      <span class="help-block" *ngIf="editForm.controls['emmpid'].errors && editForm.controls['emmpid'].touched">
+                    Employee ID is invalid
+                </span>
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group pos-rel cal-icon"
+                         [class.has-error]="
+                    editForm.controls['joiningdate'].invalid &&
+                    editForm.controls['joiningdate'].touched"
+                         [class.has-success]="editForm.controls['joiningdate'].valid"
+                    >
+                      <label class="control-label">Joining Date <span class="text-danger m-l-5">*</span></label>
+                      <input class="form-control" bsDatepicker type="text"
+                             [bsConfig]="{ dateInputFormat: 'DD-MM-YYYY',  returnFocusToInput: true }"
+                             [class.invalid]="editForm.get('joiningdate').invalid && editForm.get('joiningdate').touched"
+                             formControlName="joiningdate" (bsValueChange)="from($event)">
+                      <span class="help-block" *ngIf="editForm.controls['joiningdate'].errors && editForm.controls['joiningdate'].touched">
+                   Joining Date is invalid
+                </span>
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group"
+                         [class.has-error]="
+                    editForm.controls['corporateid'].invalid &&
+                    editForm.controls['corporateid'].touched"
+                         [class.has-success]="editForm.controls['corporateid'].valid"
+                    >
+                      <label class="control-label">Company <span class="text-danger">*</span></label>
+                      <select class="select form-control" formControlName="corporateid" required>
+                        <option value="">--Select--</option>
+                        <option *ngFor="let cmp of companies" [value]=cmp.corporateid>{{cmp.corporateid}}</option>
+                      </select>
+                      <span class="help-block" *ngIf="editForm.controls['corporateid'].errors && editForm.controls['corporateid'].touched">
+                   Company is invalid
+                </span>
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group"
+                         [class.has-error]="
+                    editForm.controls['role'].invalid &&
+                    editForm.controls['role'].touched"
+                         [class.has-success]="editForm.controls['role'].valid"
+                    >
+                      <label class="control-label">Role<span class="text-danger m-l-5">*</span></label>
+                      <select class="select form-control" formControlName="role" required>
+                        <option value="">--Select--</option>
+                        <option value="Admin">Admin</option>
+                        <option value="Management">Management</option>
+                        <option value="Employee">Employee</option>
+                      </select>
+                      <span class="help-block" *ngIf="editForm.controls['role'].errors && editForm.controls['role'].touched">
+                   Role is invalid
+                </span>
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group"
+                         [class.has-error]="
+                        editForm.controls['department'].invalid &&
+                        editForm.controls['department'].touched"
+                         [class.has-success]="editForm.controls['department'].valid"
+                    >
+                      <label for="department" class="control-label">Department<span class="text-danger m-l-5">*</span></label>
+                      <select id="department" class="select form-control" formControlName="department" required (change)="onDepartChange(editForm.controls['department'])">
+                        <option value="">--Select--</option>
+                        <option *ngFor="let opt of departments" [value]="opt._id">{{opt.department}}</option>
+                      </select>
+                      <span class="help-block" *ngIf="editForm.controls['department'].errors && editForm.controls['department'].touched">
+                        Department is invalid
+                      </span>
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group"
+                         [class.has-error]="
+                          editForm.controls['designation'].invalid &&
+                          editForm.controls['designation'].touched"
+                         [class.has-success]="editForm.controls['designation'].valid"
+                        >
+                      <label for="designation" class="control-label">Designation<span class="text-danger m-l-5">*</span></label>
+                      <select id="designation" class="select form-control" formControlName="designation" required>
+                        <option value="">--Select--</option>
+                        <option *ngFor="let opt of designations" [value]="opt._id">{{opt.designation}}</option>
+                      </select>
+                      <span class="help-block" *ngIf="editForm.controls['designation'].errors && editForm.controls['designation'].touched">
+                        Designation is invalid
+                      </span>
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group" [class.has-error]="editForm.controls['mobile'].invalid && editForm.controls['mobile'].touched" [class.has-success]="editForm.controls['mobile'].valid">
+                      <label class="control-label">Mobile</label>
+                      <input class="form-control unit-cost" type="text" formControlName="mobile" pattern="(\d{10}|\d{12})">
+                      <span class="help-block" *ngIf="editForm.controls['mobile'].errors && editForm.controls['mobile'].touched">
+                        Mobile Number is invalid
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div class="table-responsive m-t-15">
+                  <table class="table table-striped custom-table">
+                    <thead>
+                    <tr>
+                      <th>Module Permission</th>
+                      <th class="text-center">Read</th>
+                      <th class="text-center">Write</th>
+                      <th class="text-center">Create</th>
+                      <th class="text-center">Delete</th>
+                      <th class="text-center">Import</th>
+                      <th class="text-center">Export</th>
+                    </tr>
+                    </thead>
+                    <tbody formArrayName="permissions">
+                    <tr formGroupName="holiday">
+                      <td>Holidays</td>
+                      <td class="text-center">
+                        <input formControlName="read" type="checkbox">
+                      </td>
+                      <td class="text-center">
+                        <input formControlName="write" type="checkbox">
+                      </td>
+                      <td class="text-center">
+                        <input formControlName="create" type="checkbox">
+                      </td>
+                      <td class="text-center">
+                        <input formControlName="delete" type="checkbox">
+                      </td>
+                      <td class="text-center">
+                        <input formControlName="import" type="checkbox">
+                      </td>
+                      <td class="text-center">
+                        <input formControlName="export" type="checkbox">
+                      </td>
+                    </tr>
+                    <tr formGroupName="leave">
+                      <td>Leave Request</td>
+                      <td class="text-center">
+                        <input formControlName="read" type="checkbox">
+                      </td>
+                      <td class="text-center">
+                        <input formControlName="write" type="checkbox">
+                      </td>
+                      <td class="text-center">
+                        <input formControlName="create" type="checkbox">
+                      </td>
+                      <td class="text-center">
+                        <input formControlName="delete" type="checkbox">
+                      </td>
+                      <td class="text-center">
+                        <input formControlName="import" type="checkbox">
+                      </td>
+                      <td class="text-center">
+                        <input formControlName="export" type="checkbox">
+                      </td>
+                    </tr>
+                    <tr formGroupName="assets">
+                      <td>Assets</td>
+                      <td class="text-center">
+                        <input formControlName="read" type="checkbox">
+                      </td>
+                      <td class="text-center">
+                        <input formControlName="write" type="checkbox">
+                      </td>
+                      <td class="text-center">
+                        <input formControlName="create" type="checkbox">
+                      </td>
+                      <td class="text-center">
+                        <input formControlName="delete" type="checkbox">
+                      </td>
+                      <td class="text-center">
+                        <input formControlName="import" type="checkbox">
+                      </td>
+                      <td class="text-center">
+                        <input formControlName="export" type="checkbox">
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                  <br>
+
+                </div>
+                <div class="m-t-20 text-center">
+                  <div *ngIf="uptEmployeeValidation" class="alert alert-info m-t-10">
+                    <strong>Warning!</strong> Must Fill all Mandatory Fields.
+                  </div>
+                  <button class="btn btn-primary" type="submit" [disabled]="editForm.invalid">Create Employee</button>
+                </div>
+              </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Add Employee Modal -->
+
+<!-- Edit Employee Modal -->
+<div id="edit_employee" class="modal custom-modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Employee</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" *ngIf="editForm">
+              <form class="m-b-30" [formGroup]="editForm" (ngSubmit)="updateSubmit(editForm)" novalidate>
+                <input type="hidden" formControlName="_id">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <div class="form-group"
+                         [class.has-error]="
+                          editForm.controls['username'].invalid &&
+                          editForm.controls['username'].touched"
+                         [class.has-success]="editForm.controls['username'].valid"
+                    >
+                      <label class="control-label">Username <span class="text-danger m-l-5">*</span></label>
+                      <input class="form-control" type="text" formControlName="username" required>
+                      <span class="help-block" *ngIf="editForm.controls['username'].errors && editForm.controls['username'].touched">
+                    Username is invalid
+                </span>
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group">
+                      <label class="control-label">First Name</label>
+                      <input class="form-control" type="text" formControlName="firstname">
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group">
+                      <label class="control-label">Last Name</label>
+                      <input class="form-control" type="text" formControlName="lastname">
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group" [class.has-error]="editForm.controls['email'].invalid && editForm.controls['email'].touched" [class.has-success]="editForm.controls['email'].valid">
+                      <label class="control-label">Email <span class="text-danger m-l-5">*</span></label>
+                      <input class="form-control" type="email" pattern="([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})" formControlName="email" required>
+                      <span class="help-block" *ngIf="editForm.controls['email'].errors && editForm.controls['email'].touched">
+                        Email is invalid
+                </span>
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group"
+                         [class.has-error]="
+                    editForm.controls['password'].invalid &&
+                    editForm.controls['password'].touched"
+                         [class.has-success]="editForm.controls['password'].valid"
+                    >
+                      <label class="control-label">Password<span class="text-danger m-l-5">*</span></label>
+                      <input class="form-control" type="password" formControlName="password" required>
+                      <span class="help-block" *ngIf="editForm.controls['password'].errors && editForm.controls['password'].touched">
+                    Password is invalid
+                </span>
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group" [class.has-error]="editForm.hasError('notSame') || (editForm.controls['password'].invalid &&
+                    editForm.controls['password'].touched)">
+                      <label class="control-label">Confirm Password<span class="text-danger m-l-5">*</span></label>
+                      <input class="form-control" type="password" formControlName="password2">
+                      <span class="help-block" *ngIf="editForm.controls['password2'].errors && editForm.controls['password2'].touched">
+                        Confirm Password is invalid
+                      </span>
+                      <span class="help-block" *ngIf="editForm.hasError('notSame')">
+                          Passwords do not match
+                      </span>
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group"
+                         [class.has-error]="
+                    editForm.controls['emmpid'].invalid &&
+                    editForm.controls['emmpid'].touched"
+                         [class.has-success]="editForm.controls['emmpid'].valid"
+                    >
+                      <label class="control-label">Employee ID <span class="text-danger m-l-5">*</span></label>
+                      <input type="text" class="form-control" formControlName="emmpid" required>
+                      <span class="help-block" *ngIf="editForm.controls['emmpid'].errors && editForm.controls['emmpid'].touched">
+                    Employee ID is invalid
+                </span>
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group pos-rel cal-icon"
+                         [class.has-error]="
+                    editForm.controls['joiningdate'].invalid &&
+                    editForm.controls['joiningdate'].touched"
+                         [class.has-success]="editForm.controls['joiningdate'].valid"
+                    >
+                      <label class="control-label">Joining Date <span class="text-danger m-l-5">*</span></label>
+                      <input class="form-control datetimepicker" type="text" bsDatepicker type="text"
+                             [bsConfig]="{ dateInputFormat: 'DD-MM-YYYY',  returnFocusToInput: true }"
+                             [class.invalid]="editForm.get('joiningdate').invalid && editForm.get('joiningdate').touched"
+                             formControlName="joiningdate" (bsValueChange)="from($event)">
+                      <span class="help-block" *ngIf="editForm.controls['joiningdate'].errors && editForm.controls['joiningdate'].touched">
+                   Joining Date is invalid
+                </span>
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group"
+                         [class.has-error]="
+                    editForm.controls['corporateid'].invalid &&
+                    editForm.controls['corporateid'].touched"
+                         [class.has-success]="editForm.controls['corporateid'].valid"
+                    >
+                      <label class="control-label">Company <span class="text-danger">*</span></label>
+                      <select class="select form-control" formControlName="corporateid" required>
+                        <option value="">--Select--</option>
+                        <option *ngFor="let cmp of companies" [value]=cmp.corporateid>{{cmp.corporateid}}</option>
+                      </select>
+                      <span class="help-block" *ngIf="editForm.controls['corporateid'].errors && editForm.controls['corporateid'].touched">
+                   Company is invalid
+                </span>
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group"
+                         [class.has-error]="
+                    editForm.controls['role'].invalid &&
+                    editForm.controls['role'].touched"
+                         [class.has-success]="editForm.controls['role'].valid"
+                    >
+                      <label class="control-label">Role<span class="text-danger m-l-5">*</span></label>
+                      <select class="select form-control" formControlName="role" required>
+                        <option value="">--Select--</option>
+                        <option value="Admin">Admin</option>
+                        <option value="Management">Management</option>
+                        <option value="Employee">Employee</option>
+                      </select>
+                      <span class="help-block" *ngIf="editForm.controls['role'].errors && editForm.controls['role'].touched">
+                   Role is invalid
+                </span>
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group"
+                         [class.has-error]="
+                        editForm.controls['department'].invalid &&
+                        editForm.controls['department'].touched"
+                         [class.has-success]="editForm.controls['department'].valid"
+                    >
+                      <label for="department1" class="control-label">Department<span class="text-danger m-l-5">*</span></label>
+                      <select id="department1" class="select form-control" formControlName="department" required (change)="onDepartChange(editForm.controls['department'])">
+                        <option value="">--Select--</option>
+                        <option *ngFor="let opt of departments" [value]="opt._id">{{opt.department}}</option>
+                      </select>
+                      <span class="help-block" *ngIf="editForm.controls['department'].errors && editForm.controls['department'].touched">
+                        Department is invalid
+                      </span>
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group"
+                         [class.has-error]="
+                          editForm.controls['designation'].invalid &&
+                          editForm.controls['designation'].touched"
+                         [class.has-success]="editForm.controls['designation'].valid"
+                    >
+                      <label for="designation1" class="control-label">Designation<span class="text-danger m-l-5">*</span></label>
+                      <select id="designation1" class="select form-control" formControlName="designation" required>
+                        <option value="">--Select--</option>
+                        <option *ngFor="let opt of designations" [value]="opt._id">{{opt.designation}}</option>
+                      </select>
+                      <span class="help-block" *ngIf="editForm.controls['designation'].errors && editForm.controls['designation'].touched">
+                        Designation is invalid
+                      </span>
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group" [class.has-error]="editForm.controls['mobile'].invalid && editForm.controls['mobile'].touched" [class.has-success]="editForm.controls['mobile'].valid">
+                      <label class="control-label">Mobile</label>
+                      <input class="form-control unit-cost" type="text" formControlName="mobile" pattern="(\d{10}|\d{12})">
+                      <span class="help-block" *ngIf="editForm.controls['mobile'].errors && editForm.controls['mobile'].touched">
+                        Mobile Number is invalid
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div class="table-responsive m-t-15">
+                  <table class="table table-striped custom-table">
+                    <thead>
+                    <tr>
+                      <th>Module Permission</th>
+                      <th class="text-center">Read</th>
+                      <th class="text-center">Write</th>
+                      <th class="text-center">Create</th>
+                      <th class="text-center">Delete</th>
+                      <th class="text-center">Import</th>
+                      <th class="text-center">Export</th>
+                    </tr>
+                    </thead>
+                    <tbody formArrayName="permissions">
+                    <tr formGroupName="holiday">
+                      <td>Holidays</td>
+                      <td class="text-center">
+                        <input formControlName="read" type="checkbox">
+                      </td>
+                      <td class="text-center">
+                        <input formControlName="write" type="checkbox">
+                      </td>
+                      <td class="text-center">
+                        <input formControlName="create" type="checkbox">
+                      </td>
+                      <td class="text-center">
+                        <input formControlName="delete" type="checkbox">
+                      </td>
+                      <td class="text-center">
+                        <input formControlName="import" type="checkbox">
+                      </td>
+                      <td class="text-center">
+                        <input formControlName="export" type="checkbox">
+                      </td>
+                    </tr>
+                    <tr formGroupName="leave">
+                      <td>Leave Request</td>
+                      <td class="text-center">
+                        <input formControlName="read" type="checkbox">
+                      </td>
+                      <td class="text-center">
+                        <input formControlName="write" type="checkbox">
+                      </td>
+                      <td class="text-center">
+                        <input formControlName="create" type="checkbox">
+                      </td>
+                      <td class="text-center">
+                        <input formControlName="delete" type="checkbox">
+                      </td>
+                      <td class="text-center">
+                        <input formControlName="import" type="checkbox">
+                      </td>
+                      <td class="text-center">
+                        <input formControlName="export" type="checkbox">
+                      </td>
+                    </tr>
+                    <tr formGroupName="assets">
+                      <td>Assets</td>
+                      <td class="text-center">
+                        <input formControlName="read" type="checkbox">
+                      </td>
+                      <td class="text-center">
+                        <input formControlName="write" type="checkbox">
+                      </td>
+                      <td class="text-center">
+                        <input formControlName="create" type="checkbox">
+                      </td>
+                      <td class="text-center">
+                        <input formControlName="delete" type="checkbox">
+                      </td>
+                      <td class="text-center">
+                        <input formControlName="import" type="checkbox">
+                      </td>
+                      <td class="text-center">
+                        <input formControlName="export" type="checkbox">
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                  <br>
+
+                </div>
+                <div class="m-t-20 text-center">
+                  <div *ngIf="uptEmployeeValidation" class="alert alert-info m-t-10">
+                    <strong>Warning!</strong> Must Fill all Mandatory Fields.
+                  </div>
+                  <button class="btn btn-primary" type="submit">Save Changes</button>
+                </div>
+              </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Edit Employee Modal -->
+
+<!-- Delete Employee Modal -->
+<div class="modal custom-modal fade" id="delete_employee" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="form-header">
+                    <h3>Delete Employee</h3>
+                    <p>Are you sure want to delete?</p>
+                </div>
+                <div class="modal-btn delete-action">
+                    <div class="row">
+                        <div class="col-6">
+                            <a class="btn btn-primary continue-btn"
+                                (click)="deleteEmployee()">Delete</a>
+                        </div>
+                        <div class="col-6">
+                            <a data-dismiss="modal"
+                                class="btn btn-primary cancel-btn">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Delete Employee Modal -->

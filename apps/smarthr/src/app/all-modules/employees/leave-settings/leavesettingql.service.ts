@@ -28,7 +28,7 @@ export class RegisterLeaveTypeGQL extends Mutation {
         leavetype
         leavedays
         carryforward
-        carrymax,
+        carrymax
         status
       }
     }
@@ -45,8 +45,8 @@ export class UpdateLeaveTypeGQL extends Mutation {
       $leavetype: String!,
       $leavedays: String!,
       $carryforward: String,
-      $carrymax: String,
       $status: String,
+      $carrymax: String,
       $modified: [modifiedInputs]
     ) {
       updateLeaveType(
@@ -54,7 +54,7 @@ export class UpdateLeaveTypeGQL extends Mutation {
         leavetype: $leavetype,
         leavedays: $leavedays,
         carryforward: $carryforward,
-        carrymax: $carrymax
+        carrymax: $carrymax,
         status: $status,
         modified: $modified
       ) {

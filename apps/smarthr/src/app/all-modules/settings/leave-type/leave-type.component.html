@@ -12,7 +12,7 @@
                 </ul>
             </div>
             <div class="col-auto float-right ml-auto">
-                <a  class="btn add-btn" data-toggle="modal" data-target="#add_leavetype"><i
+                <a  class="btn add-btn" data-toggle="modal" data-target="#add_leavetype" (click)="addReset()"><i
                         class="fa fa-plus"></i> Add Leave Type</a>
             </div>
         </div>
@@ -88,22 +88,51 @@
             <div class="modal-body">
               <form [formGroup]="addForm" (ngSubmit)="addLeavetype(addForm)">
                 <input id="lid" type="hidden" formControlName="_id">
-                <div class="form-group">
+                <div class="form-group"
+                     [class.has-error]="
+                      addForm.controls['leavetype'].invalid &&
+                      addForm.controls['leavetype'].touched"
+                     [class.has-success]="addForm.controls['leavetype'].valid"
+                >
                   <label for="leavetype1">Leave Type <span class="text-danger">*</span></label>
                   <input id="leavetype1" class="form-control" required type="text" formControlName="leavetype">
                 </div>
-                <div class="form-group">
+                <div class="form-group"
+                     [class.has-error]="
+                      addForm.controls['leavedays'].invalid &&
+                      addForm.controls['leavedays'].touched"
+                     [class.has-success]="addForm.controls['leavedays'].valid"
+                >
                   <label for="numberofdays1">Number of days <span class="text-danger">*</span></label>
                   <input id="numberofdays1" class="form-control" required type="text" formControlName="leavedays">
                 </div>
-                <div class="form-group">
+                <div class="form-group"
+                     [class.has-error]="
+                      addForm.controls['carryforward'].invalid &&
+                      addForm.controls['carryforward'].touched"
+                     [class.has-success]="addForm.controls['carryforward'].valid"
+                >
                   <label for="carryforward1">Carry Forward <span class="text-danger">*</span></label>
-                  <select id="carryforward1" class="form-control" formControlName="carryforward">
+                  <select id="carryforward1" class="form-control" formControlName="carryforward" (change)="onCarryChange(addForm)">
                     <option value="Yes">Yes</option>
                     <option value="No">No</option>
                   </select>
                 </div>
-                <div class="form-group">
+                <div *ngIf="addForm.controls['carryforward'].value === 'Yes'" class="form-group"
+                     [class.has-error]="
+                      addForm.controls['carrymax'].invalid &&
+                      addForm.controls['carrymax'].touched"
+                     [class.has-success]="addForm.controls['carrymax'].valid"
+                >
+                  <label for="carrymax1">Max Carryforward <span class="text-danger">*</span></label>
+                  <input id="carrymax1" required class="form-control" type="text" value="0" formControlName="carrymax">
+                </div>
+                <div class="form-group"
+                     [class.has-error]="
+                      addForm.controls['status'].invalid &&
+                      addForm.controls['status'].touched"
+                     [class.has-success]="addForm.controls['status'].valid"
+                >
                   <label for="status1">Status <span class="text-danger">*</span></label>
                   <select id="status1" class="form-control" formControlName="status">
                     <option value="Active">Active</option>
@@ -133,22 +162,51 @@
             <div class="modal-body">
               <form [formGroup]="uptForm" (ngSubmit)="updateLeavetype(uptForm)">
                 <input id="lid1" type="hidden" formControlName="_id">
-                <div class="form-group">
+                <div class="form-group"
+                   [class.has-error]="
+                    uptForm.controls['leavetype'].invalid &&
+                    uptForm.controls['leavetype'].touched"
+                   [class.has-success]="uptForm.controls['leavetype'].valid"
+                >
                   <label for="leavetype2">Leave Type <span class="text-danger">*</span></label>
                   <input id="leavetype2" class="form-control" required type="text" formControlName="leavetype">
                 </div>
-                <div class="form-group">
+                <div class="form-group"
+                     [class.has-error]="
+                    uptForm.controls['leavedays'].invalid &&
+                    uptForm.controls['leavedays'].touched"
+                     [class.has-success]="uptForm.controls['leavedays'].valid"
+                >
                   <label for="numberofdays2">Number of days <span class="text-danger">*</span></label>
                   <input id="numberofdays2" class="form-control" required type="text" formControlName="leavedays">
                 </div>
-                <div class="form-group">
+                <div class="form-group"
+                     [class.has-error]="
+                    uptForm.controls['carryforward'].invalid &&
+                    uptForm.controls['carryforward'].touched"
+                     [class.has-success]="uptForm.controls['carryforward'].valid"
+                >
                   <label for="carryforward2">Carry Forward <span class="text-danger">*</span></label>
-                  <select id="carryforward2" class="form-control" formControlName="carryforward">
+                  <select id="carryforward2" class="form-control" formControlName="carryforward" (change)="onCarryChange(uptForm)">
                     <option value="Yes">Yes</option>
                     <option value="No">No</option>
                   </select>
                 </div>
-                <div class="form-group">
+                <div *ngIf="uptForm.controls['carryforward'].value === 'Yes'" class="form-group"
+                     [class.has-error]="
+                    uptForm.controls['carrymax'].invalid &&
+                    uptForm.controls['carrymax'].touched"
+                     [class.has-success]="uptForm.controls['carrymax'].valid"
+                >
+                  <label for="carrymax2">Max Carryforward <span class="text-danger">*</span></label>
+                  <input id="carrymax2" required class="form-control" type="text" value="0" formControlName="carrymax">
+                </div>
+                <div class="form-group"
+                     [class.has-error]="
+                    uptForm.controls['status'].invalid &&
+                    uptForm.controls['status'].touched"
+                     [class.has-success]="uptForm.controls['status'].valid"
+                >
                   <label for="status2">Status <span class="text-danger">*</span></label>
                   <select id="status2" class="form-control" formControlName="status">
                     <option value="Active">Active</option>

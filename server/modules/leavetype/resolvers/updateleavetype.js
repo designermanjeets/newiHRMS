@@ -6,6 +6,7 @@ const updateLeaveType = (_, {
                             leavetype,
                             leavedays,
                             carryforward,
+                            carrymax,
                             status,
                             modified
                           },{me,secret}) => new Promise(async (resolve, reject) => {
@@ -14,8 +15,10 @@ const updateLeaveType = (_, {
       leavetype,
       leavedays,
       carryforward,
+      carrymax,
       status,
     }
+    console.log(param)
     const ltype = await LeaveType.findById(id);
     let changeFields = {};
     for ( item in param) {

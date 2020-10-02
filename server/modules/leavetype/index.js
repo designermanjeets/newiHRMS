@@ -14,6 +14,7 @@ const typeDefs = gql`
       leavetype: String,
       leavedays: String,
       carryforward: String,
+      carrymax: String,
       status: String,
       created_at: ISODate,
       created_by: String
@@ -24,6 +25,7 @@ const typeDefs = gql`
       leavetype: String,
       leavedays: String,
       carryforward: String,
+      carrymax: String,
       status: String,
       modified: [modifiedInputs]
     ): LeaveType
@@ -37,6 +39,7 @@ const typeDefs = gql`
     leavetype: String!,
     leavedays: String!,
     carryforward: String,
+    carrymax: String,
     status: String,
     created_at: ISODate,
     created_by: String,

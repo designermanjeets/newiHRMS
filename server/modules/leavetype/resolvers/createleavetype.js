@@ -5,6 +5,7 @@ const createLeaveType = (_, {
                             leavetype,
                             leavedays,
                             carryforward,
+                            carrymax,
                             status,
                             created_by,
                             created_at
@@ -17,6 +18,7 @@ const createLeaveType = (_, {
       leavetype,
       leavedays,
       carryforward,
+      carrymax,
       status,
       created_by,
       created_at

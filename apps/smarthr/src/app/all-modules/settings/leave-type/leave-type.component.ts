@@ -1,10 +1,6 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AllModulesService } from '../../all-modules.service';
-import {
-  FormBuilder,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { Subject } from 'rxjs';
 import { DataTableDirective } from 'angular-datatables';
@@ -16,6 +12,7 @@ declare const $: any;
   selector: 'app-leave-type',
   templateUrl: './leave-type.component.html',
   styleUrls: ['./leave-type.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LeaveTypeComponent implements OnInit, OnDestroy {
   @ViewChild(DataTableDirective, { static: false })
@@ -40,7 +37,8 @@ export class LeaveTypeComponent implements OnInit, OnDestroy {
     private apollo: Apollo,
     private registerLeaveTypeGQL: RegisterLeaveTypeGQL,
     private updateLeaveTypeGQL: UpdateLeaveTypeGQL,
-    private deleteLeaveTypeGQL: DeleteLeaveTypeGQL
+    private deleteLeaveTypeGQL: DeleteLeaveTypeGQL,
+    private cdRef: ChangeDetectorRef
   ) {
   }
 
@@ -53,6 +51,7 @@ export class LeaveTypeComponent implements OnInit, OnDestroy {
       leavetype: ['', Validators.required],
       leavedays: ['', Validators.required],
       carryforward: ['', Validators.required],
+      carrymax: ['0'],
       status: ['', Validators.required]
     });
 
@@ -61,6 +60,7 @@ export class LeaveTypeComponent implements OnInit, OnDestroy {
       leavetype: ['', Validators.required],
       leavedays: ['', Validators.required],
       carryforward: ['', Validators.required],
+      carrymax: ['0'],
       status: ['', Validators.required]
     });
 
@@ -96,6 +96,7 @@ export class LeaveTypeComponent implements OnInit, OnDestroy {
       if (response.data.getLeaveTypes.length) {
         this.rerender();
         this.allLeaveType = response.data.getLeaveTypes;
+        this.cdRef.detectChanges();
       }
     });
   }
@@ -108,6 +109,7 @@ export class LeaveTypeComponent implements OnInit, OnDestroy {
         leavetype: f.value.leavetype,
         leavedays: f.value.leavedays,
         carryforward: f.value.carryforward,
+        carrymax: f.value.carrymax,
         status: f.value.status,
         created_by: JSON.parse(sessionStorage.getItem('user')).username,
         created_at: Date.now(),
@@ -117,9 +119,9 @@ export class LeaveTypeComponent implements OnInit, OnDestroy {
           $('#add_leavetype').modal('hide');
           this.addForm.reset();
           this.toastr.success('Leave type is added', 'Success');
-          window.location.reload();
+          setTimeout(_ => window.location.reload(), 2000);
         }
-      }, error => console.log(error));
+      }, error => this.toastr.error(error, 'Error'));
   }
   // Edit Provident Modal Api Call
 
@@ -131,6 +133,7 @@ export class LeaveTypeComponent implements OnInit, OnDestroy {
         leavetype: f.value.leavetype,
         leavedays: f.value.leavedays,
         carryforward: f.value.carryforward,
+        carrymax: f.value.carrymax,
         status: f.value.status,
         modified: {
           modified_by: JSON.parse(sessionStorage.getItem('user')).username,
@@ -141,12 +144,30 @@ export class LeaveTypeComponent implements OnInit, OnDestroy {
         if (val.data.updateLeaveType) {
           $('#edit_leavetype').modal('hide');
           this.toastr.success('Leave type is edited', 'Success');
-          window.location.reload();
+          setTimeout(_ => window.location.reload(), 2000);
         }
-      }, error => console.log(error));
+      }, error => this.toastr.error(error, 'Error')
+      );
   }
 
-edit(value) {
+  onCarryChange(form) {
+    const carryInput = form.controls['carryforward'] as FormControl;
+    const maxCarryInput = form.controls['carrymax'] as FormControl;
+    if (carryInput.value === 'Yes') {
+      maxCarryInput.setValidators([Validators.required]);
+    } else {
+      maxCarryInput.clearValidators();
+    }
+    maxCarryInput.updateValueAndValidity();
+    this.cdRef.detectChanges();
+  }
+
+  addReset() {
+    this.addForm.reset();
+  }
+
+  edit(value) {
+    this.uptForm.reset();
     console.log(value);
     this.editId = value;
     const index = this.allLeaveType.findIndex((item) => item._id === value);
@@ -171,9 +192,11 @@ deleteLeave() {
         this.getLeaveTypes();
         $('#delete_leavetype').modal('hide');
         this.toastr.success('Leave type is deleted', 'Success');
-        window.location.reload();
+        setTimeout(_ => window.location.reload(), 2000);
       }
-    }, error => console.log(error));
+    }, error =>
+      this.toastr.error(error, 'Error')
+    );
 }
   // for unsubscribe datatable
 ngOnDestroy(): void {

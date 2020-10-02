@@ -8232,3 +8232,5 @@ ul.comment-list li ul.children {
 #toast-container > div {
   opacity:1;
 }
+
+.onoffswitch.readonly { opacity: .6; }

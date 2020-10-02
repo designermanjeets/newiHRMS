@@ -12,6 +12,7 @@ const LeaveTypeSchema = new Schema({
   leavetype: String,
   leavedays: String,
   carryforward: String,
+  carrymax: String,
   status: String,
   created_at: Date,
   created_by: String,

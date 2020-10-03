@@ -85,7 +85,7 @@ export class DepartmentsComponent implements OnInit, OnDestroy {
         this.setGetDepartmentsService.setDepartments(response.data.getDepartments);
         this.cdRef.detectChanges();
       }
-    });
+    }, error => this.toastr.error(error, 'Error'));
   }
 
   // Add Department  Modal Api Call
@@ -102,7 +102,7 @@ export class DepartmentsComponent implements OnInit, OnDestroy {
           this.toastr.success('Department added sucessfully...!', 'Success');
           this.LoadDepartment();
         }
-      }, error => console.log(error));
+      }, error => this.toastr.error(error, 'Error'));
   }
 
   editDepartment(f) {
@@ -122,7 +122,7 @@ export class DepartmentsComponent implements OnInit, OnDestroy {
           this.toastr.success('Department Updated sucessfully...!', 'Success');
           this.LoadDepartment();
         }
-      }, error => console.log(error));
+      }, error => this.toastr.error(error, 'Error'));
   }
 
   // To Get The department Edit Id And Set Values To Edit Modal Form
@@ -159,7 +159,7 @@ export class DepartmentsComponent implements OnInit, OnDestroy {
           this.cdRef.detectChanges();
           this.LoadDepartment();
         }
-      }, error => console.log(error));
+      }, error => this.toastr.error(error, 'Error'));
   }
 
   ngOnDestroy(): void {

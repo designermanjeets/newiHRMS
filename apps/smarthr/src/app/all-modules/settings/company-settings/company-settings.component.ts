@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
-  FormControl,
   Validators,
 } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
@@ -16,7 +15,6 @@ import {
 import { Apollo } from 'apollo-angular';
 import { GET_USER_QUERY } from '../../employees/all-employees/employee-gql.service';
 import { Router } from '@angular/router';
-import { timeInterval, timeout } from 'rxjs/operators';
 
 @Component({
   selector: 'app-company-settings',

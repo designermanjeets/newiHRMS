@@ -679,7 +679,7 @@
                   <div *ngIf="uptEmployeeValidation" class="alert alert-info m-t-10">
                     <strong>Warning!</strong> Must Fill all Mandatory Fields.
                   </div>
-                  <button class="btn btn-primary" type="submit">Save Changes</button>
+                  <button class="btn btn-primary" type="submit" [disabled]="editForm.invalid">Save Changes</button>
                 </div>
               </form>
             </div>

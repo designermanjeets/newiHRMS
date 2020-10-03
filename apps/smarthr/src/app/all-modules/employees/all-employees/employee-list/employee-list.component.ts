@@ -227,7 +227,7 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
           this.toastr.success('Employeee added sucessfully...!', 'Success');
           this.getUsers();
         }
-      }, error => console.log(error));
+      }, error => this.toastr.error(error, 'Error'));
   }
 
   updateSubmit(f) {
@@ -291,7 +291,7 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
           this.cdref.detectChanges();
 
         }
-      }, error => console.log(error));
+      }, error => this.toastr.error(error, 'Error'));
   }
 
   getUsers() {
@@ -309,7 +309,7 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
       this.srch = [...this.rows];
       this.employeeGQLService.setUsers(response.data.users);
       this.cdref.detectChanges();
-    });
+    }, error => this.toastr.error(error, 'Error'));
   }
 
   getCompanies() {
@@ -324,7 +324,7 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
       this.companies = response.data.getCompanies;
       this.cdref.detectChanges();
 
-    });
+    }, error => this.toastr.error(error, 'Error'));
   }
 
   getDepartments() {
@@ -343,7 +343,7 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
         this.getDesignations(); // Don't want to load All beforehand
         this.cdref.detectChanges();
       }
-    });
+    }, error => this.toastr.error(error, 'Error'));
   }
 
   getDesignations() {
@@ -361,11 +361,12 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
         this.editForm.get('designation').disable(); // Will enable on Department basis/selection
         this.cdref.detectChanges();
       }
-    });
+    }, error => this.toastr.error(error, 'Error'));
   }
 
   onDepartChange(event) {
     this.designations = _.filter(this.allDesignations, person => person.department_ID === event.value);
+    console.log(this.designations);
     this.editForm.get('designation').enable();
     this.cdref.detectChanges();
   }
@@ -407,7 +408,9 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
     this.editForm.get('password2').patchValue(value.password);
     this.editForm.get('department').patchValue(value.department_ID);
     this.onDepartChange({value: value.department_ID});
-    this.editForm.get('designation').patchValue(value.designation._id);
+    if (value.designation) {
+      this.editForm.get('designation').patchValue(value.designation._id);
+    }
   }
 
   // delete employee data api call
@@ -426,7 +429,7 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
             this.toastr.success('Employee deleted sucessfully..!', 'Success', { timeOut: 3000 });
             this.getUsers();
           }
-        }, error => console.log(error));
+        }, error => this.toastr.error(error, 'Error'));
   }
 
   onImportgetData(rowData) {

@@ -82,7 +82,7 @@ export class LeaveTypeComponent implements OnInit, OnDestroy {
         this.rows = this.allLeaveType;
         this.cdRef.detectChanges();
       }
-    });
+    }, error => this.toastr.error(error, 'Error'));
   }
 
   // Add Provident Modal Api Call

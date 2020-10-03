@@ -4,10 +4,7 @@ import { ToastrService } from 'ngx-toastr';
 import { PrimeNGConfig } from 'primeng/api';
 import { AllModulesService } from '../../all-modules.service';
 import {
-  DeleteLeaveTypeGQL,
   GET_LEAVETYPES_QUERY,
-  RegisterLeaveTypeGQL,
-  UpdateLeaveTypeGQL
 } from '../../settings/leave-type/leave-types-gql.service';
 import { Apollo } from 'apollo-angular';
 
@@ -35,37 +32,11 @@ export class LeaveSettingsComponent implements OnInit {
     private allModuleService: AllModulesService,
     private formBuilder: FormBuilder,
     private toastr: ToastrService,
-
-    private apollo: Apollo,
-    private registerLeaveTypeGQL: RegisterLeaveTypeGQL,
-    private updateLeaveTypeGQL: UpdateLeaveTypeGQL,
-    private deleteLeaveTypeGQL: DeleteLeaveTypeGQL
+    private apollo: Apollo
   ) {}
 
   ngOnInit() {
     // Leave Settings button show
-    $(document).on('click', '.leave-edit-btn', function() {
-      $(this)
-        .removeClass('leave-edit-btn')
-        .addClass('btn btn-white leave-cancel-btn')
-        .text('Cancel');
-      $(this)
-        .closest('div.leave-right')
-        .append(
-          '<button class="btn btn-primary leave-save-btn" type="submit">Save</button>'
-        );
-      $(this).parent().parent().find('input').prop('disabled', false);
-      return false;
-    });
-    $(document).on('click', '.leave-cancel-btn', function() {
-      $(this)
-        .removeClass('btn btn-white leave-cancel-btn')
-        .addClass('leave-edit-btn')
-        .text('Edit');
-      $(this).closest('div.leave-right').find('.leave-save-btn').remove();
-      $(this).parent().parent().find('input').prop('disabled', true);
-      return false;
-    });
 
     $(document).on('change', '.leave-box .onoffswitch-checkbox', function() {
       const id = $(this).attr('id').split('_')[1];
@@ -225,7 +196,7 @@ export class LeaveSettingsComponent implements OnInit {
       if (response.data.getLeaveTypes.length) {
         this.allLeaveType = response.data.getLeaveTypes;
       }
-    });
+    }, error => this.toastr.error(error, 'Error'));
   }
 
 }

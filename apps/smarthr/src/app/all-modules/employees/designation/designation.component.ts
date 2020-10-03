@@ -100,21 +100,21 @@ export class DesignationComponent implements OnInit, OnDestroy {
   }
 
   getAllLeaveTypes() {
-    this.apollo.query({
+    this.apollo.watchQuery({
       query: GET_LEAVETYPES_QUERY,
       variables: {
         pagination: {
           limit: 100
         }
       },
-    }).subscribe((response: any) => {
+    }).valueChanges.subscribe((response: any) => {
       if (response.data.getLeaveTypes) {
         this.allLeaveTypes = response.data.getLeaveTypes;
         _.forEach(this.allLeaveTypes, val => delete val['leavechecked']); // Cache Issue
         _.forEach(this.allLeaveTypes, val => this.addLeavetypes(val));
       }
       this.cdRef.detectChanges();
-    });
+    }, error => this.toastr.error(error, 'Error'));
   }
 
   // Get designation list  Api Call
@@ -168,7 +168,7 @@ export class DesignationComponent implements OnInit, OnDestroy {
           this.toastr.success('Desigantion added sucessfully...!', 'Success');
           this.LoadDesignation();
         }
-      }, error => console.log(error));
+      }, error => this.toastr.error(error, 'Error'));
   }
 
   editDesignation(f) {
@@ -198,7 +198,7 @@ export class DesignationComponent implements OnInit, OnDestroy {
           this.toastr.success('Department Updated sucessfully...!', 'Success');
           this.LoadDesignation();
         }
-      }, error => console.log(error));
+      }, error => this.toastr.error(error, 'Error'));
   }
 
   getDepartments() {
@@ -214,7 +214,7 @@ export class DesignationComponent implements OnInit, OnDestroy {
         this.departments = response.data.getDepartments;
         this.setGetDesignationsService.setDepartments(this.departments);
       }
-    });
+    }, error => this.toastr.error(error, 'Error'));
   }
 
   addModel() {
@@ -288,7 +288,7 @@ export class DesignationComponent implements OnInit, OnDestroy {
           this.toastr.success('Designation deleted sucessfully..!', 'Success');
           this.LoadDesignation();
         }
-      }, error => console.log(error));
+      }, error => this.toastr.error(error, 'Error'));
   }
 
   ngOnDestroy(): void {

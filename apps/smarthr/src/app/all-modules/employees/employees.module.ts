@@ -24,6 +24,7 @@ import { SharingModule } from '../../sharing/sharing.module';
 import { PickListModule } from 'primeng/picklist';
 import { MatDatepickerModule, MatNativeDateModule } from '@angular/material';
 import { NgxUploaderModule } from 'ngx-uploader';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 @NgModule({
   declarations: [EmployeesComponent, AllEmployeesComponent, EmployeePageContentComponent, EmployeeListComponent, EmployeeProfileComponent, HolidaysComponent, LeavesAdminComponent, LeavesEmployeeComponent, LeaveSettingsComponent, AttendanceAdminComponent, AttendanceEmployeeComponent, DepartmentsComponent, DesignationComponent, TimesheetComponent, OvertimeComponent],
@@ -38,7 +39,8 @@ import { NgxUploaderModule } from 'ngx-uploader';
     DataTablesModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    NgxUploaderModule
+    NgxUploaderModule,
+    NgxDatatableModule
   ]
 })
 export class EmployeesModule { }

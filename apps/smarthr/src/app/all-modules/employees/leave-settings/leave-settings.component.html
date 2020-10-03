@@ -28,7 +28,7 @@
                         {{item.leavetype}}
                           <div class="onoffswitch readonly">
                               <input type="checkbox" disabled name="onoffswitch" class="onoffswitch-checkbox" id="switch_annual"
-                                  [checked]="item.status">
+                                  [checked]="item.status === 'Active'">
                               <label class="onoffswitch-label" for="switch_annual">
                                   <span class="onoffswitch-inner"></span>
                                   <span class="onoffswitch-switch"></span>

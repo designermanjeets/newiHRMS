@@ -37,7 +37,10 @@
               "node_modules/primeng/resources/primeng.min.css",
               "node_modules/primeicons/primeicons.css",
               "node_modules/ngx-toastr/toastr.css",
-              "node_modules/ng-drag-drop/style.css"
+              "node_modules/ng-drag-drop/style.css",
+              "node_modules/@swimlane/ngx-datatable/index.css",
+              "node_modules/@swimlane/ngx-datatable/themes/material.scss",
+              "node_modules/@swimlane/ngx-datatable/assets/icons.css"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",

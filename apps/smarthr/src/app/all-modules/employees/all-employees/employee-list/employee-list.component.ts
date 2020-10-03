@@ -29,6 +29,7 @@ import { GET_DESIGNATIONS_QUERY, SetGetDesignationsService } from '../../designa
 import { GET_DEPARTMENTS_QUERY } from '../../departments/department-gql.service';
 import { UploadFileGQL } from './uploadgql.service';
 import { UploadOutput, UploadInput, UploadFile, UploaderOptions } from 'ngx-uploader';
+import { ColumnMode, SelectionType } from '@swimlane/ngx-datatable';
 
 declare const $: any;
 import * as moment from 'moment';
@@ -52,7 +53,6 @@ export class EmployeeListComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
   public pipe = new DatePipe('en-US');
-  public rows = [];
   public srch = [];
   public statusValue;
   public dtTrigger: Subject<any> = new Subject();
@@ -72,19 +72,22 @@ export class EmployeeListComponent implements OnInit, OnDestroy, AfterViewInit {
   allDesignations: any;
   isModal: boolean;
   actionParams: any;
-  filepath1: 'apps/smarthr/src/assets/uploads/';
 
-  xlsColumns = {
-    A: 'firstname',
-    B: 'emmpid',
-    C: 'email',
-    D: 'mobile',
-    E: 'joiningdate',
-    F: 'role',
-    G: 'username',
-    H: 'corporateid',
-    I: 'password'
-  };
+  rows = [];
+  selected = [];
+  columns: any[] = [
+    { prop: 'username', name: 'Username' },
+    { prop: 'email', name: 'Email' },
+    { prop: 'emmpid', name: 'Emp ID' },
+    { prop: 'firstname', name: 'First Name' },
+    { prop: 'lastname', name: 'Last Name' },
+    { prop: 'joiningdate', name: 'Joining Date' },
+    { prop: 'role', name: 'Role' },
+    { prop: 'department', name: 'Department' },
+    { prop: 'designation.designation', name: 'Designation' }
+    ];
+  ColumnMode = ColumnMode;
+  SelectionType = SelectionType;
 
   constructor(
     private srvModuleService: AllModulesService,
@@ -237,7 +240,7 @@ export class EmployeeListComponent implements OnInit, OnDestroy, AfterViewInit {
         if (val.data.signup.username) {
           $('#add_employee').modal('hide');
           this.toastr.success('Employeee added sucessfully...!', 'Success');
-          setTimeout(_ => window.location.reload(), 2000);
+          this.getUsers();
         }
       }, error => console.log(error));
   }
@@ -299,36 +302,29 @@ export class EmployeeListComponent implements OnInit, OnDestroy, AfterViewInit {
         if (val.data.updateUser) {
           $('#edit_employee').modal('hide');
           this.toastr.success('Employeee Updated sucessfully...!', 'Success');
-          setTimeout(_ => window.location.reload(), 2000);
+          this.getUsers();
+          this.cdref.detectChanges();
+
         }
       }, error => console.log(error));
   }
 
   getUsers() {
-    this.apollo.query({
+    this.apollo.watchQuery({
       query: GET_USERS_QUERY,
       variables: {
         pagination: {
           limit: 100
         }
       },
-    }).subscribe((response: any) => {
+    }).valueChanges.subscribe((response: any) => {
       this.lstEmployee = response.data.users;
+      this.rows = [];
       this.rows = this.lstEmployee;
       this.srch = [...this.rows];
       this.employeeGQLService.setUsers(response.data.users);
       this.cdref.detectChanges();
     });
-  }
-
-  rerender(): void {
-    $('#datatable').DataTable().clear();
-    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-      dtInstance.destroy();
-    });
-    this.lstEmployee = [];
-    this.getUsers();
-    setTimeout(() => this.dtTrigger.next(), 1000);
   }
 
   getCompanies() {
@@ -341,6 +337,8 @@ export class EmployeeListComponent implements OnInit, OnDestroy, AfterViewInit {
       },
     }).valueChanges.subscribe((response: any) => {
       this.companies = response.data.getCompanies;
+      this.cdref.detectChanges();
+
     });
   }
 
@@ -358,6 +356,7 @@ export class EmployeeListComponent implements OnInit, OnDestroy, AfterViewInit {
         this.departments = response.data.getDepartments;
         this.setGetDesignationsService.setDepartments(this.departments);
         this.getDesignations(); // Don't want to load All beforehand
+        this.cdref.detectChanges();
       }
     });
   }
@@ -375,6 +374,7 @@ export class EmployeeListComponent implements OnInit, OnDestroy, AfterViewInit {
         this.allDesignations = response.data.getDesignations;
         this.setGetDesignationsService.setDesignations(this.allDesignations);
         this.editForm.get('designation').disable(); // Will enable on Department basis/selection
+        this.cdref.detectChanges();
       }
     });
   }
@@ -382,6 +382,7 @@ export class EmployeeListComponent implements OnInit, OnDestroy, AfterViewInit {
   onDepartChange(event) {
     this.designations = _.filter(this.allDesignations, person => person.department_ID === event.value);
     this.designations && this.editForm.get('designation').enable();
+    this.cdref.detectChanges();
   }
 
   add() {
@@ -438,7 +439,7 @@ export class EmployeeListComponent implements OnInit, OnDestroy, AfterViewInit {
           if (!val.data.deleteUser.email) {
             $('#delete_employee').modal('hide');
             this.toastr.success('Employee deleted sucessfully..!', 'Success', { timeOut: 3000 });
-            setTimeout(_ => window.location.reload(), 2000);
+            this.getUsers();
           }
         }, error => console.log(error));
   }
@@ -486,7 +487,7 @@ export class EmployeeListComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe( (val: any) => {
         if (val.data.insertManyUsers.users[0].username) {
           this.toastr.success('Data Saved', 'Success', { timeOut: 3000 });
-          setTimeout(_ => window.location.reload(), 2000);
+          this.getUsers();
         }
       }, error => {
         this.toastr.error(error, 'Error', { timeOut: 5000 });
@@ -497,10 +498,10 @@ export class EmployeeListComponent implements OnInit, OnDestroy, AfterViewInit {
   searchId(val) {
     this.rows.splice(0, this.rows.length);
     const temp = this.srch.filter(function(d) {
-      val = val.toLowerCase();
-      return d.employeeId.toLowerCase().indexOf(val) !== -1 || !val;
+      return d.emmpid && d.emmpid.indexOf(val) !== -1 || !val;
     });
     this.rows.push(...temp);
+    this.cdref.detectChanges();
   }
 
   // search by name
@@ -508,19 +509,21 @@ export class EmployeeListComponent implements OnInit, OnDestroy, AfterViewInit {
     this.rows.splice(0, this.rows.length);
     const temp = this.srch.filter(function(d) {
       val = val.toLowerCase();
-      return d.firstname.toLowerCase().indexOf(val) !== -1 || !val;
+      return d.firstname && d.firstname.toLowerCase().indexOf(val) !== -1 || !val;
     });
     this.rows.push(...temp);
+    this.cdref.detectChanges();
   }
 
   // search by purchase
   searchByDesignation(val) {
     this.rows.splice(0, this.rows.length);
+    val = val.toLowerCase();
     const temp = this.srch.filter(function(d) {
-      val = val.toLowerCase();
-      return d.designation.toLowerCase().indexOf(val) !== -1 || !val;
+      return d.designation && d.designation.designation.toLowerCase().indexOf(val) !== -1 || !val;
     });
     this.rows.push(...temp);
+    this.cdref.detectChanges();
   }
 
   // getting the status value

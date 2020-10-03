@@ -48,25 +48,21 @@
     <div class="row filter-row">
         <div class="col-sm-6 col-md-3">
             <div class="form-group form-focus">
-                <input type="text" class="form-control floating" (input)="searchId($event.target.value)" (focusout)="rerender()">
+                <input type="text" class="form-control floating" (input)="searchId($event.target.value)">
                 <label class="focus-label">Employee ID</label>
             </div>
         </div>
         <div class="col-sm-6 col-md-3">
             <div class="form-group form-focus">
-                <input type="text" class="form-control floating" (input)="searchName($event.target.value)"
-                    (focusout)="rerender()">
+                <input type="text" class="form-control floating" (input)="searchName($event.target.value)">
                 <label class="focus-label">Employee Name</label>
             </div>
         </div>
         <div class="col-sm-6 col-md-3">
             <div class="form-group form-focus select-focus">
-                <select class="select form-control" (input)="searchByDesignation($event.target.value)" (focusout)="rerender()">
+                <select class="select form-control" (input)="searchByDesignation($event.target.value)">
                     <option value = "">Select Designation</option>
-                    <option>Web Developer</option>
-                    <option>Web Designer</option>
-                    <option>Android Developer</option>
-                    <option>Ios Developer</option>
+                    <option *ngFor="let d of allDesignations" [value]=d.designation>{{d.designation}}</option>
                 </select>
             </div>
         </div>
@@ -79,56 +75,49 @@
     <div class="row">
         <div class="col-md-12">
             <div class="table-responsive">
-                <table class="table table-striped custom-table datatable" datatable [dtOptions]="dtOptions"
-                    [dtTrigger]="dtTrigger">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Employee ID</th>
-                            <th>Email</th>
-                            <th>Mobile</th>
-                            <th class="text-nowrap">Join Date</th>
-                            <th>Role</th>
-                            <th class="text-right no-sort">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let row of lstEmployee;let i = index">
-                            <td>
-                                <h2 class="table-avatar">
-                                    <a routerLink="/employees/employeeprofile" class="avatar"><img alt=""
-                                            src="assets/img/profiles/avatar-0{{i+ 1}}.jpg"></a>
-                                    <a routerLink="/employees/employeeprofile">{{row.firstname}}
-                                        <span>{{row.designation?.designation}} </span></a>
-                                </h2>
-                            </td>
-                            <td>{{row.emmpid}}</td>
-                            <td>{{row.email}}</td>
-                            <td>{{row.mobile}}</td>
-                            <td>{{row.joiningdate | date}}</td>
-                            <td>
-                                <div class="dropdown">
-                                    <a class="btn btn-block btn-white btn-sm btn-rounded dropdown-toggle">{{row.role}}</a>
-                                </div>
-                            </td>
-                            <td class="text-right">
-                                <div class="dropdown dropdown-action">
-                                    <a  class="action-icon dropdown-toggle" data-toggle="dropdown"
-                                        aria-expanded="false"><i class="material-icons">more_vert</i></a>
-                                    <div class="dropdown-menu dropdown-menu-right">
-                                        <a class="dropdown-item"  data-toggle="modal"
-                                            data-target="#edit_employee" (click)="edit(row)"><i
-                                                class="fa fa-pencil m-r-5"></i> Edit</a>
-                                        <a class="dropdown-item"  data-toggle="modal"
-                                            data-target="#delete_employee" (click)="deleteparams = row"><i
-                                                class="fa fa-trash-o m-r-5"></i>
-                                            Delete</a>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+
+              <ngx-datatable
+                class="bootstrap"
+                [rows]="rows"
+                [columnMode]="ColumnMode.force"
+                [columns]="columns"
+                [headerHeight]="50"
+                [footerHeight]="50"
+                rowHeight="auto"
+                [limit]="10"
+              >
+                <ngx-datatable-column name="Username" prop="username"></ngx-datatable-column>
+                <ngx-datatable-column name="Email" prop="email"></ngx-datatable-column>
+                <ngx-datatable-column name="Emp ID" prop="emmpid"></ngx-datatable-column>
+                <ngx-datatable-column name="First Name" prop="firstname"></ngx-datatable-column>
+<!--                <ngx-datatable-column name="Last Name" prop="lastname"></ngx-datatable-column>-->
+                <ngx-datatable-column name="Joining Date" prop="joiningdate">
+                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                    {{value | date}}
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Role" prop="role">
+                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                    <a class="btn btn-block btn-white btn-sm btn-rounded">{{value}}</a>
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Department" prop="department"></ngx-datatable-column>
+                <ngx-datatable-column name="Designation" prop="designation.designation"></ngx-datatable-column>
+
+                <ngx-datatable-column name="Actions" sortable="false" prop="_id">
+                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                    <button class="btn btn-default" data-toggle="modal"
+                             data-target="#edit_employee" (click)="edit(row)">
+                      <i class="fa fa-pencil-square" aria-hidden="true"></i>
+                    </button>
+                    <button class="btn btn-default" data-toggle="modal"
+                             data-target="#delete_employee" (click)="deleteparams = row">
+                      <i class="fa fa-trash" aria-hidden="true"></i>
+                    </button>
+                  </ng-template>
+                </ngx-datatable-column>
+              </ngx-datatable>
+
             </div>
         </div>
     </div>
@@ -187,8 +176,8 @@
                   <div class="col-sm-4">
                     <div class="form-group"
                          [class.has-error]="
-                    editForm.controls['password'].invalid &&
-                    editForm.controls['password'].touched"
+                        editForm.controls['password'].invalid &&
+                        editForm.controls['password'].touched"
                          [class.has-success]="editForm.controls['password'].valid"
                     >
                       <label class="control-label">Password<span class="text-danger m-l-5">*</span></label>
@@ -214,10 +203,10 @@
                   <div class="col-sm-4">
                     <div class="form-group"
                          [class.has-error]="
-                    editForm.controls['emmpid'].invalid &&
-                    editForm.controls['emmpid'].touched"
+                        editForm.controls['emmpid'].invalid &&
+                        editForm.controls['emmpid'].touched"
                          [class.has-success]="editForm.controls['emmpid'].valid"
-                    >
+                      >
                       <label class="control-label">Employee ID <span class="text-danger m-l-5">*</span></label>
                       <input type="text" class="form-control" formControlName="emmpid" required>
                       <span class="help-block" *ngIf="editForm.controls['emmpid'].errors && editForm.controls['emmpid'].touched">
@@ -228,8 +217,8 @@
                   <div class="col-sm-4">
                     <div class="form-group pos-rel cal-icon"
                          [class.has-error]="
-                    editForm.controls['joiningdate'].invalid &&
-                    editForm.controls['joiningdate'].touched"
+                        editForm.controls['joiningdate'].invalid &&
+                        editForm.controls['joiningdate'].touched"
                          [class.has-success]="editForm.controls['joiningdate'].valid"
                     >
                       <label class="control-label">Joining Date <span class="text-danger m-l-5">*</span></label>
@@ -245,8 +234,8 @@
                   <div class="col-sm-4">
                     <div class="form-group"
                          [class.has-error]="
-                    editForm.controls['corporateid'].invalid &&
-                    editForm.controls['corporateid'].touched"
+                        editForm.controls['corporateid'].invalid &&
+                        editForm.controls['corporateid'].touched"
                          [class.has-success]="editForm.controls['corporateid'].valid"
                     >
                       <label class="control-label">Company <span class="text-danger">*</span></label>

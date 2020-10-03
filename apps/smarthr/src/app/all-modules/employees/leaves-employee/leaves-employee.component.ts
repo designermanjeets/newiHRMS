@@ -1,19 +1,21 @@
-import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
-import { FormGroup, FormBuilder, Validators } from "@angular/forms";
-import { AllModulesService } from "../../all-modules.service";
-import { ToastrService } from "ngx-toastr";
-import { DataTableDirective } from "angular-datatables";
-import { Subject } from "rxjs";
-import { DatePipe } from "@angular/common";
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { AllModulesService } from '../../all-modules.service';
+import { ToastrService } from 'ngx-toastr';
+import { DataTableDirective } from 'angular-datatables';
+import { Subject } from 'rxjs';
+import { DatePipe } from '@angular/common';
+import { GET_LEAVETYPES_QUERY } from '../../settings/leave-type/leave-types-gql.service';
+import { Apollo } from 'apollo-angular';
 declare const $: any;
 @Component({
-  selector: "app-leaves-employee",
-  templateUrl: "./leaves-employee.component.html",
-  styleUrls: ["./leaves-employee.component.css"],
+  selector: 'app-leaves-employee',
+  templateUrl: './leaves-employee.component.html',
+  styleUrls: ['./leaves-employee.component.css'],
 })
 export class LeavesEmployeeComponent implements OnInit, OnDestroy {
   lstLeave: any[];
-  url: any = "employeeleaves";
+  url: any = 'employeeleaves';
   public tempId: any;
   public editId: any;
 
@@ -24,79 +26,100 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
   public srch = [];
   public statusValue;
   public dtTrigger: Subject<any> = new Subject();
-  public pipe = new DatePipe("en-US");
+  public pipe = new DatePipe('en-US');
   public addLeaveadminForm: FormGroup;
   public editLeaveadminForm: FormGroup;
   public editFromDate: any;
   public editToDate: any;
+
+  allLeaveTypes: any;
+
+
+
   constructor(
     private formBuilder: FormBuilder,
     private srvModuleService: AllModulesService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private apollo: Apollo,
   ) {}
 
   ngOnInit() {
     this.loadLeaves();
+    this.loadAllLeaveTypes();
 
     this.addLeaveadminForm = this.formBuilder.group({
-      addLeaveType: ["", [Validators.required]],
-      From: ["", [Validators.required]],
-      To: ["", [Validators.required]],
-      NoOfDays: ["", [Validators.required]],
-      RemainLeaves: ["", [Validators.required]],
-      LeaveReason: ["", [Validators.required]],
+      addLeaveType: ['', [Validators.required]],
+      From: ['', [Validators.required]],
+      To: ['', [Validators.required]],
+      NoOfDays: ['', [Validators.required]],
+      RemainLeaves: ['', [Validators.required]],
+      LeaveReason: ['', [Validators.required]],
     });
 
     // Edit leaveadmin Form Validation And Getting Values
 
     this.editLeaveadminForm = this.formBuilder.group({
-      LeaveType: ["", [Validators.required]],
-      From: ["", [Validators.required]],
-      To: ["", [Validators.required]],
-      NoOfDays: ["", [Validators.required]],
-      RemainLeaves: ["", [Validators.required]],
-      LeaveReason: ["", [Validators.required]],
+      LeaveType: ['', [Validators.required]],
+      From: ['', [Validators.required]],
+      To: ['', [Validators.required]],
+      NoOfDays: ['', [Validators.required]],
+      RemainLeaves: ['', [Validators.required]],
+      LeaveReason: ['', [Validators.required]],
     });
 
     // for data table configuration
     this.dtOptions = {
       // ... skipped ...
       pageLength: 10,
-      dom: "lrtip",
+      dom: 'lrtip',
     };
+  }
+
+  loadAllLeaveTypes() {
+    this.apollo.watchQuery({
+      query: GET_LEAVETYPES_QUERY,
+      variables: {
+        pagination: {
+          limit: 100
+        }
+      },
+    }).valueChanges.subscribe((response: any) => {
+      if (response.data.getLeaveTypes.length) {
+        this.allLeaveTypes = response.data.getLeaveTypes;
+        // this.lstLeave = response.data.getLeaveTypes;
+        // this.dtTrigger.next();
+        // this.rows = this.lstLeave;
+        // this.srch = [...this.rows];
+      }
+    });
   }
 
   // Get leave  Api Call
   loadLeaves() {
-    this.srvModuleService.get(this.url).subscribe((data) => {
-      this.lstLeave = data;
-      this.dtTrigger.next();
-      this.rows = this.lstLeave;
-      this.srch = [...this.rows];
-    });
+    //
   }
 
   // Add leaves for admin Modal Api Call
   addleaves() {
     if (this.addLeaveadminForm.valid) {
-      let fromDate = this.pipe.transform(
+      const fromDate = this.pipe.transform(
         this.addLeaveadminForm.value.From,
-        "dd-MM-yyyy"
+        'dd-MM-yyyy'
       );
-      let toDate = this.pipe.transform(
+      const toDate = this.pipe.transform(
         this.addLeaveadminForm.value.To,
-        "dd-MM-yyyy"
+        'dd-MM-yyyy'
       );
-      let obj = {
-        employeeName: "Mike Litorus",
-        designation: "web developer",
+      const obj = {
+        employeeName: 'Mike Litorus',
+        designation: 'web developer',
         leaveType: this.addLeaveadminForm.value.addLeaveType,
         from: fromDate,
         to: toDate,
         noofDays: this.addLeaveadminForm.value.NoOfDays,
         remainleaves: this.addLeaveadminForm.value.RemainLeaves,
         reason: this.addLeaveadminForm.value.LeaveReason,
-        status: "Approved",
+        status: 'Approved',
       };
       this.srvModuleService.add(obj, this.url).subscribe((data) => {
         this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
@@ -104,34 +127,34 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
         });
       });
       this.loadLeaves();
-      $("#add_leave").modal("hide");
+      $('#add_leave').modal('hide');
       this.addLeaveadminForm.reset();
-      this.toastr.success("Leaves added sucessfully...!", "Success");
+      this.toastr.success('Leaves added sucessfully...!', 'Success');
     } else {
-      this.toastr.warning("Mandatory fields required", "");
+      this.toastr.warning('Mandatory fields required', '');
     }
   }
 
   from(data) {
-    this.editFromDate = this.pipe.transform(data, "dd-MM-yyyy");
+    this.editFromDate = this.pipe.transform(data, 'dd-MM-yyyy');
   }
   to(data) {
-    this.editToDate = this.pipe.transform(data, "dd-MM-yyyy");
+    this.editToDate = this.pipe.transform(data, 'dd-MM-yyyy');
   }
 
   // Edit leaves Modal Api Call
   editLeaves() {
     if (this.editLeaveadminForm.valid) {
-      let obj = {
-        employeeName: "Mike Litorus",
-        designation: "web developer",
+      const obj = {
+        employeeName: 'Mike Litorus',
+        designation: 'web developer',
         leaveType: this.editLeaveadminForm.value.LeaveType,
         from: this.editFromDate,
         to: this.editToDate,
         noofDays: this.editLeaveadminForm.value.NoOfDays,
         remainleaves: this.editLeaveadminForm.value.RemainLeaves,
         reason: this.editLeaveadminForm.value.LeaveReason,
-        status: "Approved",
+        status: 'Approved',
         id: this.editId,
       };
       this.srvModuleService.update(obj, this.url).subscribe((data) => {
@@ -140,10 +163,10 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
         });
       });
       this.loadLeaves();
-      $("#edit_leave").modal("hide");
-      this.toastr.success("Leaves Updated sucessfully...!", "Success");
+      $('#edit_leave').modal('hide');
+      this.toastr.success('Leaves Updated sucessfully...!', 'Success');
     } else {
-      this.toastr.warning("Mandatory fields required", "");
+      this.toastr.warning('Mandatory fields required', '');
     }
   }
 
@@ -155,8 +178,8 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
         dtInstance.destroy();
       });
       this.loadLeaves();
-      $("#delete_approve").modal("hide");
-      this.toastr.success("Leaves deleted sucessfully..!", "Success");
+      $('#delete_approve').modal('hide');
+      this.toastr.success('Leaves deleted sucessfully..!', 'Success');
     });
   }
 
@@ -167,7 +190,7 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
     const index = this.lstLeave.findIndex((item) => {
       return item.id === value;
     });
-    let toSetValues = this.lstLeave[index];
+    const toSetValues = this.lstLeave[index];
     this.editLeaveadminForm.setValue({
       LeaveType: toSetValues.leaveType,
       From: toSetValues.from,

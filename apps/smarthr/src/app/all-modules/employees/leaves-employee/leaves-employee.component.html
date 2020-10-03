@@ -125,10 +125,7 @@
                         <select class="select form-control"
                             [class.invalid]="addLeaveadminForm.get('addLeaveType').invalid && addLeaveadminForm.get('addLeaveType').touched"
                             formControlName="addLeaveType">
-                            <option>Select Leave Type</option>
-                            <option>Casual Leave 12 Days</option>
-                            <option>Medical Leave</option>
-                            <option>Loss of Pay</option>
+                          <option *ngFor="let l of allLeaveTypes" [value]=l._id>{{l.leavetype}}</option>
                         </select>
                         <div
                             *ngIf="addLeaveadminForm.get('addLeaveType').invalid && addLeaveadminForm.get('addLeaveType').touched">

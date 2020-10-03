@@ -144,40 +144,39 @@
                   <div class="form-group">
                       <div class="row">
                         <div class="col-6">
-                          <div class="form-group">
+                          <div class="form-group pos-rel">
                             <label>From <span class="text-danger">*</span></label>
-                            <div class="cal-icon">
-                              <input class="form-control datetimepicker" type="text" bsDatepicker type="text"
-                                     [bsConfig]="{ dateInputFormat: 'DD-MM-YYYY',  returnFocusToInput: true }"
-                                     [class.invalid]="addLeaveadminForm.get('from').invalid && addLeaveadminForm.get('from').touched"
-                                     formControlName="from">
-                              <div *ngIf="addLeaveadminForm.get('from').invalid && addLeaveadminForm.get('from').touched">
-                                <small
-                                  *ngIf="addLeaveadminForm.get('from').invalid && addLeaveadminForm.get('from').touched"
-                                  class="text-danger"> *From is required</small>
-                              </div>
+                            <input class="form-control datecolor"
+                                   [matDatepicker]="picker3"
+                                   [class.invalid]="addLeaveadminForm.get('from').invalid && addLeaveadminForm.get('from').touched"
+                                   formControlName="from">
+                            <mat-datepicker-toggle class="formpicker" matSuffix [for]="picker3"></mat-datepicker-toggle>
+                            <mat-datepicker #picker3></mat-datepicker>
+                            <div *ngIf="addLeaveadminForm.get('from').invalid && addLeaveadminForm.get('from').touched">
+                              <small
+                                *ngIf="addLeaveadminForm.get('from').invalid && addLeaveadminForm.get('from').touched"
+                                class="text-danger"> *From is required</small>
                             </div>
                           </div>
                         </div>
                         <div class="col-6">
-                          <div class="form-group">
+                          <div class="form-group pos-rel">
                             <label>To <span class="text-danger">*</span></label>
-                            <div class="cal-icon">
-                              <input class="form-control datetimepicker" type="text" bsDatepicker type="text"
-                                     [bsConfig]="{ dateInputFormat: 'DD-MM-YYYY',  returnFocusToInput: true }"
-                                     [class.invalid]="addLeaveadminForm.get('to').invalid && addLeaveadminForm.get('to').touched"
-                                     formControlName="to">
-                              <div *ngIf="addLeaveadminForm.get('to').invalid && addLeaveadminForm.get('to').touched">
-                                <small
-                                  *ngIf="addLeaveadminForm.get('to').invalid && addLeaveadminForm.get('to').touched"
-                                  class="text-danger"> *To is required</small>
-                              </div>
+                            <input class="form-control datecolor"
+                                   [matDatepicker]="picker4"
+                                   [class.invalid]="addLeaveadminForm.get('to').invalid && addLeaveadminForm.get('to').touched"
+                                   formControlName="to">
+                            <mat-datepicker-toggle class="formpicker" matSuffix [for]="picker4"></mat-datepicker-toggle>
+                            <mat-datepicker #picker4></mat-datepicker>
+                            <div *ngIf="addLeaveadminForm.get('to').invalid && addLeaveadminForm.get('to').touched">
+                              <small
+                                *ngIf="addLeaveadminForm.get('to').invalid && addLeaveadminForm.get('to').touched"
+                                class="text-danger"> *To is required</small>
                             </div>
                           </div>
                         </div>
                       </div>
                   </div>
-
                   <div class="form-group">
                     <div class="row">
                       <div class="col-6">
@@ -263,34 +262,34 @@
                   <div class="form-group">
                     <div class="row">
                       <div class="col-6">
-                        <div class="form-group">
+                        <div class="form-group pos-rel">
                           <label>From <span class="text-danger">*</span></label>
-                          <div class="cal-icon">
-                            <input class="form-control datetimepicker" type="text" bsDatepicker type="text"
-                                   [bsConfig]="{ dateInputFormat: 'DD-MM-YYYY',  returnFocusToInput: true }"
+                            <input class="form-control datecolor"
+                                   [matDatepicker]="picker1"
                                    [class.invalid]="addLeaveadminForm.get('from').invalid && addLeaveadminForm.get('from').touched"
                                    formControlName="from">
+                            <mat-datepicker-toggle class="formpicker" matSuffix [for]="picker1"></mat-datepicker-toggle>
+                            <mat-datepicker #picker1></mat-datepicker>
                             <div *ngIf="addLeaveadminForm.get('from').invalid && addLeaveadminForm.get('from').touched">
                               <small
                                 *ngIf="addLeaveadminForm.get('from').invalid && addLeaveadminForm.get('from').touched"
                                 class="text-danger"> *From is required</small>
                             </div>
-                          </div>
                         </div>
                       </div>
                       <div class="col-6">
-                        <div class="form-group">
+                        <div class="form-group pos-rel">
                           <label>To <span class="text-danger">*</span></label>
-                          <div class="cal-icon">
-                            <input class="form-control datetimepicker" type="text" bsDatepicker type="text"
-                                   [bsConfig]="{ dateInputFormat: 'DD-MM-YYYY',  returnFocusToInput: true }"
-                                   [class.invalid]="addLeaveadminForm.get('to').invalid && addLeaveadminForm.get('to').touched"
-                                   formControlName="to">
-                            <div *ngIf="addLeaveadminForm.get('to').invalid && addLeaveadminForm.get('to').touched">
-                              <small
-                                *ngIf="addLeaveadminForm.get('to').invalid && addLeaveadminForm.get('to').touched"
-                                class="text-danger"> *To is required</small>
-                            </div>
+                          <input class="form-control datecolor"
+                                 [matDatepicker]="picker2"
+                                 [class.invalid]="addLeaveadminForm.get('to').invalid && addLeaveadminForm.get('to').touched"
+                                 formControlName="to">
+                          <mat-datepicker-toggle class="formpicker" matSuffix [for]="picker2"></mat-datepicker-toggle>
+                          <mat-datepicker #picker2></mat-datepicker>
+                          <div *ngIf="addLeaveadminForm.get('to').invalid && addLeaveadminForm.get('to').touched">
+                            <small
+                              *ngIf="addLeaveadminForm.get('to').invalid && addLeaveadminForm.get('to').touched"
+                              class="text-danger"> *To is required</small>
                           </div>
                         </div>
                       </div>

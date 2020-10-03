@@ -1,9 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AllModulesService } from '../../all-modules.service';
 import { ToastrService } from 'ngx-toastr';
-import { DataTableDirective } from 'angular-datatables';
-import { Subject } from 'rxjs';
 import { Apollo } from 'apollo-angular';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -14,6 +11,7 @@ import {
   UpdateDepartmentGQL
 } from './department-gql.service';
 import { UpdateDesignationGQL } from '../designation/designation-gql.service';
+import { ColumnMode, SelectionType } from '@swimlane/ngx-datatable';
 declare const $: any;
 
 @Component({
@@ -23,29 +21,29 @@ declare const $: any;
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DepartmentsComponent implements OnInit, OnDestroy {
-  @ViewChild(DataTableDirective, { static: false })
-  public dtElement: DataTableDirective;
-  public dtOptions: DataTables.Settings = {};
-  public dtTrigger: Subject<any> = new Subject();
   public lstDepartment: any[];
   public url: any = 'departments';
   public tempId: any;
   public editId: any;
 
-  public rows = [];
   public srch = [];
+
+  rows = [];
+  selected = [];
+  columns: any[] = [
+    { prop: 'department', name: 'Department Name' },
+  ];
+  ColumnMode = ColumnMode;
+  SelectionType = SelectionType;
 
 
   editForm: FormGroup;
   actionParams: any;
 
   public uptD = [];
-  isDtInitialized = false;
 
   constructor(
-    private srvModuleService: AllModulesService,
     private toastr: ToastrService,
-
     private router: Router,
     private route: ActivatedRoute,
     private fb: FormBuilder,
@@ -59,11 +57,6 @@ export class DepartmentsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.dtOptions = {
-      // ... skipped ...
-      pageLength: 10,
-      dom: 'lrtip',
-    };
 
     this.editForm = this.fb.group({
       _id: [''],
@@ -71,18 +64,6 @@ export class DepartmentsComponent implements OnInit, OnDestroy {
     });
 
     this.LoadDepartment();
-  }
-
-  rerender(): void {
-    if (this.isDtInitialized) {
-      this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-        dtInstance.destroy();
-        this.dtTrigger.next();
-      });
-    } else {
-      this.isDtInitialized = true;
-      this.dtTrigger.next();
-    }
   }
 
   // Get department list  Api Call
@@ -97,8 +78,9 @@ export class DepartmentsComponent implements OnInit, OnDestroy {
       },
     }).valueChanges.subscribe((response: any) => {
       if (response.data) {
-        this.rerender();
+        this.rows = [];
         this.lstDepartment = response.data.getDepartments;
+        this.rows = response.data.getDepartments;
         this.srch = [...this.rows];
         this.setGetDepartmentsService.setDepartments(response.data.getDepartments);
         this.cdRef.detectChanges();
@@ -116,11 +98,9 @@ export class DepartmentsComponent implements OnInit, OnDestroy {
       })
       .subscribe( (val: any) => {
         if (val.data) {
-          this.LoadDepartment();
           $('#add_department').modal('hide');
-          this.editForm.reset();
           this.toastr.success('Department added sucessfully...!', 'Success');
-          window.location.reload();
+          this.LoadDepartment();
         }
       }, error => console.log(error));
   }
@@ -140,19 +120,25 @@ export class DepartmentsComponent implements OnInit, OnDestroy {
         if (val.data) {
           $('#edit_department').modal('hide');
           this.toastr.success('Department Updated sucessfully...!', 'Success');
-          this.router.navigate(['employees/departments']);
-          window.location.reload();
+          this.LoadDepartment();
         }
       }, error => console.log(error));
   }
 
   // To Get The department Edit Id And Set Values To Edit Modal Form
+
+  addReset() {
+    this.editForm.reset();
+  }
+
   edit(value) {
+    this.editForm.reset();
     this.editId = value;
     const index = this.lstDepartment.findIndex((item) => {
       return item._id === value;
     });
     const toSetValues = this.lstDepartment[index];
+    console.log(toSetValues);
     this.editForm.patchValue(toSetValues);
   }
 
@@ -171,13 +157,12 @@ export class DepartmentsComponent implements OnInit, OnDestroy {
           $('#delete_department').modal('hide');
           this.toastr.success('Department deleted sucessfully..!', 'Success');
           this.cdRef.detectChanges();
-          window.location.reload();
+          this.LoadDepartment();
         }
       }, error => console.log(error));
   }
 
   ngOnDestroy(): void {
     // Do not forget to unsubscribe the event
-    this.dtTrigger.unsubscribe();
   }
 }

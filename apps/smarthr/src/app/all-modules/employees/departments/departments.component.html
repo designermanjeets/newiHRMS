@@ -12,7 +12,7 @@
                 </ul>
             </div>
             <div class="col-auto float-right ml-auto">
-                <a  class="btn add-btn" data-toggle="modal" data-target="#add_department"><i
+                <a  class="btn add-btn" data-toggle="modal" data-target="#add_department" (click)="addReset()"><i
                         class="fa fa-plus"></i> Add Department</a>
             </div>
         </div>
@@ -22,37 +22,41 @@
     <div class="row">
         <div class="col-md-12">
             <div>
-                <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
-                    class="table table-striped custom-table datatable mb-0">
-                    <thead>
-                        <tr>
-                            <th style="width: 30px;">#</th>
-                            <th>Department Name</th>
-                            <th class="text-right">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let item of lstDepartment">
-                            <td>{{item.id}}</td>
-                            <td>{{item.department}}</td>
-                            <td class="text-right">
-                                <div class="dropdown dropdown-action">
-                                    <a  class="action-icon dropdown-toggle" data-toggle="dropdown"
-                                        aria-expanded="false"><i class="material-icons">more_vert</i></a>
-                                    <div class="dropdown-menu dropdown-menu-right">
-                                        <a class="dropdown-item"  data-toggle="modal"
-                                            data-target="#edit_department" (click)="edit(item._id)"><i
-                                                class="fa fa-pencil m-r-5"></i> Edit</a>
-                                        <a class="dropdown-item"  data-toggle="modal"
-                                            data-target="#delete_department" (click)="tempId = item._id"><i
-                                                class="fa fa-trash-o m-r-5"></i>
-                                            Delete</a>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+
+              <ngx-datatable
+                class="bootstrap"
+                [rows]="rows"
+                [columnMode]="ColumnMode.force"
+                [columns]="columns"
+                [headerHeight]="50"
+                [footerHeight]="50"
+                rowHeight="auto"
+                [limit]="10"
+              >
+                <ngx-datatable-column name="#" prop="#" [width]="50">
+                  <ng-template let-row="row" let-rowIndex="rowIndex" let-value="value" ngx-datatable-cell-template>
+                    {{rowIndex + 1}}
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column prop="department">
+                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                    <a class="btn btn-block btn-white btn-sm btn-rounded">{{value}}</a>
+                  </ng-template>
+                </ngx-datatable-column>
+
+                <ngx-datatable-column name="Actions" sortable="false" prop="_id">
+                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                    <button class="btn btn-default" data-toggle="modal"
+                            data-target="#edit_department" (click)="edit(row._id)">
+                      <i class="fa fa-pencil-square" aria-hidden="true"></i>
+                    </button>
+                    <button class="btn btn-default" data-toggle="modal"
+                            data-target="#delete_department" (click)="tempId = row._id">
+                      <i class="fa fa-trash" aria-hidden="true"></i>
+                    </button>
+                  </ng-template>
+                </ngx-datatable-column>
+              </ngx-datatable>
             </div>
         </div>
     </div>

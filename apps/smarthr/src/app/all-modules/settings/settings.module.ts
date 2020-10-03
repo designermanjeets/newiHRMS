@@ -17,6 +17,7 @@ import { DataTablesModule } from 'angular-datatables';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 @NgModule({
   declarations: [SettingsComponent, CompanySettingsComponent, LocalizationComponent, ThemeSettingsComponent, RoleComponent, EmailSettingsComponent, InvoiceSettingsComponent, SalarySettingsComponent, NotificationsComponent, ChangePasswordComponent, LeaveTypeComponent],
@@ -27,7 +28,8 @@ import { MatNativeDateModule } from '@angular/material/core';
     FormsModule,
     ReactiveFormsModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    NgxDatatableModule
   ]
 })
 export class SettingsModule { }

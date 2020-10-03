@@ -1,19 +1,14 @@
 import {
-  AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  Component, ElementRef,
+  Component,
   EventEmitter,
   OnDestroy,
   OnInit,
-  ViewChild
 } from '@angular/core';
-import { AllModulesService } from '../../../all-modules.service';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { DatePipe } from '@angular/common';
-import { Subject } from 'rxjs';
-import { DataTableDirective } from 'angular-datatables';
 
 import {
   CreateUserGQL,
@@ -42,10 +37,7 @@ import * as XLSX from 'xlsx';
   styleUrls: ['./employee-list.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EmployeeListComponent implements OnInit, OnDestroy, AfterViewInit {
-  public dtOptions: DataTables.Settings = {};
-  @ViewChild(DataTableDirective, { static: false })
-  public dtElement: DataTableDirective;
+export class EmployeeListComponent implements OnInit, OnDestroy {
   public lstEmployee: any;
   public url: any = 'employeelist';
   public tempId: any;
@@ -55,7 +47,6 @@ export class EmployeeListComponent implements OnInit, OnDestroy, AfterViewInit {
   public pipe = new DatePipe('en-US');
   public srch = [];
   public statusValue;
-  public dtTrigger: Subject<any> = new Subject();
   public DateJoin;
   deleteparams: any;
 
@@ -90,10 +81,8 @@ export class EmployeeListComponent implements OnInit, OnDestroy, AfterViewInit {
   SelectionType = SelectionType;
 
   constructor(
-    private srvModuleService: AllModulesService,
     private toastr: ToastrService,
     private fb: FormBuilder,
-
     private router: Router,
     private apollo: Apollo,
     private employeeGQLService: EmployeeGQLService,
@@ -173,10 +162,6 @@ export class EmployeeListComponent implements OnInit, OnDestroy, AfterViewInit {
     }, { validator: this.checkPasswords });
 
     // edit form validation
-  }
-
-  ngAfterViewInit(): void {
-    setTimeout(() => this.dtTrigger.next(), 1000);
   }
 
   checkPasswords(group: FormGroup) { // here we have the 'passwords' group
@@ -381,7 +366,7 @@ export class EmployeeListComponent implements OnInit, OnDestroy, AfterViewInit {
 
   onDepartChange(event) {
     this.designations = _.filter(this.allDesignations, person => person.department_ID === event.value);
-    this.designations && this.editForm.get('designation').enable();
+    this.editForm.get('designation').enable();
     this.cdref.detectChanges();
   }
 
@@ -453,7 +438,7 @@ export class EmployeeListComponent implements OnInit, OnDestroy, AfterViewInit {
         // console.log('Invalid!'); // But Convert First
         r.joiningdate = moment(r.joiningdate, 'DD MM YYYY');
       }
-      delete r['__typename'];
+      delete r.__typename;
     });
 
     const uniqArrByEmail = _.difference(rowData, _.uniqBy(rowData, 'email'), 'email');
@@ -497,9 +482,7 @@ export class EmployeeListComponent implements OnInit, OnDestroy, AfterViewInit {
   // search by Id
   searchId(val) {
     this.rows.splice(0, this.rows.length);
-    const temp = this.srch.filter(function(d) {
-      return d.emmpid && d.emmpid.indexOf(val) !== -1 || !val;
-    });
+    const temp = this.srch.filter(d => d.emmpid && d.emmpid.indexOf(val) !== -1 || !val);
     this.rows.push(...temp);
     this.cdref.detectChanges();
   }
@@ -507,7 +490,7 @@ export class EmployeeListComponent implements OnInit, OnDestroy, AfterViewInit {
   // search by name
   searchName(val) {
     this.rows.splice(0, this.rows.length);
-    const temp = this.srch.filter(function(d) {
+    const temp = this.srch.filter(d => {
       val = val.toLowerCase();
       return d.firstname && d.firstname.toLowerCase().indexOf(val) !== -1 || !val;
     });
@@ -519,9 +502,7 @@ export class EmployeeListComponent implements OnInit, OnDestroy, AfterViewInit {
   searchByDesignation(val) {
     this.rows.splice(0, this.rows.length);
     val = val.toLowerCase();
-    const temp = this.srch.filter(function(d) {
-      return d.designation && d.designation.designation.toLowerCase().indexOf(val) !== -1 || !val;
-    });
+    const temp = this.srch.filter(d => d.designation && d.designation.designation.toLowerCase().indexOf(val) !== -1 || !val);
     this.rows.push(...temp);
     this.cdref.detectChanges();
   }
@@ -532,7 +513,6 @@ export class EmployeeListComponent implements OnInit, OnDestroy, AfterViewInit {
   }
   ngOnDestroy(): void {
     // Do not forget to unsubscribe the event
-    this.dtTrigger.unsubscribe();
   }
 
   // Upload

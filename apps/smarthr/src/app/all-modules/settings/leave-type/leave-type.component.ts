@@ -1,13 +1,13 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { AllModulesService } from '../../all-modules.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-import { Subject } from 'rxjs';
-import { DataTableDirective } from 'angular-datatables';
 import { Apollo } from 'apollo-angular';
 import { DeleteLeaveTypeGQL, GET_LEAVETYPES_QUERY, RegisterLeaveTypeGQL, UpdateLeaveTypeGQL } from './leave-types-gql.service';
+import { ColumnMode, SelectionType } from '@swimlane/ngx-datatable';
 
 declare const $: any;
+
 @Component({
   selector: 'app-leave-type',
   templateUrl: './leave-type.component.html',
@@ -15,19 +15,21 @@ declare const $: any;
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LeaveTypeComponent implements OnInit, OnDestroy {
-  @ViewChild(DataTableDirective, { static: false })
-  public dtElement: DataTableDirective;
-  public dtOptions: DataTables.Settings = {};
-  public dtTrigger: Subject<any> = new Subject();
   public url: any = 'leaveType';
   public allLeaveType: any = [];
   public editId: any;
   public tempId: any;
-  isDtInitialized = false;
 
   uptForm: FormGroup;
   addForm: FormGroup;
   actionParams: any;
+
+
+  rows = [];
+  selected = [];
+  columns: any[];
+  ColumnMode = ColumnMode;
+  SelectionType = SelectionType;
 
   constructor(
     private allModuleService: AllModulesService,
@@ -63,25 +65,6 @@ export class LeaveTypeComponent implements OnInit, OnDestroy {
       carrymax: ['0'],
       status: ['', Validators.required]
     });
-
-    // for data table configuration
-    this.dtOptions = {
-      // ... skipped ...
-      pageLength: 10,
-      dom: 'lrtip',
-    };
-  }
-
-  rerender(): void {
-    if (this.isDtInitialized) {
-      this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-        dtInstance.destroy();
-        this.dtTrigger.next();
-      });
-    } else {
-      this.isDtInitialized = true;
-      this.dtTrigger.next();
-    }
   }
 
   getLeaveTypes() {
@@ -94,8 +77,9 @@ export class LeaveTypeComponent implements OnInit, OnDestroy {
       },
     }).valueChanges.subscribe((response: any) => {
       if (response.data.getLeaveTypes.length) {
-        this.rerender();
+        this.rows = [];
         this.allLeaveType = response.data.getLeaveTypes;
+        this.rows = this.allLeaveType;
         this.cdRef.detectChanges();
       }
     });
@@ -117,9 +101,8 @@ export class LeaveTypeComponent implements OnInit, OnDestroy {
       .subscribe((val: any) => {
         if (val.data.createLeaveType) {
           $('#add_leavetype').modal('hide');
-          this.addForm.reset();
           this.toastr.success('Leave type is added', 'Success');
-          setTimeout(_ => window.location.reload(), 2000);
+          this.getLeaveTypes();
         }
       }, error => this.toastr.error(error, 'Error'));
   }
@@ -144,7 +127,7 @@ export class LeaveTypeComponent implements OnInit, OnDestroy {
         if (val.data.updateLeaveType) {
           $('#edit_leavetype').modal('hide');
           this.toastr.success('Leave type is edited', 'Success');
-          setTimeout(_ => window.location.reload(), 2000);
+          this.getLeaveTypes();
         }
       }, error => this.toastr.error(error, 'Error')
       );
@@ -168,7 +151,6 @@ export class LeaveTypeComponent implements OnInit, OnDestroy {
 
   edit(value) {
     this.uptForm.reset();
-    console.log(value);
     this.editId = value;
     const index = this.allLeaveType.findIndex((item) => item._id === value);
     const toSetValues = this.allLeaveType[index];
@@ -189,10 +171,9 @@ deleteLeave() {
     })
     .subscribe( (val: any) => {
       if (val.data.deleteLeaveType) {
-        this.getLeaveTypes();
         $('#delete_leavetype').modal('hide');
         this.toastr.success('Leave type is deleted', 'Success');
-        setTimeout(_ => window.location.reload(), 2000);
+        this.getLeaveTypes();
       }
     }, error =>
       this.toastr.error(error, 'Error')
@@ -201,6 +182,5 @@ deleteLeave() {
   // for unsubscribe datatable
 ngOnDestroy(): void {
     // Do not forget to unsubscribe the event
-    this.dtTrigger.unsubscribe();
   }
 }

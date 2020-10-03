@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
-import { AllModulesService } from '../../all-modules.service';
 import { ToastrService } from 'ngx-toastr';
 import { DataTableDirective } from 'angular-datatables';
 import { Subject } from 'rxjs';
@@ -17,6 +16,7 @@ declare const $: any;
 import * as _ from 'lodash';
 import { GET_DEPARTMENTS_QUERY } from '../departments/department-gql.service';
 import { GET_LEAVETYPES_QUERY } from '../../settings/leave-type/leave-types-gql.service';
+import { ColumnMode, SelectionType } from '@swimlane/ngx-datatable';
 
 
 @Component({
@@ -26,17 +26,12 @@ import { GET_LEAVETYPES_QUERY } from '../../settings/leave-type/leave-types-gql.
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DesignationComponent implements OnInit, OnDestroy {
-  @ViewChild(DataTableDirective, { static: false })
-  public dtElement: DataTableDirective;
-  public dtOptions: DataTables.Settings = {};
-  public dtTrigger: Subject<any> = new Subject();
   lstDesignation: any[];
   url: any = 'designation';
   public tempId: any;
   public editId: any;
-  public uptD:any = [];
+  public uptD = [];
 
-  public rows = [];
   public srch = [];
 
   editForm: FormGroup;
@@ -46,10 +41,14 @@ export class DesignationComponent implements OnInit, OnDestroy {
   isAddModel = false;
   isEditModel = false;
 
-  constructor(
-    private srvModuleService: AllModulesService,
-    private toastr: ToastrService,
+  rows = [];
+  selected = [];
+  columns: any[];
+  ColumnMode = ColumnMode;
+  SelectionType = SelectionType;
 
+  constructor(
+    private toastr: ToastrService,
     private router: Router,
     private route: ActivatedRoute,
     private apollo: Apollo,
@@ -62,11 +61,6 @@ export class DesignationComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.dtOptions = {
-      // ... skipped ...
-      pageLength: 10,
-      dom: 'lrtip',
-    };
     this.LoadDesignation();
   }
 
@@ -135,6 +129,7 @@ export class DesignationComponent implements OnInit, OnDestroy {
       },
     }).valueChanges.subscribe((response: any) => {
       if (response.data) {
+        this.rows = [];
         this.lstDesignation = response.data.getDesignations;
         this.rows = this.lstDesignation;
         this.srch = [...this.rows];
@@ -170,9 +165,8 @@ export class DesignationComponent implements OnInit, OnDestroy {
       .subscribe( (val: any) => {
         if (val.data) {
           $('#add_designation').modal('hide');
-          this.editForm.reset();
           this.toastr.success('Desigantion added sucessfully...!', 'Success');
-          window.location.reload();
+          this.LoadDesignation();
         }
       }, error => console.log(error));
   }
@@ -200,9 +194,9 @@ export class DesignationComponent implements OnInit, OnDestroy {
       })
       .subscribe( (val: any) => {
         if (val.data) {
-          window.location.reload();
           $('#edit_designation').modal('hide');
           this.toastr.success('Department Updated sucessfully...!', 'Success');
+          this.LoadDesignation();
         }
       }, error => console.log(error));
   }
@@ -292,13 +286,12 @@ export class DesignationComponent implements OnInit, OnDestroy {
         if (val.data) {
           $('#delete_designation').modal('hide');
           this.toastr.success('Designation deleted sucessfully..!', 'Success');
-          window.location.reload();
+          this.LoadDesignation();
         }
       }, error => console.log(error));
   }
 
   ngOnDestroy(): void {
     // Do not forget to unsubscribe the event
-    this.dtTrigger.unsubscribe();
   }
 }

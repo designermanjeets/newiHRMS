@@ -1,13 +1,11 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
-import { AllModulesService } from '../../all-modules.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DatePipe } from '@angular/common';
-import { Subject } from 'rxjs';
-import { DataTableDirective } from 'angular-datatables';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { DeleteHolidayGQL, GET_HOLIDAYS_QUERY, RegisterHolidayGQL, UpdateHolidayGQL } from './holidays-gql.service';
+import { ColumnMode, SelectionType } from '@swimlane/ngx-datatable';
 declare const $: any;
 
 @Component({
@@ -18,29 +16,32 @@ declare const $: any;
 })
 
 export class HolidaysComponent implements OnInit, OnDestroy {
-  @ViewChild(DataTableDirective, { static: false })
-  public dtElement: DataTableDirective;
-  public dtOptions: DataTables.Settings = {};
   lstHolidays: any[];
   url: any = 'holidays';
   public tempId: any;
   public editId: any;
 
-  public rows = [];
   public srch = [];
   public statusValue;
-  public dtTrigger: Subject<any> = new Subject();
   public pipe = new DatePipe('en-US');
   public addHolidayForm: FormGroup;
   public editHolidayForm: FormGroup;
   public editHolidayDate: any;
-  isDtInitialized = false;
   addForm: FormGroup;
 
-  constructor(
-    private srvModuleService: AllModulesService,
-    private toastr: ToastrService,
+  rows = [];
+  selected = [];
+  columns: any[] = [
+    { prop: 'title', name: 'Title' },
+    { prop: 'holiday', name: 'Holiday' },
+    { prop: 'day', name: 'Day' },
+    { prop: 'date', name: 'Date' }
+  ];
+  ColumnMode = ColumnMode;
+  SelectionType = SelectionType;
 
+  constructor(
+    private toastr: ToastrService,
     private router: Router,
     private route: ActivatedRoute,
     private apollo: Apollo,
@@ -62,18 +63,6 @@ export class HolidaysComponent implements OnInit, OnDestroy {
     });
   }
 
-  rerender(): void {
-    if (this.isDtInitialized) {
-      this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-        dtInstance.destroy();
-        this.dtTrigger.next();
-      });
-    } else {
-      this.isDtInitialized = true;
-      this.dtTrigger.next();
-    }
-  }
-
   // Get Employee  Api Call
   loadholidays() {
 
@@ -86,7 +75,7 @@ export class HolidaysComponent implements OnInit, OnDestroy {
       },
     }).valueChanges.subscribe((response: any) => {
       if (response.data) {
-        this.rerender();
+        this.rows = [];
         this.lstHolidays = response.data.getHolidays;
         this.rows = this.lstHolidays;
         this.srch = [...this.rows];
@@ -113,7 +102,7 @@ export class HolidaysComponent implements OnInit, OnDestroy {
           $('#add_holiday').modal('hide');
           this.addForm.reset();
           this.toastr.success('Holidays added', 'Success');
-          window.location.reload();
+          this.loadholidays();
         }
       }, error => console.log(error));
   }
@@ -142,7 +131,7 @@ export class HolidaysComponent implements OnInit, OnDestroy {
         if (val.data) {
           $('#edit_holiday').modal('hide');
           this.toastr.success('Holidays Updated succesfully', 'Success');
-          window.location.reload();
+          this.loadholidays();
         }
       }, error => console.log(error));
   }
@@ -163,14 +152,19 @@ export class HolidaysComponent implements OnInit, OnDestroy {
         if (val.data.deleteHoliday) {
           $('#delete_holiday').modal('hide');
           this.toastr.success('Holidays Deleted', 'Success');
-          window.location.reload();
+          this.loadholidays();
         }
       }, error => console.log(error));
   }
 
   // To Get The holidays Edit Id And Set Values To Edit Modal Form
 
+  addReset() {
+    this.addForm.reset();
+  }
+
   edit(value) {
+    this.addForm.reset();
     this.editId = value;
     const index = this.lstHolidays.findIndex((item) => {
       return item._id === value;
@@ -186,6 +180,5 @@ export class HolidaysComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     // Do not forget to unsubscribe the event
-    this.dtTrigger.unsubscribe();
   }
 }

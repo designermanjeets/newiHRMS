@@ -30,12 +30,9 @@ export class DepartmentsComponent implements OnInit, OnDestroy {
 
   rows = [];
   selected = [];
-  columns: any[] = [
-    { prop: 'department', name: 'Department Name' },
-  ];
+  columns: any[] = [];
   ColumnMode = ColumnMode;
   SelectionType = SelectionType;
-
 
   editForm: FormGroup;
   actionParams: any;

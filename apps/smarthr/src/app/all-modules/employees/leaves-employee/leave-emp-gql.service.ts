@@ -5,102 +5,64 @@ import gql from 'graphql-tag';
 @Injectable({
   providedIn: 'root',
 })
-export class RegisterLeaveTypeGQL extends Mutation {
+export class RegisterLeaveGQL extends Mutation {
   document = gql`
-    mutation createLeaveType(
-      $leavetype: String!,
-      $leavedays: String!,
-      $carryforward: String,
-      $carrymax: String,
-      $created_by: String,
-      $created_at: ISODate,
-      $status: String
+    mutation createLeave (
+      $user_ID: String
+      $leavetype: String!
+      $leave_ID: String!
+      $from: ISODate
+      $to: ISODate
+      $nofdays: String
+      $remaingleaves: String
+      $reason: String
+      $created_at: ISODate
+      $created_by: String
     ) {
-      createLeaveType(
-        leavetype: $leavetype,
-        leavedays: $leavedays,
-        carryforward: $carryforward,
-        carrymax: $carrymax,
-        created_by: $created_by,
-        created_at: $created_at,
-        status: $status,
+      createLeave(
+        user_ID: $user_ID
+        leavetype: $leavetype
+        leave_ID: $leave_ID
+        from: $from
+        to: $to
+        nofdays: $nofdays
+        remaingleaves: $remaingleaves
+        reason: $reason
+        created_at: $created_at
+        created_by: $created_by
       ) {
-        leavetype
-        leavedays
-        carryforward
-        carrymax
-        status
+          user_ID
+          leavetype
+          leave_ID
+          from
+          to
+          nofdays
+          remaingleaves
+          reason
+          created_at
+          created_by
       }
     }
   `;
 }
 
-@Injectable({
-  providedIn: 'root',
-})
-export class UpdateLeaveTypeGQL extends Mutation {
-  document = gql`
-    mutation updateLeaveType(
-      $id: ID!
-      $leavetype: String!,
-      $leavedays: String!,
-      $carryforward: String,
-      $status: String,
-      $carrymax: String,
-      $modified: [modifiedInputs]
-    ) {
-      updateLeaveType(
-        id: $id,
-        leavetype: $leavetype,
-        leavedays: $leavedays,
-        carryforward: $carryforward,
-        carrymax: $carrymax,
-        status: $status,
-        modified: $modified
-      ) {
-        _id
-        leavetype
-        leavedays
-        carryforward
-        carrymax
-        status
-      }
-    }
-  `;
-}
-
-@Injectable({
-  providedIn: 'root',
-})
-export class DeleteLeaveTypeGQL extends Mutation {
-  document = gql`
-    mutation deleteLeaveType(
-      $id: ID!,
-      $modified: [modifiedInputs]
-    ) {
-      deleteLeaveType(
-        id: $id,
-        modified: $modified
-      ) {
-        _id
-      }
-    }
-  `;
-}
-
-export const GET_LEAVETYPES_QUERY = gql`
-   query getLeaveTypes(
+export const GET_USERLEAVES_QUERY = gql`
+   query getUserLeaves(
       $pagination: Pagination!
     ) {
-      getLeaveTypes(
-        query: $pagination
-      ) {
+    getLeavesApplied(
+      query: $pagination,
+    ) {
         _id
+        leave_ID
         leavetype
-        leavedays
-        carryforward
-        carrymax
+        user_ID
+        from
+        to
+        nofdays
+        reason
         status
+        approver
       }
-    }
+  }
 `;

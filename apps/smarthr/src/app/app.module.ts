@@ -33,8 +33,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     DataTablesModule,
     ToastrModule.forRoot(
       {
-        timeOut: 1500,
-        positionClass: 'toast-bottom-right',
+        timeOut: 10000,
+        positionClass: 'toast-top-full-width',
         preventDuplicates: true,
       }
     ),

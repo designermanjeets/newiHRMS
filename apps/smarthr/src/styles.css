@@ -8311,3 +8311,10 @@ ul.comment-list li ul.children {
   line-height: 27px;
   padding: 0 3px;
 }
+.row-danger {
+  background-color: rgba(220,53,69, .1) !important;
+}
+.row-success {
+  background-color: rgba(40,167,69, .1) !important;
+}
+

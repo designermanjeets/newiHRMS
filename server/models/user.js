@@ -11,6 +11,21 @@ const leaveTypesSchema = mongoose.Schema({
   status: String
 }, { strict: false});
 
+const leaveAppliedSchema = mongoose.Schema({
+  user_ID: String,
+  leavetype: String,
+  leave_ID: String,
+  nofdays: String,
+  status: String,
+  approver: String,
+  reason: String,
+  created_at: Date,
+  created_by:String,
+  from: Date,
+  to: Date,
+  remaingleaves: String
+}, { strict: false});
+
 const designationSchema = new Schema({
   designation: String,
   department: String,
@@ -39,6 +54,7 @@ const userSchema = new Schema({
   department: String,
   department_ID: String,
   designation: designationSchema,
+  leaveApplied: [leaveAppliedSchema],
   designation_ID: String,
   permissions:{
     holiday: {

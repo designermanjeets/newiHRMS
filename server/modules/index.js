@@ -6,6 +6,7 @@ const holiday = require('./holiday')
 const leavetype = require('./leavetype')
 const designation = require('./designation')
 const department = require('./department')
+const leaveapplied = require('./leaveapplied')
 
 module.exports = makeExecutableSchemaFromModules({
   modules: [
@@ -15,5 +16,6 @@ module.exports = makeExecutableSchemaFromModules({
     leavetype,
     designation,
     department,
+    leaveapplied,
   ]
 })

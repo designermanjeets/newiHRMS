@@ -12,7 +12,7 @@
                 </ul>
             </div>
             <div class="col-auto float-right ml-auto">
-                <a class="btn add-btn" data-toggle="modal" data-target="#add_leave"><i class="fa fa-plus"></i>
+                <a class="btn add-btn" data-toggle="modal" data-target="#add_leave" (click)="addReset()" ><i class="fa fa-plus"></i>
                     Add Leave</a>
             </div>
         </div>
@@ -21,86 +21,93 @@
 
     <!-- Leave Statistics -->
     <div class="row">
-        <div class="col-md-3">
-            <div class="stats-info">
-                <h6>Annual Leave</h6>
-                <h4>12</h4>
-            </div>
+
+      <div class="col-md-3" *ngFor="let item of allLeaveTypes">
+        <div class="stats-info">
+          <h6>{{item.leavetype}}</h6>
+          <h4>{{item.leavedays}}</h4>
         </div>
-        <div class="col-md-3">
-            <div class="stats-info">
-                <h6>Medical Leave</h6>
-                <h4>3</h4>
-            </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stats-info">
+          <h6>Remaining Leaves</h6>
+          <h4>12</h4>
         </div>
-        <div class="col-md-3">
-            <div class="stats-info">
-                <h6>Other Leave</h6>
-                <h4>4</h4>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="stats-info">
-                <h6>Remaining Leave</h6>
-                <h4>5</h4>
-            </div>
-        </div>
+      </div>
+
     </div>
     <!-- /Leave Statistics -->
 
     <div class="row">
         <div class="col-md-12">
             <div class="table-responsive">
-                <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
-                    class="table table-striped custom-table mb-0 datatable">
-                    <thead>
-                        <tr>
-                            <th>Leave Type</th>
-                            <th>From</th>
-                            <th>To</th>
-                            <th>No of Days</th>
-                            <th>Reason</th>
-                            <th class="text-center">Status</th>
-                            <th>Approved by</th>
-                            <th class="text-right">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let row of lstLeave;let i = index">
-                            <td>{{row.leaveType}}</td>
-                            <td>{{row.from | customDate}}</td>
-                            <td>{{row.to | customDate}}</td>
-                            <td>{{row.noofDays}}</td>
-                            <td>{{row.reason}}</td>
-                            <td class="text-center">
-                                <div class="action-label">
-                                    <a class="btn btn-white btn-sm btn-rounded" >
-                                        <i class="fa fa-dot-circle-o text-purple"></i> New
-                                    </a>
-                                </div>
-                            </td>
-                            <td>
-                                <h2 class="table-avatar">
-                                    <a routerLink="/employees/employeeprofile" class="avatar avatar-xs"><img
-                                            src="assets/img/profiles/avatar-0{{i+ 1}}.jpg" alt=""></a>
-                                    <a routerLink="/employees/employeeprofile">Richard Miles</a>
-                                </h2>
-                            </td>
-                            <td class="text-right">
-                                <div class="dropdown dropdown-action">
-                                    <a class="action-icon dropdown-toggle" data-toggle="dropdown"
-                                        aria-expanded="false"><i class="material-icons">more_vert</i></a>
-                                    <div class="dropdown-menu dropdown-menu-right">
-                                        <a class="dropdown-item" data-toggle="modal" data-target="#edit_leave"
-                                            (click)="edit(row.id)"><i class="fa fa-pencil m-r-5"></i> Edit</a>
-                                        <a class="dropdown-item" data-toggle="modal" data-target="#delete_approve"
-                                            (click)="tempId = row.id"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+
+              <ngx-datatable
+                class="bootstrap"
+                [rows]="rows"
+                [columnMode]="ColumnMode.force"
+                [columns]="columns"
+                [headerHeight]="50"
+                [footerHeight]="50"
+                rowHeight="auto"
+                [limit]="10"
+                [rowClass]="getRowClass"
+              >
+                <ngx-datatable-column name="#" prop="#">
+                  <ng-template let-row="row" let-rowIndex="rowIndex" let-value="value" ngx-datatable-cell-template>
+                    {{rowIndex + 1}}
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Leave Type" prop="leavetype">
+                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                    {{value}}
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="From" prop="from">
+                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                    {{value | date}}
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="To" prop="to">
+                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                    {{value | date}}
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Number of Days" prop="nofdays">
+                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                    {{value}}
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Reason" prop="reason">
+                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                    {{value}}
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Status" prop="status">
+                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                    <a class="btn btn-block btn-white btn-sm btn-rounded">{{value}}</a>
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Approved by" prop="approver">
+                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                    {{value}}
+                  </ng-template>
+                </ngx-datatable-column>
+
+                <ngx-datatable-column name="Actions" sortable="false" prop="_id">
+                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                    <button class="btn btn-default" data-toggle="modal"
+                            data-target="#edit_leave" (click)="edit(row._id)">
+                      <i class="fa fa-pencil-square" aria-hidden="true"></i>
+                    </button>
+                    <button class="btn btn-default" data-toggle="modal"
+                            data-target="#delete_approve" (click)="tempId = row._id">
+                      <i class="fa fa-trash" aria-hidden="true"></i>
+                    </button>
+                  </ng-template>
+                </ngx-datatable-column>
+              </ngx-datatable>
+
             </div>
         </div>
     </div>
@@ -119,82 +126,99 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form (ngSubmit)="addleaves()" [formGroup]="addLeaveadminForm">
+                <form (ngSubmit)="addleaves(addLeaveadminForm)" [formGroup]="addLeaveadminForm">
                     <div class="form-group">
                         <label>Leave Type <span class="text-danger">*</span></label>
-                        <select class="select form-control"
-                            [class.invalid]="addLeaveadminForm.get('addLeaveType').invalid && addLeaveadminForm.get('addLeaveType').touched"
-                            formControlName="addLeaveType">
+                        <select class="select form-control" (change)="onltypechange(addLeaveadminForm.get('leavetype'))"
+                            [class.invalid]="addLeaveadminForm.get('leavetype').invalid && addLeaveadminForm.get('leavetype').touched"
+                            formControlName="leavetype">
                           <option *ngFor="let l of allLeaveTypes" [value]=l._id>{{l.leavetype}}</option>
                         </select>
                         <div
-                            *ngIf="addLeaveadminForm.get('addLeaveType').invalid && addLeaveadminForm.get('addLeaveType').touched">
+                            *ngIf="addLeaveadminForm.get('leavetype').invalid && addLeaveadminForm.get('leavetype').touched">
                             <small
-                                *ngIf="addLeaveadminForm.get('addLeaveType').invalid && addLeaveadminForm.get('addLeaveType').touched"
+                                *ngIf="addLeaveadminForm.get('leavetype').invalid && addLeaveadminForm.get('leavetype').touched"
                                 class="text-danger"> *Leave type is required</small>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label>From <span class="text-danger">*</span></label>
-                        <div class="cal-icon">
-                            <input class="form-control datetimepicker" type="text" bsDatepicker type="text"
-                                [bsConfig]="{ dateInputFormat: 'DD-MM-YYYY',  returnFocusToInput: true }"
-                                [class.invalid]="addLeaveadminForm.get('From').invalid && addLeaveadminForm.get('From').touched"
-                                formControlName="From">
-                            <div *ngIf="addLeaveadminForm.get('From').invalid && addLeaveadminForm.get('From').touched">
+                  <div class="form-group">
+                      <div class="row">
+                        <div class="col-6">
+                          <div class="form-group">
+                            <label>From <span class="text-danger">*</span></label>
+                            <div class="cal-icon">
+                              <input class="form-control datetimepicker" type="text" bsDatepicker type="text"
+                                     [bsConfig]="{ dateInputFormat: 'DD-MM-YYYY',  returnFocusToInput: true }"
+                                     [class.invalid]="addLeaveadminForm.get('from').invalid && addLeaveadminForm.get('from').touched"
+                                     formControlName="from">
+                              <div *ngIf="addLeaveadminForm.get('from').invalid && addLeaveadminForm.get('from').touched">
                                 <small
-                                    *ngIf="addLeaveadminForm.get('From').invalid && addLeaveadminForm.get('From').touched"
-                                    class="text-danger"> *From is required</small>
+                                  *ngIf="addLeaveadminForm.get('from').invalid && addLeaveadminForm.get('from').touched"
+                                  class="text-danger"> *From is required</small>
+                              </div>
                             </div>
+                          </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label>To <span class="text-danger">*</span></label>
-                        <div class="cal-icon">
-                            <input class="form-control datetimepicker" type="text" bsDatepicker type="text"
-                                [bsConfig]="{ dateInputFormat: 'DD-MM-YYYY',  returnFocusToInput: true }"
-                                [class.invalid]="addLeaveadminForm.get('To').invalid && addLeaveadminForm.get('To').touched"
-                                formControlName="To">
-                            <div *ngIf="addLeaveadminForm.get('To').invalid && addLeaveadminForm.get('To').touched">
+                        <div class="col-6">
+                          <div class="form-group">
+                            <label>To <span class="text-danger">*</span></label>
+                            <div class="cal-icon">
+                              <input class="form-control datetimepicker" type="text" bsDatepicker type="text"
+                                     [bsConfig]="{ dateInputFormat: 'DD-MM-YYYY',  returnFocusToInput: true }"
+                                     [class.invalid]="addLeaveadminForm.get('to').invalid && addLeaveadminForm.get('to').touched"
+                                     formControlName="to">
+                              <div *ngIf="addLeaveadminForm.get('to').invalid && addLeaveadminForm.get('to').touched">
                                 <small
-                                    *ngIf="addLeaveadminForm.get('To').invalid && addLeaveadminForm.get('To').touched"
-                                    class="text-danger"> *To is required</small>
+                                  *ngIf="addLeaveadminForm.get('to').invalid && addLeaveadminForm.get('to').touched"
+                                  class="text-danger"> *To is required</small>
+                              </div>
                             </div>
+                          </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Number of days <span class="text-danger">*</span></label>
-                        <input class="form-control" type="text"
-                            [class.invalid]="addLeaveadminForm.get('NoOfDays').invalid && addLeaveadminForm.get('NoOfDays').touched"
-                            formControlName="NoOfDays">
-                        <div
-                            *ngIf="addLeaveadminForm.get('NoOfDays').invalid && addLeaveadminForm.get('NoOfDays').touched">
+                      </div>
+                  </div>
+
+                  <div class="form-group">
+                    <div class="row">
+                      <div class="col-6">
+                        <div class="form-group">
+                          <label>Number of days <span class="text-danger">*</span></label>
+                          <input class="form-control" type="text"
+                                 [class.invalid]="addLeaveadminForm.get('nofdays').invalid && addLeaveadminForm.get('nofdays').touched"
+                                 formControlName="nofdays">
+                          <div
+                            *ngIf="addLeaveadminForm.get('nofdays').invalid && addLeaveadminForm.get('nofdays').touched">
                             <small
-                                *ngIf="addLeaveadminForm.get('NoOfDays').invalid && addLeaveadminForm.get('NoOfDays').touched"
-                                class="text-danger"> *No.of days is required</small>
+                              *ngIf="addLeaveadminForm.get('nofdays').invalid && addLeaveadminForm.get('nofdays').touched"
+                              class="text-danger"> *No.of days is required</small>
+                          </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Remaining Leaves <span class="text-danger">*</span></label>
-                        <input class="form-control" value="12" type="text"
-                            [class.invalid]="addLeaveadminForm.get('RemainLeaves').invalid && addLeaveadminForm.get('RemainLeaves').touched"
-                            formControlName="RemainLeaves">
-                        <div
-                            *ngIf="addLeaveadminForm.get('RemainLeaves').invalid && addLeaveadminForm.get('RemainLeaves').touched">
+                      </div>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <label>Remaining Leaves <span class="text-danger">*</span></label>
+                          <input class="form-control" readonly type="text"
+                                 [class.invalid]="addLeaveadminForm.get('remaingleaves').invalid && addLeaveadminForm.get('remaingleaves').touched"
+                                 formControlName="remaingleaves">
+                          <div
+                            *ngIf="addLeaveadminForm.get('remaingleaves').invalid && addLeaveadminForm.get('remaingleaves').touched">
                             <small
-                                *ngIf="addLeaveadminForm.get('RemainLeaves').invalid && addLeaveadminForm.get('RemainLeaves').touched"
-                                class="text-danger"> *Remaining Leaves is required</small>
+                              *ngIf="addLeaveadminForm.get('remaingleaves').invalid && addLeaveadminForm.get('remaingleaves').touched"
+                              class="text-danger"> *Remaining Leaves is required</small>
+                          </div>
                         </div>
+                      </div>
                     </div>
+                  </div>
                     <div class="form-group">
                         <label>Leave Reason <span class="text-danger">*</span></label>
                         <textarea rows="4" class="form-control"
-                            [class.invalid]="addLeaveadminForm.get('LeaveReason').invalid && addLeaveadminForm.get('LeaveReason').touched"
-                            formControlName="LeaveReason"></textarea>
+                            [class.invalid]="addLeaveadminForm.get('reason').invalid && addLeaveadminForm.get('reason').touched"
+                            formControlName="reason"></textarea>
                         <div
-                            *ngIf="addLeaveadminForm.get('LeaveReason').invalid && addLeaveadminForm.get('LeaveReason').touched">
+                            *ngIf="addLeaveadminForm.get('reason').invalid && addLeaveadminForm.get('reason').touched">
                             <small
-                                *ngIf="addLeaveadminForm.get('LeaveReason').invalid && addLeaveadminForm.get('LeaveReason').touched"
+                                *ngIf="addLeaveadminForm.get('reason').invalid && addLeaveadminForm.get('reason').touched"
                                 class="text-danger"> *Leave Reason is required</small>
                         </div>
                     </div>
@@ -221,90 +245,105 @@
             </div>
             <div class="modal-body">
                 <form (ngSubmit)="editLeaves()" [formGroup]="editLeaveadminForm">
-                    <div class="form-group">
-                        <label>Leave Type <span class="text-danger">*</span></label>
-                        <select class="select form-control"
-                            [class.invalid]="editLeaveadminForm.get('LeaveType').invalid && editLeaveadminForm.get('LeaveType').touched"
-                            formControlName="LeaveType">
-                            <option>Select Leave Type</option>
-                            <option>Casual Leave 12 Days</option>
-                            <option>Medical Leave</option>
-                            <option>Loss of Pay</option>
-                        </select>
-                        <div
-                            *ngIf="editLeaveadminForm.get('LeaveType').invalid && editLeaveadminForm.get('LeaveType').touched">
-                            <small
-                                *ngIf="editLeaveadminForm.get('LeaveType').invalid && editLeaveadminForm.get('LeaveType').touched"
-                                class="text-danger"> *Leave type is required</small>
-                        </div>
+                  <input type="hidden" formControlName="_id">
+                  <div class="form-group">
+                    <label>Leave Type <span class="text-danger">*</span></label>
+                    <select class="select form-control" (change)="onltypechange(addLeaveadminForm.get('leavetype'))"
+                            [class.invalid]="addLeaveadminForm.get('leavetype').invalid && addLeaveadminForm.get('leavetype').touched"
+                            formControlName="leavetype">
+                      <option *ngFor="let l of allLeaveTypes" [value]=l._id>{{l.leavetype}}</option>
+                    </select>
+                    <div
+                      *ngIf="addLeaveadminForm.get('leavetype').invalid && addLeaveadminForm.get('leavetype').touched">
+                      <small
+                        *ngIf="addLeaveadminForm.get('leavetype').invalid && addLeaveadminForm.get('leavetype').touched"
+                        class="text-danger"> *Leave type is required</small>
                     </div>
-                    <div class="form-group">
-                        <label>From <span class="text-danger">*</span></label>
-                        <div class="cal-icon">
+                  </div>
+                  <div class="form-group">
+                    <div class="row">
+                      <div class="col-6">
+                        <div class="form-group">
+                          <label>From <span class="text-danger">*</span></label>
+                          <div class="cal-icon">
                             <input class="form-control datetimepicker" type="text" bsDatepicker type="text"
-                                [bsConfig]="{ dateInputFormat: 'DD-MM-YYYY',  returnFocusToInput: true }"
-                                [class.invalid]="editLeaveadminForm.get('From').invalid && editLeaveadminForm.get('From').touched"
-                                formControlName="From" (bsValueChange)="from($event)">
-                            <div
-                                *ngIf="editLeaveadminForm.get('From').invalid && editLeaveadminForm.get('From').touched">
-                                <small
-                                    *ngIf="editLeaveadminForm.get('From').invalid && editLeaveadminForm.get('From').touched"
-                                    class="text-danger"> *From is required</small>
+                                   [bsConfig]="{ dateInputFormat: 'DD-MM-YYYY',  returnFocusToInput: true }"
+                                   [class.invalid]="addLeaveadminForm.get('from').invalid && addLeaveadminForm.get('from').touched"
+                                   formControlName="from">
+                            <div *ngIf="addLeaveadminForm.get('from').invalid && addLeaveadminForm.get('from').touched">
+                              <small
+                                *ngIf="addLeaveadminForm.get('from').invalid && addLeaveadminForm.get('from').touched"
+                                class="text-danger"> *From is required</small>
                             </div>
+                          </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label>To <span class="text-danger">*</span></label>
-                        <div class="cal-icon"> <input class="form-control datetimepicker" type="text" bsDatepicker
-                                type="text" [bsConfig]="{ dateInputFormat: 'DD-MM-YYYY',  returnFocusToInput: true }"
-                                [class.invalid]="editLeaveadminForm.get('To').invalid && editLeaveadminForm.get('To').touched"
-                                formControlName="To" (bsValueChange)="to($event)">
-                            <div *ngIf="editLeaveadminForm.get('To').invalid && editLeaveadminForm.get('To').touched">
-                                <small
-                                    *ngIf="editLeaveadminForm.get('To').invalid && editLeaveadminForm.get('To').touched"
-                                    class="text-danger"> *To is required</small>
+                      </div>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <label>To <span class="text-danger">*</span></label>
+                          <div class="cal-icon">
+                            <input class="form-control datetimepicker" type="text" bsDatepicker type="text"
+                                   [bsConfig]="{ dateInputFormat: 'DD-MM-YYYY',  returnFocusToInput: true }"
+                                   [class.invalid]="addLeaveadminForm.get('to').invalid && addLeaveadminForm.get('to').touched"
+                                   formControlName="to">
+                            <div *ngIf="addLeaveadminForm.get('to').invalid && addLeaveadminForm.get('to').touched">
+                              <small
+                                *ngIf="addLeaveadminForm.get('to').invalid && addLeaveadminForm.get('to').touched"
+                                class="text-danger"> *To is required</small>
                             </div>
+                          </div>
                         </div>
+                      </div>
                     </div>
-                    <div class="form-group">
-                        <label>Number of days <span class="text-danger">*</span></label>
-                        <input class="form-control" type="text"
-                            [class.invalid]="editLeaveadminForm.get('NoOfDays').invalid && editLeaveadminForm.get('NoOfDays').touched"
-                            formControlName="NoOfDays">
-                        <div
-                            *ngIf="editLeaveadminForm.get('NoOfDays').invalid && editLeaveadminForm.get('NoOfDays').touched">
+                  </div>
+
+                  <div class="form-group">
+                    <div class="row">
+                      <div class="col-6">
+                        <div class="form-group">
+                          <label>Number of days <span class="text-danger">*</span></label>
+                          <input class="form-control" type="text"
+                                 [class.invalid]="addLeaveadminForm.get('nofdays').invalid && addLeaveadminForm.get('nofdays').touched"
+                                 formControlName="nofdays">
+                          <div
+                            *ngIf="addLeaveadminForm.get('nofdays').invalid && addLeaveadminForm.get('nofdays').touched">
                             <small
-                                *ngIf="editLeaveadminForm.get('NoOfDays').invalid && editLeaveadminForm.get('NoOfDays').touched"
-                                class="text-danger"> *No.of days is required</small>
+                              *ngIf="addLeaveadminForm.get('nofdays').invalid && addLeaveadminForm.get('nofdays').touched"
+                              class="text-danger"> *No.of days is required</small>
+                          </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Remaining Leaves <span class="text-danger">*</span></label>
-                        <input class="form-control" value="12" type="text"
-                            [class.invalid]="editLeaveadminForm.get('RemainLeaves').invalid && editLeaveadminForm.get('RemainLeaves').touched"
-                            formControlName="RemainLeaves">
-                        <div
-                            *ngIf="editLeaveadminForm.get('RemainLeaves').invalid && editLeaveadminForm.get('RemainLeaves').touched">
+                      </div>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <label>Remaining Leaves <span class="text-danger">*</span></label>
+                          <input class="form-control" readonly type="text"
+                                 [class.invalid]="addLeaveadminForm.get('remaingleaves').invalid && addLeaveadminForm.get('remaingleaves').touched"
+                                 formControlName="remaingleaves">
+                          <div
+                            *ngIf="addLeaveadminForm.get('remaingleaves').invalid && addLeaveadminForm.get('remaingleaves').touched">
                             <small
-                                *ngIf="editLeaveadminForm.get('RemainLeaves').invalid && editLeaveadminForm.get('RemainLeaves').touched"
-                                class="text-danger"> *Remaining Leaves is required</small>
+                              *ngIf="addLeaveadminForm.get('remaingleaves').invalid && addLeaveadminForm.get('remaingleaves').touched"
+                              class="text-danger"> *Remaining Leaves is required</small>
+                          </div>
                         </div>
+                      </div>
                     </div>
-                    <div class="form-group">
-                        <label>Leave Reason <span class="text-danger">*</span></label>
-                        <textarea rows="4" class="form-control"
-                            [class.invalid]="editLeaveadminForm.get('LeaveReason').invalid && editLeaveadminForm.get('LeaveReason').touched"
-                            formControlName="LeaveReason"></textarea>
-                        <div
-                            *ngIf="editLeaveadminForm.get('LeaveReason').invalid && editLeaveadminForm.get('LeaveReason').touched">
-                            <small
-                                *ngIf="editLeaveadminForm.get('LeaveReason').invalid && editLeaveadminForm.get('LeaveReason').touched"
-                                class="text-danger"> *Leave Reason is required</small>
-                        </div>
+                  </div>
+                  <div class="form-group">
+                    <label>Leave Reason <span class="text-danger">*</span></label>
+                    <textarea rows="4" class="form-control"
+                              [class.invalid]="addLeaveadminForm.get('reason').invalid && addLeaveadminForm.get('reason').touched"
+                              formControlName="reason"></textarea>
+                    <div
+                      *ngIf="addLeaveadminForm.get('reason').invalid && addLeaveadminForm.get('reason').touched">
+                      <small
+                        *ngIf="addLeaveadminForm.get('reason').invalid && addLeaveadminForm.get('reason').touched"
+                        class="text-danger"> *Leave Reason is required</small>
                     </div>
-                    <div class="submit-section">
-                        <button class="btn btn-primary submit-btn" type="submit">Submit</button>
-                    </div>
+                  </div>
+                  <div class="submit-section">
+                    <button class="btn btn-primary submit-btn" type="submit">Submit</button>
+                  </div>
                 </form>
             </div>
         </div>

@@ -1,17 +1,22 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AllModulesService } from '../../all-modules.service';
 import { ToastrService } from 'ngx-toastr';
-import { DataTableDirective } from 'angular-datatables';
-import { Subject } from 'rxjs';
 import { DatePipe } from '@angular/common';
-import { GET_LEAVETYPES_QUERY } from '../../settings/leave-type/leave-types-gql.service';
 import { Apollo } from 'apollo-angular';
+import { ColumnMode, SelectionType } from '@swimlane/ngx-datatable';
+import { GET_USERLEAVES_QUERY, RegisterLeaveGQL } from './leave-emp-gql.service';
+import * as _ from 'lodash';
+import * as moment from 'moment';
+import { GET_LEAVETYPES_QUERY } from '../leave-settings/leavesettingql.service';
+
 declare const $: any;
+
 @Component({
   selector: 'app-leaves-employee',
   templateUrl: './leaves-employee.component.html',
   styleUrls: ['./leaves-employee.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LeavesEmployeeComponent implements OnInit, OnDestroy {
   lstLeave: any[];
@@ -19,13 +24,14 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
   public tempId: any;
   public editId: any;
 
-  @ViewChild(DataTableDirective, { static: false })
-  public dtElement: DataTableDirective;
-  public dtOptions: DataTables.Settings = {};
-  public rows = [];
+  rows = [];
+  selected = [];
+  columns: any[] = [];
+  ColumnMode = ColumnMode;
+  SelectionType = SelectionType;
+
   public srch = [];
   public statusValue;
-  public dtTrigger: Subject<any> = new Subject();
   public pipe = new DatePipe('en-US');
   public addLeaveadminForm: FormGroup;
   public editLeaveadminForm: FormGroup;
@@ -33,49 +39,72 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
   public editToDate: any;
 
   allLeaveTypes: any;
-
-
+  allLeaveApplied: any;
 
   constructor(
     private formBuilder: FormBuilder,
     private srvModuleService: AllModulesService,
     private toastr: ToastrService,
     private apollo: Apollo,
+    private registerLeaveGQL: RegisterLeaveGQL,
+    private cdRef: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
-    this.loadLeaves();
-    this.loadAllLeaveTypes();
+
+    this.loadallLeaveTypes();
+    this.loadallLeaveApplied();
 
     this.addLeaveadminForm = this.formBuilder.group({
-      addLeaveType: ['', [Validators.required]],
-      From: ['', [Validators.required]],
-      To: ['', [Validators.required]],
-      NoOfDays: ['', [Validators.required]],
-      RemainLeaves: ['', [Validators.required]],
-      LeaveReason: ['', [Validators.required]],
+      leavetype: ['', [Validators.required]],
+      from: ['', [Validators.required]],
+      to: ['', [Validators.required]],
+      nofdays: ['', [Validators.required]],
+      remaingleaves: ['', [Validators.required]],
+      reason: ['', [Validators.required]],
     });
 
     // Edit leaveadmin Form Validation And Getting Values
 
     this.editLeaveadminForm = this.formBuilder.group({
-      LeaveType: ['', [Validators.required]],
-      From: ['', [Validators.required]],
-      To: ['', [Validators.required]],
-      NoOfDays: ['', [Validators.required]],
-      RemainLeaves: ['', [Validators.required]],
-      LeaveReason: ['', [Validators.required]],
+      _id: [''],
+      leavetype: ['', [Validators.required]],
+      from: ['', [Validators.required]],
+      to: ['', [Validators.required]],
+      nofdays: ['', [Validators.required]],
+      remaingleaves: ['', [Validators.required]],
+      reason: ['', [Validators.required]],
     });
+  }
 
-    // for data table configuration
-    this.dtOptions = {
-      // ... skipped ...
-      pageLength: 10,
-      dom: 'lrtip',
+  getRowClass = (row) => {
+    return {
+      'row-danger': row.status === 'pending',
+      'row-success': row.status === 'approved',
     };
   }
 
-  loadAllLeaveTypes() {
+  loadallLeaveApplied() {
+    this.apollo.watchQuery({
+      query: GET_USERLEAVES_QUERY,
+      variables: {
+        pagination: {
+          limit: 100
+        }
+      },
+    }).valueChanges.subscribe((response: any) => {
+      if (response.data.getLeavesApplied) {
+        this.allLeaveApplied = response.data.getLeavesApplied;
+        console.log(this.allLeaveApplied);
+        this.rows = this.allLeaveApplied;
+        this.srch = [...this.rows];
+        this.cdRef.detectChanges();
+      }
+    });
+  }
+
+
+  loadallLeaveTypes() {
     this.apollo.watchQuery({
       query: GET_LEAVETYPES_QUERY,
       variables: {
@@ -84,14 +113,20 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
         }
       },
     }).valueChanges.subscribe((response: any) => {
-      if (response.data.getLeaveTypes.length) {
+      if (response.data.getLeaveTypes) {
         this.allLeaveTypes = response.data.getLeaveTypes;
-        // this.lstLeave = response.data.getLeaveTypes;
-        // this.dtTrigger.next();
-        // this.rows = this.lstLeave;
-        // this.srch = [...this.rows];
+        this.cdRef.detectChanges();
       }
     });
+  }
+
+  addReset() {
+    this.addLeaveadminForm.reset();
+  }
+
+  onltypechange(value) {
+    const lt = this.allLeaveApplied.filter((item) => item._id === value.value);
+    this.addLeaveadminForm.get('remaingleaves').patchValue(lt[0].leavedays);
   }
 
   // Get leave  Api Call
@@ -100,39 +135,30 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
   }
 
   // Add leaves for admin Modal Api Call
-  addleaves() {
-    if (this.addLeaveadminForm.valid) {
-      const fromDate = this.pipe.transform(
-        this.addLeaveadminForm.value.From,
-        'dd-MM-yyyy'
-      );
-      const toDate = this.pipe.transform(
-        this.addLeaveadminForm.value.To,
-        'dd-MM-yyyy'
-      );
-      const obj = {
-        employeeName: 'Mike Litorus',
-        designation: 'web developer',
-        leaveType: this.addLeaveadminForm.value.addLeaveType,
-        from: fromDate,
-        to: toDate,
-        noofDays: this.addLeaveadminForm.value.NoOfDays,
-        remainleaves: this.addLeaveadminForm.value.RemainLeaves,
-        reason: this.addLeaveadminForm.value.LeaveReason,
-        status: 'Approved',
-      };
-      this.srvModuleService.add(obj, this.url).subscribe((data) => {
-        this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-          dtInstance.destroy();
-        });
-      });
-      this.loadLeaves();
-      $('#add_leave').modal('hide');
-      this.addLeaveadminForm.reset();
-      this.toastr.success('Leaves added sucessfully...!', 'Success');
-    } else {
-      this.toastr.warning('Mandatory fields required', '');
-    }
+  addleaves(f) {
+    console.log(f.value);
+
+    const lv = _.filter(this.allLeaveApplied, p => p._id === f.value.leavetype);
+    console.log(lv);
+
+    this.registerLeaveGQL
+      .mutate({
+        user_ID: JSON.parse(sessionStorage.getItem('user')).userid,
+        leavetype: lv[0].leavetype,
+        leave_ID: lv[0]._id,
+        nofdays: f.value.nofdays,
+        reason: f.value.reason,
+        from: f.value.from,
+        to: f.value.to,
+        created_at: Date.now(),
+        created_by: JSON.parse(sessionStorage.getItem('user')).username
+      })
+      .subscribe( (val: any) => {
+        if (val.data) {
+          console.log(val.data);
+          this.toastr.success('Leave Applied added sucessfully...!', 'Success');
+        }
+      }, error => this.toastr.error(error, 'Error'));
   }
 
   from(data) {
@@ -144,64 +170,32 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
 
   // Edit leaves Modal Api Call
   editLeaves() {
-    if (this.editLeaveadminForm.valid) {
-      const obj = {
-        employeeName: 'Mike Litorus',
-        designation: 'web developer',
-        leaveType: this.editLeaveadminForm.value.LeaveType,
-        from: this.editFromDate,
-        to: this.editToDate,
-        noofDays: this.editLeaveadminForm.value.NoOfDays,
-        remainleaves: this.editLeaveadminForm.value.RemainLeaves,
-        reason: this.editLeaveadminForm.value.LeaveReason,
-        status: 'Approved',
-        id: this.editId,
-      };
-      this.srvModuleService.update(obj, this.url).subscribe((data) => {
-        this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-          dtInstance.destroy();
-        });
-      });
-      this.loadLeaves();
-      $('#edit_leave').modal('hide');
-      this.toastr.success('Leaves Updated sucessfully...!', 'Success');
-    } else {
-      this.toastr.warning('Mandatory fields required', '');
-    }
+    //
   }
 
   // Delete leaves Modal Api Call
 
   deleteleaves() {
-    this.srvModuleService.delete(this.tempId, this.url).subscribe((data) => {
-      this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-        dtInstance.destroy();
-      });
-      this.loadLeaves();
-      $('#delete_approve').modal('hide');
-      this.toastr.success('Leaves deleted sucessfully..!', 'Success');
-    });
+    //
   }
 
   // To Get The leaves Edit Id And Set Values To Edit Modal Form
 
-  edit(value) {
-    this.editId = value;
-    const index = this.lstLeave.findIndex((item) => {
-      return item.id === value;
+  edit(id) {
+    this.editLeaveadminForm.reset();
+    console.log(id);
+    _.forEach(this.allLeaveApplied,  lv => {
+      lv['remaingleaves'] = 0;
+      moment(lv.from).format('DD-MM-YYYY');
+      moment(lv.to).format('DD-MM-YYYY');
     });
-    const toSetValues = this.lstLeave[index];
-    this.editLeaveadminForm.setValue({
-      LeaveType: toSetValues.leaveType,
-      From: toSetValues.from,
-      To: toSetValues.to,
-      NoOfDays: toSetValues.noofDays,
-      RemainLeaves: toSetValues.remainleaves,
-      LeaveReason: toSetValues.reason,
-    });
+    let l = this.allLeaveApplied.find((item) => item._id === id);
+    console.log(l);
+    this.editLeaveadminForm.patchValue(l);
+    this.editLeaveadminForm.get('leavetype').patchValue(l.leave_ID);
   }
+
   ngOnDestroy(): void {
     // Do not forget to unsubscribe the event
-    this.dtTrigger.unsubscribe();
   }
 }

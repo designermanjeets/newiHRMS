@@ -1,5 +1,6 @@
 const Designation = require('../../../models/designation');
 const Audit = require('../../../models/Audit');
+const LeaveType = require('../../../models/leavetype');
 
 const createDesignation = (_, {
   designation,
@@ -21,7 +22,22 @@ const createDesignation = (_, {
       created_at,
       created_by,
       leavetype
+    }).then(val => {
+      LeaveType.findById({_id: leavetype[0].leave_ID}).then( v => {
+        if(v) {
+          val.leavetype.forEach(lv => {
+            if (lv.leave_ID ===v._id.toHexString()) {
+              lv.carrymax = v.carrymax
+              lv.carryforward = v.carryforward
+              lv.remainingleaves = v.remainingleaves
+              val.save();
+            }
+          })
+          resolve(newDesignation);
+        }
+      });
     })
+
     const nmodified = {
       newDesig_ID: newDesignation._id,
       action: 'Designation Created',

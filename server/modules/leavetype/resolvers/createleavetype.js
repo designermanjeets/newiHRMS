@@ -8,12 +8,14 @@ const createLeaveType = (_, {
                             carrymax,
                             status,
                             created_by,
-                            created_at
+                            created_at,
+                            remainingleaves
                           },{me,secret}) => new Promise(async (resolve, reject) => {
   const leave = await LeaveType.findOne({$or:[ {leavetype} ]})
   if (leave) {
     reject('LeaveType already exist');
   } else {
+    remainingleaves = leavedays;
     const newLeaveType = await LeaveType.create({
       leavetype,
       leavedays,
@@ -21,7 +23,8 @@ const createLeaveType = (_, {
       carrymax,
       status,
       created_by,
-      created_at
+      created_at,
+      remainingleaves
     })
 
     const nmodified = {

@@ -1,6 +1,7 @@
 const User = require('../../../models/user');
 const Designation = require('../../../models/designation');
 const Audit = require('../../../models/Audit');
+const LeaveType = require('../../../models/leavetype');
 
 const updateDesignation = (_, {
                               id,
@@ -28,9 +29,25 @@ const updateDesignation = (_, {
         {new: true}
       )
         .then((result) => {
+
+          LeaveType.findById({_id: leavetype[0].leave_ID}).then( v => {
+            if(v) {
+              result.leavetype.forEach(lv => {
+                if (lv.leave_ID ===v._id.toHexString()) {
+                  lv.carrymax = v.carrymax
+                  lv.carryforward = v.carryforward
+                  lv.remainingleaves = v.remainingleaves
+                  result.save();
+                }
+              })
+            }
+          });
+
+
           User.updateMany(
             {"designation._id": id},
-            { $set: { department: department, department_ID: department_ID, designation: result}  }, { new: true }).then();
+            { $set: { department: department, department_ID: department_ID, designation: result}  }, { new: true })
+            .then();
 
           if(result && Object.keys(changeFields).length !== 0) {
             const nmodified = {

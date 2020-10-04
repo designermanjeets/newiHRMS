@@ -9,9 +9,11 @@ const subSchema = mongoose.Schema({
 const leaveTypeSchema = mongoose.Schema({
   leavetype: String,
   leave_ID: String,
-  leavedays: String,
+  leavedays: Number,
   carryforward: String,
-  status: String
+  carrymax: Number,
+  status: String,
+  remainingleaves: Number
 }, { strict: false});
 
 const designationSchema = new Schema({

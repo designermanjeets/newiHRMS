@@ -61,6 +61,10 @@ export class UpdateDesignationGQL extends Mutation {
           leavetype
           leavedays
           leave_ID
+          carryforward
+          carrymax
+          remainingleaves
+          status
         }
       }
     }
@@ -102,6 +106,10 @@ export const GET_DESIGNATIONS_QUERY = gql`
           leavetype,
           leave_ID,
           leavedays
+          carryforward
+          carrymax
+          remainingleaves
+          status
         }
       }
     }
@@ -117,12 +125,12 @@ export class SetGetDesignationsService {
 
   constructor() { }
 
-  getDesignations(_id) {
+  getDesignations(id) {
     if (!this.designations) {
       return false;
     } else {
       return this.designations.find(
-        (h: any) => h._id === _id);
+        (h: any) => h._id === id);
     }
   }
 
@@ -134,12 +142,12 @@ export class SetGetDesignationsService {
     this.departments = data;
   }
 
-  getDepartment(_id) { // Same function but can be extented in future
+  getDepartment(id) { // Same function but can be extented in future
     if (!this.departments) {
       return false;
     } else {
       return this.departments.find(
-        (h: any) => h._id === _id);
+        (h: any) => h._id === id);
     }
   }
 

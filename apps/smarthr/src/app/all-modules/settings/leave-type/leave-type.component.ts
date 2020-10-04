@@ -155,6 +155,7 @@ export class LeaveTypeComponent implements OnInit, OnDestroy {
     const index = this.allLeaveType.findIndex((item) => item._id === value);
     const toSetValues = this.allLeaveType[index];
     this.uptForm.patchValue(toSetValues);
+    this.onCarryChange(this.uptForm);
   }
 
   // Delete Provident Modal Api Call

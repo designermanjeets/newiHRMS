@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Mutation } from 'apollo-angular';
+import { Mutation, Query } from 'apollo-angular';
 import gql from 'graphql-tag';
 
 @Injectable({
@@ -9,18 +9,24 @@ export class RegisterLeaveGQL extends Mutation {
   document = gql`
     mutation createLeave (
       $user_ID: String
+      $username: String
+      $email: String
+      $emmpid: String
       $leavetype: String!
       $leave_ID: String!
       $from: ISODate
       $to: ISODate
-      $nofdays: String
-      $remaingleaves: String
+      $nofdays: Int
+      $remaingleaves: Int
       $reason: String
       $created_at: ISODate
       $created_by: String
     ) {
       createLeave(
         user_ID: $user_ID
+        username: $username
+        email: $email
+        emmpid: $emmpid
         leavetype: $leavetype
         leave_ID: $leave_ID
         from: $from
@@ -32,6 +38,9 @@ export class RegisterLeaveGQL extends Mutation {
         created_by: $created_by
       ) {
           user_ID
+          username
+          email
+          emmpid
           leavetype
           leave_ID
           from
@@ -41,6 +50,56 @@ export class RegisterLeaveGQL extends Mutation {
           reason
           created_at
           created_by
+      }
+    }
+  `;
+}
+
+
+@Injectable({
+  providedIn: 'root',
+})
+export class UpdateLeaveGQL extends Mutation {
+  document = gql`
+    mutation updateLeave (
+      $id: ID!
+      $user_ID: String!
+      $username: String
+      $email: String
+      $emmpid: String
+      $leavetype: String!
+      $leave_ID: String!
+      $from: ISODate
+      $to: ISODate
+      $nofdays: Int
+      $remaingleaves: Int
+      $reason: String
+    ) {
+      updateLeave(
+        id: $id
+        user_ID: $user_ID
+        username: $username
+        email: $email
+        emmpid: $emmpid
+        leavetype: $leavetype
+        leave_ID: $leave_ID
+        from: $from
+        to: $to
+        nofdays: $nofdays
+        remaingleaves: $remaingleaves
+        reason: $reason
+      ) {
+          user_ID
+          username
+          email
+          emmpid
+          leavetype
+          leave_ID
+          from
+          to
+          nofdays
+          remaingleaves
+          reason
       }
     }
   `;
@@ -57,12 +116,39 @@ export const GET_USERLEAVES_QUERY = gql`
         leave_ID
         leavetype
         user_ID
+        email
+        username
+        emmpid
         from
         to
         nofdays
+        remaingleaves
         reason
         status
         approver
       }
   }
 `;
+
+export const GET_USER_QUERY = gql`
+   query getUser(
+      $query: Pagination!
+    ) {
+    users(
+      query: $query,
+    ) {
+        _id
+        username,
+        designation {
+          _id
+          designation
+          leavetype {
+            leavetype
+            leave_ID
+            leavedays
+          }
+        }
+      }
+  }
+`;
+

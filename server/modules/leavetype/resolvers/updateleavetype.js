@@ -1,4 +1,5 @@
 const LeaveType = require('../../../models/leavetype');
+const Designation = require('../../../models/designation');
 const Audit = require('../../../models/Audit');
 
 const updateLeaveType = (_, {
@@ -8,7 +9,8 @@ const updateLeaveType = (_, {
                             carryforward,
                             carrymax,
                             status,
-                            modified
+                            modified,
+                            remainingleaves
                           },{me,secret}) => new Promise(async (resolve, reject) => {
   try{
     let param ={
@@ -17,8 +19,8 @@ const updateLeaveType = (_, {
       carryforward,
       carrymax,
       status,
+      remainingleaves
     }
-    console.log(param)
     const ltype = await LeaveType.findById(id);
     let changeFields = {};
     for ( item in param) {
@@ -30,9 +32,29 @@ const updateLeaveType = (_, {
     if(ltype) {
       await LeaveType.findByIdAndUpdate(id,{$set:{...param}},{new: true})
         .then((result) => {
-          if(result && Object.keys(changeFields).length !== 0) {
-            // To Update All Departments LeaveTypes: TO:DO
-            const nmodified = {
+          if(result) {
+
+            // Update Designation Assigned Leave Types
+
+            Designation.find({}, function(err, des) {
+              if (!err) {
+                des.forEach(d => {
+                  if(d.leavetype && d.leavetype.length) {
+                    d.leavetype.forEach(upt => {
+                      if(upt.leave_ID === id) {
+                        upt.leavetype = result.leavetype;
+                        upt.leavedays = result.leavedays;
+                        d.save();
+                      }
+                    });
+                  }
+                });
+              } else {
+                throw new Error('No Designation Found!');
+              }
+            });
+
+            const modifiedObj = {
               leave_ID: ltype._id,
               modified_by: modified[0].modified_by,
               modified_at: modified[0].modified_at,
@@ -44,19 +66,15 @@ const updateLeaveType = (_, {
               if(val.length) {
                 Audit.findOneAndUpdate(
                   { },
-                  { $push: { leaveTypeAudit: nmodified  }  }, { new: true }).then(
-                  res => resolve(res)
-                );
+                  { $push: { leaveTypeAudit: modifiedObj  }  }, { new: true }).then();
               } else {
-                Audit.create({ leaveTypeAudit: nmodified  }, { new: true }).then(
-                  res => resolve(res)
-                );
+                Audit.create({ leaveTypeAudit: modifiedObj  }, { new: true }).then();
               }
               resolve(result);
             });
             resolve(result);
           } else {
-            resolve(result);
+            reject(new Error('No Leave Type Found!'));
           }
         })
     }

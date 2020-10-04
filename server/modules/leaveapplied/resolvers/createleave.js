@@ -5,6 +5,9 @@ const createLeave = (_, {
   leavetype,
   leave_ID,
   user_ID,
+  username,
+  email,
+  emmpid,
   nofdays,
   status,
   approver,
@@ -13,10 +16,13 @@ const createLeave = (_, {
   created_by,
   from,
   to,
-  leavepending
+  remaingleaves
 },{me,secret}) => new Promise(async (resolve, reject) => {
   let params = {
     user_ID,
+    username,
+    email,
+    emmpid,
     leavetype,
     leave_ID,
     nofdays,
@@ -27,15 +33,15 @@ const createLeave = (_, {
     created_by,
     from,
     to,
-    leavepending
+    remaingleaves
   }
   params.status = 'pending';
-  console.log(params);
 
   const user = await User.findById({_id: user_ID})
   if (!user) reject (new Error('No User Found!'))
   if (user) {
-    if (!user.leaveApplied) { user['leaveApplied'] = [] }
+    if (!user.leaveApplied)
+      user['leaveApplied'] = [];
 
       let found = false;
       user.leaveApplied.forEach(l => {
@@ -49,7 +55,13 @@ const createLeave = (_, {
     });
     if (!found) {
       user.leaveApplied.push(params);
-      user.save();
+
+      // Below TO:DO Update User Leaves
+      // user.designation.leavetype.forEach(val => {
+      //   if (val._id.toHexString() === params.leave_ID) {
+      //     val.remaingleaves = params.remaingleaves;
+      //   }
+      // });
 
       const modified = {
         user_ID: user._id,
@@ -63,13 +75,16 @@ const createLeave = (_, {
           Audit.findOneAndUpdate(
             { },
             { $push: { leaveAppliedAudit: modified  }  }, { new: true })
-            .then();
+            .then(res=> resolve(res));
         } else {
-          Audit.create({ leaveAppliedAudit: modified }, { new: true }).then();
+          Audit.create({ leaveAppliedAudit: modified }, { new: true })
+            .then(res=> resolve(res));
         }
       });
-      resolve(user);
+
+      user.save();
     }
+    resolve(user);
   }
 });
 

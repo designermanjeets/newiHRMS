@@ -10,12 +10,13 @@ const subSchema = mongoose.Schema({
 const LeaveTypeSchema = new Schema({
   id: String,
   leavetype: String,
-  leavedays: String,
+  leavedays: Number,
   carryforward: String,
-  carrymax: String,
+  carrymax: Number,
   status: String,
   created_at: Date,
   created_by: String,
+  remainingleaves: Number,
   modified : [subSchema],
 }, {collection:'LeaveType'});
 

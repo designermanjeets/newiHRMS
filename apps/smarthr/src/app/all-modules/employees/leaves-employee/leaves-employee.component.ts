@@ -1,14 +1,16 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Form, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { AllModulesService } from '../../all-modules.service';
 import { ToastrService } from 'ngx-toastr';
 import { DatePipe } from '@angular/common';
 import { Apollo } from 'apollo-angular';
 import { ColumnMode, SelectionType } from '@swimlane/ngx-datatable';
-import { GET_USERLEAVES_QUERY, RegisterLeaveGQL } from './leave-emp-gql.service';
+import { GET_USER_QUERY, GET_USERLEAVES_QUERY, RegisterLeaveGQL, UpdateLeaveGQL } from './leave-emp-gql.service';
 import * as _ from 'lodash';
 import * as moment from 'moment';
 import { GET_LEAVETYPES_QUERY } from '../leave-settings/leavesettingql.service';
+import { debounceTime, distinctUntilChanged, pairwise } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 
 declare const $: any;
 
@@ -33,13 +35,18 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
   public srch = [];
   public statusValue;
   public pipe = new DatePipe('en-US');
-  public addLeaveadminForm: FormGroup;
   public editLeaveadminForm: FormGroup;
   public editFromDate: any;
   public editToDate: any;
+  tempEditUserID: any;
+  isEdit = true;
 
   allLeaveTypes: any;
+  userLeaveTypes: [];
   allLeaveApplied: any;
+  checkPendingLeaveForUser: any;
+  remainTemp: any;
+  nofSub: Subscription;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -47,6 +54,7 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
     private toastr: ToastrService,
     private apollo: Apollo,
     private registerLeaveGQL: RegisterLeaveGQL,
+    private updateLeaveGQL: UpdateLeaveGQL,
     private cdRef: ChangeDetectorRef
   ) {}
 
@@ -54,17 +62,6 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
 
     this.loadallLeaveTypes();
     this.loadallLeaveApplied();
-
-    this.addLeaveadminForm = this.formBuilder.group({
-      leavetype: ['', [Validators.required]],
-      from: ['', [Validators.required]],
-      to: ['', [Validators.required]],
-      nofdays: ['', [Validators.required]],
-      remaingleaves: ['', [Validators.required]],
-      reason: ['', [Validators.required]],
-    });
-
-    // Edit leaveadmin Form Validation And Getting Values
 
     this.editLeaveadminForm = this.formBuilder.group({
       _id: [''],
@@ -74,6 +71,22 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
       nofdays: ['', [Validators.required]],
       remaingleaves: ['', [Validators.required]],
       reason: ['', [Validators.required]],
+    });
+
+    const reminCtr = this.editLeaveadminForm.get('remaingleaves') as FormControl;
+    this.nofSub = this.editLeaveadminForm.get('nofdays').valueChanges
+      .pipe(
+        // debounceTime(100),
+        distinctUntilChanged(),
+        pairwise() // gets a pair of old and new value
+      )
+      .subscribe(([oldValue, newValue]) => {
+        if (newValue && newValue >= Number(this.remainTemp)) {
+            // this.editLeaveadminForm.get('nofdays').patchValue(this.remainTemp);
+            reminCtr.patchValue(this.remainTemp);
+          } else {
+            reminCtr.patchValue(this.remainTemp - newValue);
+        }
     });
   }
 
@@ -95,7 +108,6 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
     }).valueChanges.subscribe((response: any) => {
       if (response.data.getLeavesApplied) {
         this.allLeaveApplied = response.data.getLeavesApplied;
-        console.log(this.allLeaveApplied);
         this.rows = this.allLeaveApplied;
         this.srch = [...this.rows];
         this.cdRef.detectChanges();
@@ -121,32 +133,58 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
   }
 
   addReset() {
-    this.addLeaveadminForm.reset();
+    this.isEdit = false;
+    this.editLeaveadminForm.reset();
+    this.tempEditUserID = JSON.parse(sessionStorage.getItem('user')).userid;
+    this.getUserPendingLeaves();
+    this.editLeaveadminForm.get('leavetype').enable();
   }
 
   onltypechange(value) {
-    const lt = this.allLeaveApplied.filter((item) => item._id === value.value);
-    this.addLeaveadminForm.get('remaingleaves').patchValue(lt[0].leavedays);
+    console.log(value);
+    this.calculatePendingLeaves(value.value); // Select Option - LeaveID
   }
 
-  // Get leave  Api Call
-  loadLeaves() {
-    //
+  calculatePendingLeaves(leaveID) { // In case of Loop Through
+    const f = _.filter(this.checkPendingLeaveForUser, v => v.leave_ID === leaveID);
+    console.log(f[0]); // Get User's Designation's Assigned Leave Type :: CL, PL ETC
+    this.editLeaveadminForm.get('remaingleaves').patchValue(f[0].leavedays);
+    this.remainTemp = JSON.parse(JSON.stringify(f[0].leavedays));
+    console.log(this.remainTemp);
+  }
+
+  getUserPendingLeaves() {
+    this.apollo.watchQuery({
+      query: GET_USER_QUERY,
+      variables: {
+        query: {
+          id: this.tempEditUserID
+        }
+      },
+    }).valueChanges.subscribe((response: any) => {
+      if (response.data.users) {
+        this.checkPendingLeaveForUser = response.data.users[0].designation.leavetype;
+        console.log(this.checkPendingLeaveForUser);
+        this.cdRef.detectChanges();
+      }
+    }, error => this.toastr.error(error, 'Error'));
   }
 
   // Add leaves for admin Modal Api Call
   addleaves(f) {
-    console.log(f.value);
 
-    const lv = _.filter(this.allLeaveApplied, p => p._id === f.value.leavetype);
-    console.log(lv);
+    const lv = _.filter(this.allLeaveTypes, p => p._id === f.value.leavetype);
 
     this.registerLeaveGQL
       .mutate({
         user_ID: JSON.parse(sessionStorage.getItem('user')).userid,
+        username: JSON.parse(sessionStorage.getItem('user')).username,
+        email: JSON.parse(sessionStorage.getItem('user')).email,
+        emmpid: JSON.parse(sessionStorage.getItem('user')).emmpid,
         leavetype: lv[0].leavetype,
         leave_ID: lv[0]._id,
         nofdays: f.value.nofdays,
+        remaingleaves: f.value.remaingleaves,
         reason: f.value.reason,
         from: f.value.from,
         to: f.value.to,
@@ -155,8 +193,10 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
       })
       .subscribe( (val: any) => {
         if (val.data) {
-          console.log(val.data);
+          $('#add_leave').modal('hide');
           this.toastr.success('Leave Applied added sucessfully...!', 'Success');
+          this.loadallLeaveApplied();
+          this.cdRef.detectChanges();
         }
       }, error => this.toastr.error(error, 'Error'));
   }
@@ -169,8 +209,35 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
   }
 
   // Edit leaves Modal Api Call
-  editLeaves() {
-    //
+  editLeaves(f) {
+
+    const lv = _.filter(this.allLeaveApplied, p => p._id === f.value._id);
+
+    this.updateLeaveGQL
+      .mutate({
+        id: lv[0]._id,
+        user_ID: JSON.parse(sessionStorage.getItem('user')).userid,
+        username: JSON.parse(sessionStorage.getItem('user')).username,
+        email: JSON.parse(sessionStorage.getItem('user')).email,
+        emmpid: JSON.parse(sessionStorage.getItem('user')).emmpid,
+        leavetype: lv[0].leavetype,
+        leave_ID: lv[0]._id,
+        nofdays: f.value.nofdays,
+        remaingleaves: f.value.remaingleaves,
+        reason: f.value.reason,
+        from: f.value.from,
+        to: f.value.to,
+        created_at: Date.now(),
+        created_by: JSON.parse(sessionStorage.getItem('user')).username
+      })
+      .subscribe( (val: any) => {
+        if (val.data) {
+          $('#edit_leave').modal('hide');
+          this.toastr.success('Leave Updated sucessfully...!', 'Success');
+          this.loadallLeaveApplied();
+          this.cdRef.detectChanges();
+        }
+      }, error => this.toastr.error(error, 'Error'));
   }
 
   // Delete leaves Modal Api Call
@@ -182,17 +249,21 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
   // To Get The leaves Edit Id And Set Values To Edit Modal Form
 
   edit(id) {
+    this.isEdit = true;
+    this.remainTemp = null;
+    this.tempEditUserID = null;
     this.editLeaveadminForm.reset();
-    console.log(id);
-    _.forEach(this.allLeaveApplied,  lv => {
-      lv['remaingleaves'] = 0;
-      moment(lv.from).format('DD-MM-YYYY');
-      moment(lv.to).format('DD-MM-YYYY');
-    });
     let l = this.allLeaveApplied.find((item) => item._id === id);
     console.log(l);
+    this.tempEditUserID = l.user_ID;
     this.editLeaveadminForm.patchValue(l);
     this.editLeaveadminForm.get('leavetype').patchValue(l.leave_ID);
+    this.onltypechange({value: l.leave_ID});
+    this.editLeaveadminForm.get('leavetype').disable();
+
+    // On Load get the Select Assigned Leave Type
+    this.getUserPendingLeaves();
+
   }
 
   ngOnDestroy(): void {

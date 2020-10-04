@@ -12,21 +12,23 @@ const typeDefs = gql`
 
     createLeaveType (
       leavetype: String,
-      leavedays: String,
+      leavedays: Int,
       carryforward: String,
-      carrymax: String,
+      carrymax: Int,
       status: String,
       created_at: ISODate,
-      created_by: String
+      created_by: String,
+      remainingleaves: Int
     ): LeaveType
 
     updateLeaveType(
       id: ID!,
       leavetype: String,
-      leavedays: String,
+      leavedays: Int,
       carryforward: String,
-      carrymax: String,
+      carrymax: Int,
       status: String,
+      remainingleaves: Int,
       modified: [modifiedInputs]
     ): LeaveType
 
@@ -37,12 +39,13 @@ const typeDefs = gql`
   type LeaveType {
     _id: ID,
     leavetype: String!,
-    leavedays: String!,
+    leavedays: Int!,
     carryforward: String,
-    carrymax: String,
+    carrymax: Int,
     status: String,
     created_at: ISODate,
     created_by: String,
+    remainingleaves: Int,
     modified: [modifiedTypes]
   }
 

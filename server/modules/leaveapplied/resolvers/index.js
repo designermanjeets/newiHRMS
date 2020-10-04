@@ -10,7 +10,7 @@ const resolvers = {
   },
   Mutation: {
     createLeave,
-    // updateLeave,
+    updateLeave,
     // deleteLeave
   }
 }

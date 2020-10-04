@@ -22,7 +22,7 @@ const typeDefs = gql`
     updateDesignation(
       id: ID!,
       designation: String!,
-      department: String,,
+      department: String,
       department_ID: String,
       modified: [modifiedInputs],
       leavetype: [leaveTypesInputs]

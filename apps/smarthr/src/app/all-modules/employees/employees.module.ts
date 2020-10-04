@@ -25,6 +25,9 @@ import { PickListModule } from 'primeng/picklist';
 import { MatDatepickerModule, MatNativeDateModule } from '@angular/material';
 import { NgxUploaderModule } from 'ngx-uploader';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { NgxMaskModule, IConfig } from 'ngx-mask';
+
+export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 
 @NgModule({
   declarations: [EmployeesComponent, AllEmployeesComponent, EmployeePageContentComponent, EmployeeListComponent, EmployeeProfileComponent, HolidaysComponent, LeavesAdminComponent, LeavesEmployeeComponent, LeaveSettingsComponent, AttendanceAdminComponent, AttendanceEmployeeComponent, DepartmentsComponent, DesignationComponent, TimesheetComponent, OvertimeComponent],
@@ -40,7 +43,8 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
     MatDatepickerModule,
     MatNativeDateModule,
     NgxUploaderModule,
-    NgxDatatableModule
+    NgxDatatableModule,
+    NgxMaskModule.forRoot(),
   ]
 })
 export class EmployeesModule { }

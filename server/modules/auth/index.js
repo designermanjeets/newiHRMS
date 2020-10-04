@@ -147,9 +147,11 @@ const typeDefs = gql`
   input leaveTypesInputs {
     leavetype: String,
     leave_ID: String,
-    leavedays: String!,
+    leavedays: Int!,
     carryforward: String,
     status: String,
+    carrymax: Int,
+    remainingleaves: Int
   },
 
   input designationInputs {
@@ -185,7 +187,11 @@ const typeDefs = gql`
   type leavetypes {
     leavetype: String,
     leave_ID: String,
-    leavedays: String
+    leavedays: Int,
+    carryforward: String,
+    carrymax: Int,
+    status: String,
+    remainingleaves: Int
   },
 
   type permissions {

@@ -12,9 +12,12 @@ const typeDefs = gql`
 
     createLeave (
       user_ID: String,
+      username: String,
+      email: String,
+      emmpid: String,
       leavetype: String,
       leave_ID: String,
-      nofdays: String,
+      nofdays: Int,
       status: String,
       approver: String,
       reason: String,
@@ -22,15 +25,18 @@ const typeDefs = gql`
       created_by:String,
       from: ISODate,
       to: ISODate,
-      remaingleaves: String
+      remaingleaves: Int
     ): LeaveApplied,
 
     updateLeave(
       id: ID!
       user_ID: String!
+      username: String
+      email: String
+      emmpid: String
       leavetype: String
       leave_ID: String
-      nofdays: String
+      nofdays: Int
       status: String
       approver: String
       reason: String
@@ -38,7 +44,7 @@ const typeDefs = gql`
       created_by:String
       from: ISODate
       to: ISODate
-      remaingleaves: String
+      remaingleaves: Int
     ): LeaveApplied
 
     deleteLeave( id: ID!, user_ID: String!, modified: [modifiedInputs] ): LeaveApplied
@@ -47,9 +53,12 @@ const typeDefs = gql`
   type LeaveApplied{
     _id: ID
     user_ID: String
+    username: String
+    email: String
+    emmpid: String
     leavetype: String
     leave_ID: String
-    nofdays: String
+    nofdays: Int
     status: String
     approver: String
     reason: String
@@ -57,7 +66,7 @@ const typeDefs = gql`
     created_by:String
     from: ISODate
     to: ISODate
-    remaingleaves: String
+    remaingleaves: Int
   }
 `
 

@@ -6,24 +6,28 @@ const Schema = mongoose.Schema;
 const leaveTypesSchema = mongoose.Schema({
   leavetype: String,
   leave_ID: String,
-  leavedays: String,
+  leavedays: Number,
   carryforward: String,
-  status: String
+  carrymax: Number,
+  status: String,
+  remainingleaves: Number
 }, { strict: false});
 
 const leaveAppliedSchema = mongoose.Schema({
   user_ID: String,
+  username: String,
+  email: String,
+  emmpid: String,
   leavetype: String,
   leave_ID: String,
-  nofdays: String,
+  nofdays: Number,
   status: String,
   approver: String,
   reason: String,
   created_at: Date,
   created_by:String,
   from: Date,
-  to: Date,
-  remaingleaves: String
+  to: Date
 }, { strict: false});
 
 const designationSchema = new Schema({

@@ -8,6 +8,9 @@ const deleteLeaveType = (_, { id, modified },{me,secret}) => new Promise(async (
     if(ltype) {
       await LeaveType.findByIdAndDelete(id)
         .then((result) => {
+
+          // Update Designation Assigned Leave Types
+
           const nmodified = {
             leave_ID: ltype._id,
             modified_by: modified[0].modified_by,

@@ -9,12 +9,13 @@ export class RegisterLeaveTypeGQL extends Mutation {
   document = gql`
     mutation createLeaveType(
       $leavetype: String!,
-      $leavedays: String!,
+      $leavedays: Int!,
       $carryforward: String,
-      $carrymax: String,
+      $carrymax: Int,
       $created_by: String,
       $created_at: ISODate,
-      $status: String
+      $status: String,
+      $remainingleaves: Int
     ) {
       createLeaveType(
         leavetype: $leavetype,
@@ -24,12 +25,14 @@ export class RegisterLeaveTypeGQL extends Mutation {
         created_by: $created_by,
         created_at: $created_at,
         status: $status,
+        remainingleaves: $remainingleaves
       ) {
         leavetype
         leavedays
         carryforward
         carrymax,
-        status
+        status,
+        remainingleaves
       }
     }
   `;
@@ -43,10 +46,11 @@ export class UpdateLeaveTypeGQL extends Mutation {
     mutation updateLeaveType(
       $id: ID!
       $leavetype: String!,
-      $leavedays: String!,
+      $leavedays: Int!,
       $carryforward: String,
-      $carrymax: String,
+      $carrymax: Int,
       $status: String,
+      $remainingleaves: Int,
       $modified: [modifiedInputs]
     ) {
       updateLeaveType(
@@ -56,7 +60,8 @@ export class UpdateLeaveTypeGQL extends Mutation {
         carryforward: $carryforward,
         carrymax: $carrymax
         status: $status,
-        modified: $modified
+        modified: $modified,
+        remainingleaves: $remainingleaves
       ) {
         _id
         leavetype
@@ -64,6 +69,7 @@ export class UpdateLeaveTypeGQL extends Mutation {
         carryforward
         carrymax
         status
+        remainingleaves
       }
     }
   `;
@@ -101,6 +107,7 @@ export const GET_LEAVETYPES_QUERY = gql`
         carryforward
         carrymax
         status
+        remainingleaves
       }
     }
 `;

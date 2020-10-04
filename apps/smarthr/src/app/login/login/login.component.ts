@@ -79,6 +79,7 @@ export class LoginComponent implements OnInit {
             role: val.data.login.user.role,
             username: val.data.login.user.username,
             userid: val.data.login.user._id,
+            emmpid: val.data.login.user.emmpid,
             corporateid: val.data.login.user.corporateid
           }));
           this.router.navigateByUrl('/dashboard');

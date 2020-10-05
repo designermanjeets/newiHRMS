@@ -17,7 +17,7 @@ const updateLeave = (_, {
   created_by,
   from,
   to,
-  remaingleaves
+  remainingleaves
 },{me,secret}) => new Promise(async (resolve, reject) => {
   let params = {
     user_ID,
@@ -32,7 +32,7 @@ const updateLeave = (_, {
     reason,
     from,
     to,
-    remaingleaves
+    remainingleaves
   }
   const user = await User.findOne(
       { $and: [ {_id: user_ID }, { 'leaveApplied._id': id} ] },
@@ -47,11 +47,11 @@ const updateLeave = (_, {
           va.reason = params.reason;
           va.from = params.from;
           va.to = params.to;
-          va.remaingleaves = params.remaingleaves;
+          va.remainingleaves = params.remainingleaves;
           user.save();
         }
         if(va.leave_ID === leave_ID) {
-          va.remaingleaves = params.remaingleaves;
+          va.remainingleaves = params.remainingleaves;
           user.save();
         }
       });

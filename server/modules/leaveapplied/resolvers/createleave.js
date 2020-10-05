@@ -16,7 +16,7 @@ const createLeave = (_, {
   created_by,
   from,
   to,
-  remaingleaves
+  remainingleaves
 },{me,secret}) => new Promise(async (resolve, reject) => {
   let params = {
     user_ID,
@@ -33,7 +33,7 @@ const createLeave = (_, {
     created_by,
     from,
     to,
-    remaingleaves
+    remainingleaves
   }
   params.status = 'pending';
 
@@ -41,12 +41,12 @@ const createLeave = (_, {
   if (!user) reject (new Error('No User Found!'))
   if (user) {
     if (!user.leaveApplied)
-      user['leaveApplied'] = [];
+      user['leaveApplied'] = []; // If Done here
 
       let found = false;
       user.leaveApplied.forEach(l => {
       if((new Date(l.from) <= new Date(to)) && (new Date(from) <= new Date(l.to))) {
-        //overlapping dates
+        // overlapping dates
         // console.log('Overlapping);
         // console.log(l);
         found = true;
@@ -56,12 +56,16 @@ const createLeave = (_, {
     if (!found) {
       user.leaveApplied.push(params);
 
-      // Below TO:DO Update User Leaves
-      // user.designation.leavetype.forEach(val => {
-      //   if (val._id.toHexString() === params.leave_ID) {
-      //     val.remaingleaves = params.remaingleaves;
-      //   }
-      // });
+      // Below Update User Leaves
+      user.designation.leavetype.forEach(val => {
+        if (val.leave_ID === params.leave_ID) {
+          if (!val.remainingleaves) {
+            val.remainingleaves = val.leavedays - params.nofdays;
+          } else {
+            val.remainingleaves = val.remainingleaves - params.nofdays;
+          }
+        }
+      });
 
       const modified = {
         user_ID: user._id,

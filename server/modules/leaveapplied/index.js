@@ -25,7 +25,7 @@ const typeDefs = gql`
       created_by:String,
       from: ISODate,
       to: ISODate,
-      remaingleaves: Int
+      remainingleaves: Int
     ): LeaveApplied,
 
     updateLeave(
@@ -44,7 +44,7 @@ const typeDefs = gql`
       created_by:String
       from: ISODate
       to: ISODate
-      remaingleaves: Int
+      remainingleaves: Int
     ): LeaveApplied
 
     deleteLeave( id: ID!, user_ID: String!, modified: [modifiedInputs] ): LeaveApplied
@@ -66,7 +66,7 @@ const typeDefs = gql`
     created_by:String
     from: ISODate
     to: ISODate
-    remaingleaves: Int
+    remainingleaves: Int
   }
 `
 

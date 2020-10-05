@@ -69,11 +69,13 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
       from: ['', [Validators.required]],
       to: ['', [Validators.required]],
       nofdays: ['', [Validators.required]],
-      remaingleaves: ['', [Validators.required]],
+      remainingleaves: ['', [Validators.required]],
       reason: ['', [Validators.required]],
     });
+  }
 
-    const reminCtr = this.editLeaveadminForm.get('remaingleaves') as FormControl;
+  calcRemainingOnFly() { // Not in Use currently
+    const reminCtr = this.editLeaveadminForm.get('remainingleaves') as FormControl;
     this.nofSub = this.editLeaveadminForm.get('nofdays').valueChanges
       .pipe(
         // debounceTime(100),
@@ -82,12 +84,12 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
       )
       .subscribe(([oldValue, newValue]) => {
         if (newValue && newValue >= Number(this.remainTemp)) {
-            // this.editLeaveadminForm.get('nofdays').patchValue(this.remainTemp);
-            reminCtr.patchValue(this.remainTemp);
-          } else {
-            reminCtr.patchValue(this.remainTemp - newValue);
+          // this.editLeaveadminForm.get('nofdays').patchValue(this.remainTemp);
+          reminCtr.patchValue(this.remainTemp);
+        } else {
+          reminCtr.patchValue(this.remainTemp - newValue);
         }
-    });
+      });
   }
 
   getRowClass = (row) => {
@@ -148,8 +150,8 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
   calculatePendingLeaves(leaveID) { // In case of Loop Through
     const f = _.filter(this.checkPendingLeaveForUser, v => v.leave_ID === leaveID);
     console.log(f[0]); // Get User's Designation's Assigned Leave Type :: CL, PL ETC
-    this.editLeaveadminForm.get('remaingleaves').patchValue(f[0].leavedays);
-    this.remainTemp = JSON.parse(JSON.stringify(f[0].leavedays));
+    this.editLeaveadminForm.get('remainingleaves').patchValue(f[0].remainingleaves);
+    this.remainTemp = JSON.parse(JSON.stringify(f[0].remainingleaves));
     console.log(this.remainTemp);
   }
 
@@ -164,6 +166,11 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
     }).valueChanges.subscribe((response: any) => {
       if (response.data.users) {
         this.checkPendingLeaveForUser = response.data.users[0].designation.leavetype;
+        _.forEach(this.checkPendingLeaveForUser, vl => {
+          if (vl.remainingleaves === null || vl.remainingleaves === 'undefined') {
+            vl.remainingleaves = vl.leavedays;
+          }
+        });
         console.log(this.checkPendingLeaveForUser);
         this.cdRef.detectChanges();
       }
@@ -184,7 +191,7 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
         leavetype: lv[0].leavetype,
         leave_ID: lv[0]._id,
         nofdays: f.value.nofdays,
-        remaingleaves: f.value.remaingleaves,
+        remainingleaves: f.value.remainingleaves,
         reason: f.value.reason,
         from: f.value.from,
         to: f.value.to,
@@ -223,7 +230,7 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
         leavetype: lv[0].leavetype,
         leave_ID: lv[0]._id,
         nofdays: f.value.nofdays,
-        remaingleaves: f.value.remaingleaves,
+        remainingleaves: f.value.remainingleaves,
         reason: f.value.reason,
         from: f.value.from,
         to: f.value.to,
@@ -258,11 +265,11 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
     this.tempEditUserID = l.user_ID;
     this.editLeaveadminForm.patchValue(l);
     this.editLeaveadminForm.get('leavetype').patchValue(l.leave_ID);
-    this.onltypechange({value: l.leave_ID});
     this.editLeaveadminForm.get('leavetype').disable();
 
     // On Load get the Select Assigned Leave Type
     this.getUserPendingLeaves();
+    this.onltypechange({value: l.leave_ID});
 
   }
 

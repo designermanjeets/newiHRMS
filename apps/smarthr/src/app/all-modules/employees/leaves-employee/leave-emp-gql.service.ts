@@ -17,7 +17,7 @@ export class RegisterLeaveGQL extends Mutation {
       $from: ISODate
       $to: ISODate
       $nofdays: Int
-      $remaingleaves: Int
+      $remainingleaves: Int
       $reason: String
       $created_at: ISODate
       $created_by: String
@@ -32,7 +32,7 @@ export class RegisterLeaveGQL extends Mutation {
         from: $from
         to: $to
         nofdays: $nofdays
-        remaingleaves: $remaingleaves
+        remainingleaves: $remainingleaves
         reason: $reason
         created_at: $created_at
         created_by: $created_by
@@ -46,7 +46,7 @@ export class RegisterLeaveGQL extends Mutation {
           from
           to
           nofdays
-          remaingleaves
+          remainingleaves
           reason
           created_at
           created_by
@@ -72,7 +72,7 @@ export class UpdateLeaveGQL extends Mutation {
       $from: ISODate
       $to: ISODate
       $nofdays: Int
-      $remaingleaves: Int
+      $remainingleaves: Int
       $reason: String
     ) {
       updateLeave(
@@ -86,7 +86,7 @@ export class UpdateLeaveGQL extends Mutation {
         from: $from
         to: $to
         nofdays: $nofdays
-        remaingleaves: $remaingleaves
+        remainingleaves: $remainingleaves
         reason: $reason
       ) {
           user_ID
@@ -98,7 +98,7 @@ export class UpdateLeaveGQL extends Mutation {
           from
           to
           nofdays
-          remaingleaves
+          remainingleaves
           reason
       }
     }
@@ -122,7 +122,7 @@ export const GET_USERLEAVES_QUERY = gql`
         from
         to
         nofdays
-        remaingleaves
+        remainingleaves
         reason
         status
         approver
@@ -146,6 +146,7 @@ export const GET_USER_QUERY = gql`
             leavetype
             leave_ID
             leavedays
+            remainingleaves
           }
         }
       }

@@ -204,12 +204,12 @@
                         <div class="form-group">
                           <label>Remaining Leaves <span class="text-danger">*</span></label>
                           <input class="form-control" readonly type="number"
-                                 [class.invalid]="editLeaveadminForm.get('remaingleaves').invalid && editLeaveadminForm.get('remaingleaves').touched"
-                                 formControlName="remaingleaves">
+                                 [class.invalid]="editLeaveadminForm.get('remainingleaves').invalid && editLeaveadminForm.get('remainingleaves').touched"
+                                 formControlName="remainingleaves">
                           <div
-                            *ngIf="editLeaveadminForm.get('remaingleaves').invalid && editLeaveadminForm.get('remaingleaves').touched">
+                            *ngIf="editLeaveadminForm.get('remainingleaves').invalid && editLeaveadminForm.get('remainingleaves').touched">
                             <small
-                              *ngIf="editLeaveadminForm.get('remaingleaves').invalid && editLeaveadminForm.get('remaingleaves').touched"
+                              *ngIf="editLeaveadminForm.get('remainingleaves').invalid && editLeaveadminForm.get('remainingleaves').touched"
                               class="text-danger"> *Remaining Leaves is required</small>
                           </div>
                         </div>
@@ -257,7 +257,7 @@
                     <select class="select form-control" (change)="onltypechange(editLeaveadminForm.get('leavetype'))"
                             [class.invalid]="editLeaveadminForm.get('leavetype').invalid && editLeaveadminForm.get('leavetype').touched"
                             formControlName="leavetype">
-                      <option *ngFor="let l of checkPendingLeaveForUser" [value]=l._id>{{l.leavetype}}</option>
+                      <option *ngFor="let l of checkPendingLeaveForUser" [value]=l.leave_ID>{{l.leavetype}}</option>
                     </select>
                     <div
                       *ngIf="editLeaveadminForm.get('leavetype').invalid && editLeaveadminForm.get('leavetype').touched">
@@ -323,12 +323,12 @@
                         <div class="form-group">
                           <label>Remaining Leaves <span class="text-danger">*</span></label>
                           <input class="form-control" readonly type="number"
-                                 [class.invalid]="editLeaveadminForm.get('remaingleaves').invalid && editLeaveadminForm.get('remaingleaves').touched"
-                                 formControlName="remaingleaves">
+                                 [class.invalid]="editLeaveadminForm.get('remainingleaves').invalid && editLeaveadminForm.get('remainingleaves').touched"
+                                 formControlName="remainingleaves">
                           <div
-                            *ngIf="editLeaveadminForm.get('remaingleaves').invalid && editLeaveadminForm.get('remaingleaves').touched">
+                            *ngIf="editLeaveadminForm.get('remainingleaves').invalid && editLeaveadminForm.get('remainingleaves').touched">
                             <small
-                              *ngIf="editLeaveadminForm.get('remaingleaves').invalid && editLeaveadminForm.get('remaingleaves').touched"
+                              *ngIf="editLeaveadminForm.get('remainingleaves').invalid && editLeaveadminForm.get('remainingleaves').touched"
                               class="text-danger"> *Remaining Leaves is required</small>
                           </div>
                         </div>

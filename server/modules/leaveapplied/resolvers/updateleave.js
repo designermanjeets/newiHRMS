@@ -13,11 +13,10 @@ const updateLeave = (_, {
   status,
   approver,
   reason,
-  created_at,
-  created_by,
   from,
   to,
-  remainingleaves
+  remainingleaves,
+  modified
 },{me,secret}) => new Promise(async (resolve, reject) => {
   let params = {
     user_ID,
@@ -32,12 +31,13 @@ const updateLeave = (_, {
     reason,
     from,
     to,
-    remainingleaves
+    remainingleaves,
+    modified
   }
-  console.log(params)
   const user = await User.findOne(
       { $and: [ {_id: user_ID }, { 'leaveApplied._id': id} ] },
     )
+
   if (!user) reject (new Error('No User Leave Found!'))
   if (user) {
     if (user.leaveApplied) {
@@ -45,6 +45,7 @@ const updateLeave = (_, {
       let remn = 0;
 
       user.leaveApplied.forEach(va => {
+
         if(va._id.toHexString() === id) {
           va.reason = params.reason;
           va.from = params.from;
@@ -73,24 +74,48 @@ const updateLeave = (_, {
           });
 
           user.save();
+
         }
       });
 
-        const modified = {
-          user_ID: user._id,
-          action: 'User Applied Leave',
-          created_by: created_by,
-          created_at: created_at,
-          createdLeave: params
+
+
+      // Loop for All
+
+      let changeFields = {};
+      user.leaveApplied.forEach(va => {
+        if(va.leave_ID === params.leave_ID) {
+          for ( let item in params) {
+            if(params[item] && params[item] !== va[item]) {
+              changeFields[item] = params[item];
+              if(item === 'date') {
+                if(JSON.stringify(params[item]) !== JSON.stringify(va[item])) {
+                  changeFields[item] = params[item];
+                } else {
+                  delete changeFields['date']
+                }
+              }
+            }
+          }
+        }
+      });
+
+        const modifiedObj = {
+          leave_ID: id,
+          action: 'User Leave Updated',
+          modified_by: modified[0].modified_by,
+          modified_at: modified[0].modified_at,
+          changedObj: changeFields,
+          oldLeave: params
         }
         Audit.find({}).then(val => {
           if(val.length) {
             Audit.findOneAndUpdate(
               { },
-              { $push: { leaveAppliedAudit: modified  }  }, { new: true })
+              { $push: { leaveAppliedAudit: modifiedObj  }  }, { new: true })
               .then(res=> resolve(res));
           } else {
-            Audit.create({ leaveAppliedAudit: modified }, { new: true })
+            Audit.create({ leaveAppliedAudit: modifiedObj }, { new: true })
               .then(res=> resolve(res));
           }
       });

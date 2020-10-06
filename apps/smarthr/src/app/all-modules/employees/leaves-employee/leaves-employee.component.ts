@@ -5,7 +5,14 @@ import { ToastrService } from 'ngx-toastr';
 import { DatePipe } from '@angular/common';
 import { Apollo } from 'apollo-angular';
 import { ColumnMode, SelectionType } from '@swimlane/ngx-datatable';
-import { DeleteLeaveGQL, GET_USER_QUERY, GET_USERLEAVES_QUERY, RegisterLeaveGQL, UpdateLeaveGQL } from './leave-emp-gql.service';
+import {
+  ApproveORejectLeaveGQL,
+  DeleteLeaveGQL,
+  GET_USER_QUERY,
+  GET_USERLEAVES_QUERY,
+  RegisterLeaveGQL,
+  UpdateLeaveGQL
+} from './leave-emp-gql.service';
 import * as _ from 'lodash';
 import * as moment from 'moment';
 import { GET_LEAVETYPES_QUERY } from '../leave-settings/leavesettingql.service';
@@ -46,6 +53,7 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
   allLeaveApplied: any;
   checkPendingLeaveForUser: any;
   remainTemp: any;
+  tempLv: any;
   nofSub: Subscription;
 
   constructor(
@@ -56,6 +64,7 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
     private registerLeaveGQL: RegisterLeaveGQL,
     private updateLeaveGQL: UpdateLeaveGQL,
     private deleteLeaveGQL: DeleteLeaveGQL,
+    private approveorejectLeave: ApproveORejectLeaveGQL,
     private cdRef: ChangeDetectorRef
   ) {}
 
@@ -72,7 +81,15 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
       nofdays: ['', [Validators.required]],
       remainingleaves: ['', [Validators.required]],
       reason: ['', [Validators.required]],
-    });
+    }); // ,{ validator: this.checkLeaveDays }
+    this.calcRemainingOnFly();
+  }
+
+  checkLeaveDays(group: FormGroup) {
+    const fromCtrl = group.controls.from.value;
+    const toCtrl = group.controls.to.value;
+
+    return fromCtrl <= toCtrl ? null : { notSame: true };
   }
 
   calcRemainingOnFly() { // Not in Use currently
@@ -84,11 +101,11 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
         pairwise() // gets a pair of old and new value
       )
       .subscribe(([oldValue, newValue]) => {
-        if (newValue && newValue >= Number(this.remainTemp)) {
-          // this.editLeaveadminForm.get('nofdays').patchValue(this.remainTemp);
-          reminCtr.patchValue(this.remainTemp);
+        if (newValue >= Number(this.remainTemp)) {
+          this.editLeaveadminForm.get('nofdays').patchValue(this.remainTemp);
+          // reminCtr.patchValue(this.remainTemp);
         } else {
-          reminCtr.patchValue(this.remainTemp - newValue);
+          // reminCtr.patchValue(this.remainTemp - newValue);
         }
       });
   }
@@ -236,8 +253,10 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
         reason: f.value.reason,
         from: f.value.from,
         to: f.value.to,
-        created_at: Date.now(),
-        created_by: JSON.parse(sessionStorage.getItem('user')).username
+        modified: {
+          modified_at: Date.now(),
+          modified_by: JSON.parse(sessionStorage.getItem('user')).username
+        }
       })
       .subscribe( (val: any) => {
         if (val.data) {
@@ -278,18 +297,90 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
 
   edit(id) {
     this.isEdit = true;
-    this.remainTemp = null;
     this.tempEditUserID = null;
     this.editLeaveadminForm.reset();
-    let l = this.allLeaveApplied.find((item) => item._id === id);
+    const l = this.allLeaveApplied.find((item) => item._id === id);
     console.log(l);
     this.tempEditUserID = l.user_ID;
     this.editLeaveadminForm.patchValue(l);
     this.editLeaveadminForm.get('leavetype').patchValue(l.leave_ID);
     this.editLeaveadminForm.get('leavetype').disable();
+    console.log(this.editLeaveadminForm)
+    this.cdRef.detectChanges();
 
     // On Load get the Select Assigned Leave Type
     this.getUserPendingLeaves(l); // For Edit Only
+
+  }
+
+  apprRejctedit(lv) {
+    this.tempLv = lv;
+    console.log(lv);
+  }
+
+  approveleave(status) {
+
+    this.approveorejectLeave
+      .mutate({
+        id: this.tempLv._id,
+        user_ID: JSON.parse(sessionStorage.getItem('user')).userid,
+        leavetype: this.tempLv.leavetype,
+        leave_ID: this.tempLv.leave_ID,
+        nofdays: this.tempLv.nofdays,
+        status: status,
+        approvedBy: {
+          approvedByID: JSON.parse(sessionStorage.getItem('user')).userid,
+          approvedByUserName: JSON.parse(sessionStorage.getItem('user')).username
+        },
+        modified: {
+          modified_at: Date.now(),
+          modified_by: JSON.parse(sessionStorage.getItem('user')).username
+        }
+      })
+      .subscribe( (val: any) => {
+        if (val.data) {
+          this.tempLv = null;
+          console.log(val.data);
+          // this.editLeaveadminForm.reset();
+          // $('#edit_leave').modal('hide');
+          // this.toastr.success('Leave Updated sucessfully...!', 'Success');
+          // this.loadallLeaveApplied();
+          // this.cdRef.detectChanges();
+        }
+      }, error => this.toastr.error(error, 'Error'));
+
+  }
+
+  rejectleave(status) {
+
+    this.approveorejectLeave
+      .mutate({
+        id: this.tempLv._id,
+        user_ID: JSON.parse(sessionStorage.getItem('user')).userid,
+        leavetype: this.tempLv.leavetype,
+        leave_ID: this.tempLv.leave_ID,
+        nofdays: this.tempLv.nofdays,
+        status: status,
+        rejectedBy: {
+          rejectedByID: JSON.parse(sessionStorage.getItem('user')).userid,
+          rejectedByUserName: JSON.parse(sessionStorage.getItem('user')).username
+        },
+        modified: {
+          modified_at: Date.now(),
+          modified_by: JSON.parse(sessionStorage.getItem('user')).username
+        }
+      })
+      .subscribe( (val: any) => {
+        if (val.data) {
+          this.tempLv = null;
+          console.log(val.data);
+          // this.editLeaveadminForm.reset();
+          // $('#edit_leave').modal('hide');
+          // this.toastr.success('Leave Updated sucessfully...!', 'Success');
+          // this.loadallLeaveApplied();
+          // this.cdRef.detectChanges();
+        }
+      }, error => this.toastr.error(error, 'Error'));
 
   }
 

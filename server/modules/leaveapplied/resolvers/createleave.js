@@ -77,7 +77,7 @@ const createLeave = (_, {
       });
 
       const modified = {
-        user_ID: user._id,
+        leave_ID: leave_ID,
         action: 'User Applied Leave',
         created_by: created_by,
         created_at: created_at,

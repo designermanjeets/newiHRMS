@@ -55,6 +55,7 @@ export class RegisterLeaveGQL extends Mutation {
   `;
 }
 
+
 @Injectable({
   providedIn: 'root',
 })
@@ -73,7 +74,6 @@ export class UpdateLeaveGQL extends Mutation {
       $nofdays: Int
       $remainingleaves: Int
       $reason: String
-      $modified: [modifiedInputs]
     ) {
       updateLeave(
         id: $id
@@ -88,7 +88,6 @@ export class UpdateLeaveGQL extends Mutation {
         nofdays: $nofdays
         remainingleaves: $remainingleaves
         reason: $reason
-        modified: $modified
       ) {
           user_ID
           username
@@ -101,52 +100,6 @@ export class UpdateLeaveGQL extends Mutation {
           nofdays
           remainingleaves
           reason
-      }
-    }
-  `;
-}
-
-@Injectable({
-  providedIn: 'root',
-})
-export class ApproveORejectLeaveGQL extends Mutation {
-  document = gql`
-    mutation approveorejectLeave (
-      $id: ID!
-      $user_ID: String!
-      $leavetype: String
-      $leave_ID: String
-      $status: String
-      $nofdays: Int
-      $approvers: [approversInput]
-      $approvedBy: approvedByInput
-      $rejectedBy: rejectedByInput
-      $modified: [modifiedInputs]
-    ) {
-      approveorejectLeave(
-        id: $id
-        user_ID: $user_ID
-        leavetype: $leavetype
-        leave_ID: $leave_ID
-        nofdays: $nofdays
-        status: $status
-        approvers: $approvers
-        approvedBy: $approvedBy
-        rejectedBy: $rejectedBy
-        modified: $modified
-      ) {
-        _id
-        leavetype
-        leave_ID
-        status
-        approvedBy {
-          approvedByID
-          approvedByUserName
-        }
-        rejectedBy {
-          rejectedByID
-          rejectedByUserName
-        }
       }
     }
   `;
@@ -193,10 +146,7 @@ export const GET_USERLEAVES_QUERY = gql`
         remainingleaves
         reason
         status
-        approvers {
-          approverID
-          approverUserName
-        }
+        approver
       }
   }
 `;

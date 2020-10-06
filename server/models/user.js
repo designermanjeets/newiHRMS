@@ -22,7 +22,20 @@ const leaveAppliedSchema = mongoose.Schema({
   leave_ID: String,
   nofdays: Number,
   status: String,
-  approver: String,
+  approvers: [
+    {
+      approverID: String,
+      approverUserName: String
+    }
+  ],
+  approvedBy: {
+    approvedByID: String,
+    approvedByUserName: String
+  },
+  rejectedBy: {
+    rejectedByID: String,
+    rejectedByUserName: String
+  },
   reason: String,
   created_at: Date,
   created_by:String,

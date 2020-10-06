@@ -90,7 +90,9 @@
                 </ngx-datatable-column>
                 <ngx-datatable-column name="Status" prop="status">
                   <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
-                    <a class="btn btn-block btn-white btn-sm btn-rounded">{{value}}</a>
+                    <a class="btn btn-block btn-white btn-sm btn-rounded"
+                       data-toggle="modal"
+                       data-target="#approverejectmodal" (click)="apprRejctedit(row)">{{value}}</a>
                   </ng-template>
                 </ngx-datatable-column>
                 <ngx-datatable-column name="Approved by" prop="approver">
@@ -166,7 +168,8 @@
                           </div>
                         </div>
                         <div class="col-6">
-                          <div class="form-group pos-rel">
+                          <div class="form-group pos-rel"
+                               [class.has-error]="editLeaveadminForm.hasError('notSame')">
                             <label>To <span class="text-danger">*</span></label>
                             <input class="form-control datecolor"
                                    [matDatepicker]="picker4"
@@ -179,6 +182,9 @@
                                 *ngIf="editLeaveadminForm.get('to').invalid && editLeaveadminForm.get('to').touched"
                                 class="text-danger"> *To is required</small>
                             </div>
+                            <small class="help-block" *ngIf="editLeaveadminForm.hasError('notSame')">
+                                To date should be greater than or equal to from date
+                            </small>
                           </div>
                         </div>
                       </div>
@@ -229,7 +235,7 @@
                         </div>
                     </div>
                     <div class="submit-section">
-                        <button class="btn btn-primary submit-btn" type="submit">Submit</button>
+                        <button class="btn btn-primary submit-btn" type="submit" [disabled]="editLeaveadminForm.invalid">Submit</button>
                     </div>
                 </form>
             </div>
@@ -285,7 +291,8 @@
                         </div>
                       </div>
                       <div class="col-6">
-                        <div class="form-group pos-rel">
+                        <div class="form-group pos-rel"
+                             [class.has-error]="editLeaveadminForm.hasError('notSame')">
                           <label>To <span class="text-danger">*</span></label>
                           <input class="form-control datecolor"
                                  [matDatepicker]="picker2"
@@ -298,6 +305,9 @@
                               *ngIf="editLeaveadminForm.get('to').invalid && editLeaveadminForm.get('to').touched"
                               class="text-danger"> *To is required</small>
                           </div>
+                          <small class="help-block" *ngIf="editLeaveadminForm.hasError('notSame')">
+                                To date should be greater than or equal to from date
+                          </small>
                         </div>
                       </div>
                     </div>
@@ -348,7 +358,7 @@
                     </div>
                   </div>
                   <div class="submit-section">
-                    <button class="btn btn-primary submit-btn" type="submit">Submit</button>
+                    <button class="btn btn-primary submit-btn" type="submit" [disabled]="editLeaveadminForm.invalid">Submit</button>
                   </div>
                 </form>
             </div>
@@ -383,3 +393,31 @@
     </div>
 </div>
 <!-- /Delete Leave Modal -->
+
+
+<!-- Approve/Reject Modal -->
+<div class="modal custom-modal fade" id="approverejectmodal" role="dialog">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="form-header">
+          <h3>Update Status</h3>
+          <p>Approve or Reject the Leave.</p>
+        </div>
+        <div class="modal-btn delete-action">
+          <div class="row">
+            <div class="col-6">
+              <a  class="btn btn-primary continue-btn"
+                  (click)="approveleave('approved')">Approve</a>
+            </div>
+            <div class="col-6">
+              <a class="btn btn-primary cancel-btn"
+                 (click)="rejectleave('rejected')">Reject</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /Approve/Reject Modal -->

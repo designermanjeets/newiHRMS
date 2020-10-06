@@ -19,12 +19,12 @@ const typeDefs = gql`
       leave_ID: String,
       nofdays: Int,
       status: String,
-      approver: String,
       reason: String,
       created_at: ISODate,
       created_by:String,
       from: ISODate,
       to: ISODate,
+      approvers: [approversInput],
       remainingleaves: Int
     ): LeaveApplied,
 
@@ -38,13 +38,29 @@ const typeDefs = gql`
       leave_ID: String
       nofdays: Int
       status: String
-      approver: String
       reason: String
       created_at: ISODate
       created_by:String
       from: ISODate
       to: ISODate
       remainingleaves: Int
+      approvers: [approversInput]
+      approvedBy: approvedByInput
+      rejectedBy: rejectedByInput
+      modified: [modifiedInputs]
+    ): LeaveApplied,
+
+    approveorejectLeave(
+      id: ID!
+      user_ID: String!
+      leavetype: String
+      leave_ID: String
+      nofdays: Int
+      status: String
+      approvers: [approversInput]
+      approvedBy: approvedByInput
+      rejectedBy: rejectedByInput
+      modified: [modifiedInputs]
     ): LeaveApplied
 
     deleteLeave( id: ID!, user_ID: String!, modified: [modifiedInputs] ): LeaveApplied
@@ -60,13 +76,46 @@ const typeDefs = gql`
     leave_ID: String
     nofdays: Int
     status: String
-    approver: String
     reason: String
     created_at: ISODate
     created_by:String
     from: ISODate
     to: ISODate
     remainingleaves: Int
+    approvers: [approversType]
+    approvedBy: approvedByType
+    rejectedBy: rejectedByType
+    modified: [modifiedTypes],
+  }
+
+  input approversInput {
+      approverID: String,
+      approverUserName: String
+  }
+
+  input approvedByInput {
+      approvedByID: String,
+      approvedByUserName: String
+  }
+
+  input rejectedByInput {
+      rejectedByID: String,
+      rejectedByUserName: String
+  }
+
+  type approversType {
+      approverID: String,
+      approverUserName: String
+  }
+
+  type approvedByType {
+      approvedByID: String,
+      approvedByUserName: String
+  }
+
+  type rejectedByType {
+      rejectedByID: String,
+      rejectedByUserName: String
   }
 `
 

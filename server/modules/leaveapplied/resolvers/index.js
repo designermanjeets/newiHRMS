@@ -11,7 +11,7 @@ const resolvers = {
   Mutation: {
     createLeave,
     updateLeave,
-    // deleteLeave
+    deleteLeave
   }
 }
 

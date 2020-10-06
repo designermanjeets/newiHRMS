@@ -105,6 +105,27 @@ export class UpdateLeaveGQL extends Mutation {
   `;
 }
 
+@Injectable({
+  providedIn: 'root',
+})
+export class DeleteLeaveGQL extends Mutation {
+  document = gql`
+    mutation deleteLeave(
+      $id: ID!,
+      $user_ID: String!
+      $modified: [modifiedInputs]
+    ) {
+      deleteLeave(
+        id: $id,
+        user_ID: $user_ID
+        modified: $modified
+      ) {
+        _id
+      }
+    }
+  `;
+}
+
 export const GET_USERLEAVES_QUERY = gql`
    query getUserLeaves(
       $pagination: Pagination!

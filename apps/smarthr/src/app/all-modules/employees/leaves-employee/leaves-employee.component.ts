@@ -5,7 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { DatePipe } from '@angular/common';
 import { Apollo } from 'apollo-angular';
 import { ColumnMode, SelectionType } from '@swimlane/ngx-datatable';
-import { GET_USER_QUERY, GET_USERLEAVES_QUERY, RegisterLeaveGQL, UpdateLeaveGQL } from './leave-emp-gql.service';
+import { DeleteLeaveGQL, GET_USER_QUERY, GET_USERLEAVES_QUERY, RegisterLeaveGQL, UpdateLeaveGQL } from './leave-emp-gql.service';
 import * as _ from 'lodash';
 import * as moment from 'moment';
 import { GET_LEAVETYPES_QUERY } from '../leave-settings/leavesettingql.service';
@@ -55,6 +55,7 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
     private apollo: Apollo,
     private registerLeaveGQL: RegisterLeaveGQL,
     private updateLeaveGQL: UpdateLeaveGQL,
+    private deleteLeaveGQL: DeleteLeaveGQL,
     private cdRef: ChangeDetectorRef
   ) {}
 
@@ -251,8 +252,26 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
 
   // Delete leaves Modal Api Call
 
-  deleteleaves() {
-    //
+  deleteleave() {
+
+    this.deleteLeaveGQL
+      .mutate({
+        id: this.tempId,
+        user_ID: JSON.parse(sessionStorage.getItem('user')).userid,
+        modified: {
+          modified_by: JSON.parse(sessionStorage.getItem('user')).username,
+          modified_at: Date.now()
+        }
+      })
+      .subscribe( (val: any) => {
+          if (val.data.deleteLeave) {
+            $('#delete_approve').modal('hide');
+            this.toastr.success('Leave deleted', 'Success');
+            this.loadallLeaveApplied();
+          }
+        }, error =>
+          this.toastr.error(error, 'Error')
+      );
   }
 
   // To Get The leaves Edit Id And Set Values To Edit Modal Form

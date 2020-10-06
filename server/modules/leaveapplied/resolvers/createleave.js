@@ -56,6 +56,8 @@ const createLeave = (_, {
     if (!found) {
       user.leaveApplied.push(params);
 
+      let remn = 0;
+
       // Below Update User Leaves
       user.designation.leavetype.forEach(val => {
         if (val.leave_ID === params.leave_ID) {
@@ -64,7 +66,14 @@ const createLeave = (_, {
           } else {
             val.remainingleaves = val.remainingleaves - params.nofdays;
           }
+          remn = val.remainingleaves;
         }
+
+        user.leaveApplied.forEach(va => {
+          if(va.leave_ID === leave_ID) {
+            va.remainingleaves = remn;
+          }
+        });
       });
 
       const modified = {

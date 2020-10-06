@@ -34,6 +34,7 @@ const updateLeave = (_, {
     to,
     remainingleaves
   }
+  console.log(params)
   const user = await User.findOne(
       { $and: [ {_id: user_ID }, { 'leaveApplied._id': id} ] },
     )
@@ -41,17 +42,36 @@ const updateLeave = (_, {
   if (user) {
     if (user.leaveApplied) {
 
+      let remn = 0;
+
       user.leaveApplied.forEach(va => {
         if(va._id.toHexString() === id) {
-          va.nofdays = params.nofdays;
           va.reason = params.reason;
           va.from = params.from;
           va.to = params.to;
-          va.remainingleaves = params.remainingleaves;
-          user.save();
-        }
-        if(va.leave_ID === leave_ID) {
-          va.remainingleaves = params.remainingleaves;
+
+          if(va.nofdays < params.nofdays) {
+            va.remainingleaves = (va.remainingleaves - (params.nofdays - va.nofdays))
+          } else {
+            va.remainingleaves = (va.remainingleaves + ( va.nofdays - params.nofdays))
+          }
+          va.nofdays = params.nofdays;
+          remn = va.remainingleaves;
+
+          // Update Designation Remaining Leaves
+          user.designation.leavetype.forEach(va => {
+            if(va.leave_ID === params.leave_ID) {
+              va.remainingleaves = remn;
+            }
+          });
+
+          // Loop for All
+          user.leaveApplied.forEach(va => {
+            if(va.leave_ID === params.leave_ID) {
+              va.remainingleaves = remn;
+            }
+          });
+
           user.save();
         }
       });

@@ -27,7 +27,8 @@ const leaveAppliedSchema = mongoose.Schema({
   created_at: Date,
   created_by:String,
   from: Date,
-  to: Date
+  to: Date,
+  remainingleaves: Number
 }, { strict: false});
 
 const designationSchema = new Schema({

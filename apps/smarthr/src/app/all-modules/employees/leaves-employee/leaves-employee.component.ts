@@ -138,24 +138,24 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
     this.isEdit = false;
     this.editLeaveadminForm.reset();
     this.tempEditUserID = JSON.parse(sessionStorage.getItem('user')).userid;
-    this.getUserPendingLeaves();
     this.editLeaveadminForm.get('leavetype').enable();
+    this.getUserPendingLeaves();
   }
 
   onltypechange(value) {
-    console.log(value);
     this.calculatePendingLeaves(value.value); // Select Option - LeaveID
   }
 
   calculatePendingLeaves(leaveID) { // In case of Loop Through
-    const f = _.filter(this.checkPendingLeaveForUser, v => v.leave_ID === leaveID);
-    console.log(f[0]); // Get User's Designation's Assigned Leave Type :: CL, PL ETC
-    this.editLeaveadminForm.get('remainingleaves').patchValue(f[0].remainingleaves);
-    this.remainTemp = JSON.parse(JSON.stringify(f[0].remainingleaves));
-    console.log(this.remainTemp);
+    if (this.checkPendingLeaveForUser) {
+      const f = _.filter(this.checkPendingLeaveForUser, v => v.leave_ID === leaveID);
+      console.log(f[0]); // Get User's Designation's Assigned Leave Type :: CL, PL ETC
+      this.editLeaveadminForm.get('remainingleaves').patchValue(f[0].remainingleaves);
+      this.remainTemp = JSON.parse(JSON.stringify(f[0].remainingleaves));
+    }
   }
 
-  getUserPendingLeaves() {
+  getUserPendingLeaves(l?) { // Para for Edit Only
     this.apollo.watchQuery({
       query: GET_USER_QUERY,
       variables: {
@@ -171,7 +171,7 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
             vl.remainingleaves = vl.leavedays;
           }
         });
-        console.log(this.checkPendingLeaveForUser);
+        (this.isEdit && l) && this.onltypechange({value: l.leave_ID}); // Only After Response
         this.cdRef.detectChanges();
       }
     }, error => this.toastr.error(error, 'Error'));
@@ -200,6 +200,7 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
       })
       .subscribe( (val: any) => {
         if (val.data) {
+          this.editLeaveadminForm.reset();
           $('#add_leave').modal('hide');
           this.toastr.success('Leave Applied added sucessfully...!', 'Success');
           this.loadallLeaveApplied();
@@ -228,7 +229,7 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
         email: JSON.parse(sessionStorage.getItem('user')).email,
         emmpid: JSON.parse(sessionStorage.getItem('user')).emmpid,
         leavetype: lv[0].leavetype,
-        leave_ID: lv[0]._id,
+        leave_ID: lv[0].leave_ID,
         nofdays: f.value.nofdays,
         remainingleaves: f.value.remainingleaves,
         reason: f.value.reason,
@@ -239,6 +240,7 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
       })
       .subscribe( (val: any) => {
         if (val.data) {
+          this.editLeaveadminForm.reset();
           $('#edit_leave').modal('hide');
           this.toastr.success('Leave Updated sucessfully...!', 'Success');
           this.loadallLeaveApplied();
@@ -268,8 +270,7 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
     this.editLeaveadminForm.get('leavetype').disable();
 
     // On Load get the Select Assigned Leave Type
-    this.getUserPendingLeaves();
-    this.onltypechange({value: l.leave_ID});
+    this.getUserPendingLeaves(l); // For Edit Only
 
   }
 

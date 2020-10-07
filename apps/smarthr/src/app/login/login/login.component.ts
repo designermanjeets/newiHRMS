@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { LoginGQL, RegisterGQL } from '../login.service';
 import { Router} from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-login',
@@ -19,7 +20,8 @@ export class LoginComponent implements OnInit {
     private registerGQL: RegisterGQL,
     private loginGQL: LoginGQL,
     private router: Router,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private toastr: ToastrService
   ) {
     if (sessionStorage.getItem('resetpwd')) {
       this.ispwdreset = true;
@@ -59,20 +61,19 @@ export class LoginComponent implements OnInit {
           this.isloggedin = true;
           this.router.navigateByUrl('/dashboard');
         }
-      }, error => this.isloggedin = false);
+      }, error => {
+        this.toastr.error(error, 'Error', { timeOut: 3000 });
+      });
   }
 
   login() {
-    console.log(this.loginForm.value);
     this.loginGQL
       .mutate({
         email: this.loginForm.value.email,
         password: this.loginForm.value.password
       })
       .subscribe( (val: any) => {
-        console.log(val);
         if (val.data.login.user) {
-          this.isloggedin = true;
           sessionStorage.setItem('JWT_TOKEN', val.data.login.token);
           sessionStorage.setItem('user', JSON.stringify({
             email: val.data.login.user.email,
@@ -82,9 +83,12 @@ export class LoginComponent implements OnInit {
             emmpid: val.data.login.user.emmpid,
             corporateid: val.data.login.user.corporateid
           }));
-          this.router.navigateByUrl('/dashboard');
+          this.toastr.success('Login Success', 'Success', { timeOut: 3000 });
+          setTimeout(_ => this.router.navigateByUrl('/dashboard'), 2000);
         }
-      }, error => this.isloggedin = true);
+      }, error => {
+        this.toastr.error(error, 'Error', { timeOut: 3000 });
+      });
   }
 
 }

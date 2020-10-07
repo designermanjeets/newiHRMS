@@ -415,7 +415,8 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
 
   // delete employee data api call
   deleteEmployee() {
-    this.deleteUserGQL
+    if (this.deleteparams.email) {
+      this.deleteUserGQL
         .mutate({
           email: this.deleteparams.email,
           modified: {
@@ -430,6 +431,9 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
             this.getUsers();
           }
         }, error => this.toastr.error(error, 'Error'));
+    } else {
+      this.toastr.error('Email ID Invalid', 'Error');
+    }
   }
 
   onImportgetData(rowData) {
@@ -479,6 +483,7 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
         }
       }, error => {
         this.toastr.error(error, 'Error', { timeOut: 5000 });
+        setTimeout(_ => this.getUsers(), 100);
       });
   }
 
@@ -557,17 +562,18 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
 
   // Manual Upload In case you need it
   startUpload() {
-    console.log(this.files[0].nativeFile);
+    // console.log(this.files[0].nativeFile);
     this.uploadFileGQL
       .mutate({
         file: this.files[0].nativeFile
       })
       .subscribe( (val: any) => {
         if (val.data.uploadFile) {
-          console.log(val.data.uploadFile);
           this.onImportgetData(val.data.uploadFile);
         }
-      }, error => console.log(error));
+      }, error => {
+        console.log(error);
+      });
 
   }
 

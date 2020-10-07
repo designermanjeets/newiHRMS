@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Event, NavigationStart } from '@angular/router'
+import { ToastrService } from 'ngx-toastr';
+import { timeout } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -12,10 +14,18 @@ export class AppComponent implements OnInit {
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
+    private toastr: ToastrService,
   ) {
 
     if (!sessionStorage.getItem(('JWT_TOKEN'))) {
       this.router.navigateByUrl('./pages/login');
+    }
+    if (sessionStorage.getItem(('JWT_TOKEN')) && sessionStorage.getItem('sessionExpire')) {
+      this.toastr.error('Your Session Expired, please login again.', 'Error');
+      setTimeout(_ => {
+        sessionStorage.removeItem('sessionExpire');
+        this.router.navigateByUrl('./pages/login');
+      }, 2000);
     }
   }
 

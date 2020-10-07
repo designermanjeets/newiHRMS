@@ -6,9 +6,28 @@ import { onError } from 'apollo-link-error';
 import { ApolloLink } from 'apollo-link';
 import { setContext } from 'apollo-link-context';
 import { createUploadLink } from 'apollo-upload-client';
+import { AppsServiceService } from './all-modules/apps/apps-service.service';
 
 const uri = 'http://localhost:5000/graphql'; // <-- add the URL of the GraphQL server here
-const uploadLink = createUploadLink({ uri: uri });
+const uploadLink = createUploadLink({ uri });
+
+const link = onError(({ graphQLErrors, networkError }) => {
+  if (graphQLErrors) {
+    graphQLErrors.map(({ message, locations, path }) => {
+      // Here you may display a message to indicate graphql error
+      // You may use 'sweetalert', 'ngx-toastr' or any of your preference
+      console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`);
+      if (message === 'JWT_EXPIRED') {
+        sessionStorage.setItem('sessionExpire', `${message}`);
+      }
+    });
+  }
+  if (networkError) {
+    // Here you may display a message to indicate network error
+    console.log(`[Network error]: ${networkError}`);
+  }
+});
+
 
 const authLink = setContext((_, { headers }) => {
   const token = sessionStorage.getItem('JWT_TOKEN');
@@ -17,12 +36,12 @@ const authLink = setContext((_, { headers }) => {
       ...headers,
       authorization: token ? `Bearer ${token}` : '',
     }
-  }
+  };
 });
 
 export function createApollo(httpLink: HttpLink) {
   return {
-    link: ApolloLink.from([ authLink, uploadLink ]),
+    link: ApolloLink.from([ link, authLink, uploadLink ]),
     cache: new InMemoryCache(),
     defaultOptions: {
       watchQuery: {
@@ -42,4 +61,5 @@ export function createApollo(httpLink: HttpLink) {
     },
   ],
 })
-export class GraphQLModule {}
+export class GraphQLModule {
+}

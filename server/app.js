@@ -30,7 +30,7 @@ const Authorization = async req => {
       return await jwt.verify(token, config.JWT_SECRET);//
     } catch (e) {
       throw new AuthenticationError(
-        'Your session expired. Sign in again.',
+        'JWT_EXPIRED',
       );
     }
   }

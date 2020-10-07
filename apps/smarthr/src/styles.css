@@ -8271,6 +8271,7 @@ ul.comment-list li ul.children {
   text-align: left;
   vertical-align: top;
   text-align: center;
+  /*position: relative;*/
 }
 .ngx-datatable.bootstrap .datatable-footer {
   background: #424242;

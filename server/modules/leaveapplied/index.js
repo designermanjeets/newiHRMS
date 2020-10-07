@@ -63,7 +63,7 @@ const typeDefs = gql`
       modified: [modifiedInputs]
     ): LeaveApplied
 
-    deleteLeave( id: ID!, user_ID: String!, modified: [modifiedInputs] ): LeaveApplied
+    deleteLeave( id: ID!, status: String!, user_ID: String!, modified: [modifiedInputs] ): LeaveApplied
   }
 
   type LeaveApplied{

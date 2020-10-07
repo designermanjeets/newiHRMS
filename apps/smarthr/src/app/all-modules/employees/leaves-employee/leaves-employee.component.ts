@@ -112,7 +112,7 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
 
   getRowClass = (row) => {
     return {
-      'row-danger': row.status === 'pending',
+      'row-danger': row.status === 'rejected',
       'row-success': row.status === 'approved',
     };
   }
@@ -272,25 +272,29 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
   // Delete leaves Modal Api Call
 
   deleteleave() {
-
-    this.deleteLeaveGQL
-      .mutate({
-        id: this.tempId,
-        user_ID: JSON.parse(sessionStorage.getItem('user')).userid,
-        modified: {
-          modified_by: JSON.parse(sessionStorage.getItem('user')).username,
-          modified_at: Date.now()
-        }
-      })
-      .subscribe( (val: any) => {
-          if (val.data.deleteLeave) {
-            $('#delete_approve').modal('hide');
-            this.toastr.success('Leave deleted', 'Success');
-            this.loadallLeaveApplied();
+    if (this.tempId.status === 'pending') {
+      this.deleteLeaveGQL
+        .mutate({
+          id: this.tempId._id,
+          status: this.tempId.status,
+          user_ID: JSON.parse(sessionStorage.getItem('user')).userid,
+          modified: {
+            modified_by: JSON.parse(sessionStorage.getItem('user')).username,
+            modified_at: Date.now()
           }
-        }, error =>
-          this.toastr.error(error, 'Error')
-      );
+        })
+        .subscribe((val: any) => {
+            if (val.data.deleteLeave) {
+              $('#delete_approve').modal('hide');
+              this.toastr.success('Leave deleted', 'Success');
+              this.loadallLeaveApplied();
+            }
+          }, error =>
+            this.toastr.error(error, 'Error')
+        );
+    } else {
+      $('#delete_approve').modal('hide');
+    }
   }
 
   // To Get The leaves Edit Id And Set Values To Edit Modal Form
@@ -305,7 +309,6 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
     this.editLeaveadminForm.patchValue(l);
     this.editLeaveadminForm.get('leavetype').patchValue(l.leave_ID);
     this.editLeaveadminForm.get('leavetype').disable();
-    console.log(this.editLeaveadminForm)
     this.cdRef.detectChanges();
 
     // On Load get the Select Assigned Leave Type
@@ -319,40 +322,43 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
   }
 
   approveleave(status) {
-
-    this.approveorejectLeave
-      .mutate({
-        id: this.tempLv._id,
-        user_ID: JSON.parse(sessionStorage.getItem('user')).userid,
-        leavetype: this.tempLv.leavetype,
-        leave_ID: this.tempLv.leave_ID,
-        nofdays: this.tempLv.nofdays,
-        status: status,
-        approvedBy: {
-          approvedByID: JSON.parse(sessionStorage.getItem('user')).userid,
-          approvedByUserName: JSON.parse(sessionStorage.getItem('user')).username
-        },
-        modified: {
-          modified_at: Date.now(),
-          modified_by: JSON.parse(sessionStorage.getItem('user')).username
-        }
-      })
-      .subscribe( (val: any) => {
-        if (val.data) {
-          this.tempLv = null;
-          console.log(val.data);
-          // this.editLeaveadminForm.reset();
-          // $('#edit_leave').modal('hide');
-          // this.toastr.success('Leave Updated sucessfully...!', 'Success');
-          // this.loadallLeaveApplied();
-          // this.cdRef.detectChanges();
-        }
-      }, error => this.toastr.error(error, 'Error'));
+    if (status === 'pending') {
+      this.approveorejectLeave
+        .mutate({
+          id: this.tempLv._id,
+          user_ID: JSON.parse(sessionStorage.getItem('user')).userid,
+          leavetype: this.tempLv.leavetype,
+          leave_ID: this.tempLv.leave_ID,
+          nofdays: this.tempLv.nofdays,
+          status: status,
+          approvedBy: {
+            approvedByID: JSON.parse(sessionStorage.getItem('user')).userid,
+            approvedByUserName: JSON.parse(sessionStorage.getItem('user')).username
+          },
+          modified: {
+            modified_at: Date.now(),
+            modified_by: JSON.parse(sessionStorage.getItem('user')).username
+          }
+        })
+        .subscribe( (val: any) => {
+          if (val.data) {
+            this.tempLv = null;
+            console.log(val.data);
+            this.editLeaveadminForm.reset();
+            $('#approverejectmodal').modal('hide');
+            this.toastr.success('Leave Updated sucessfully...!', 'Success');
+            this.loadallLeaveApplied();
+            this.cdRef.detectChanges();
+          }
+        }, error => this.toastr.error(error, 'Error'));
+    } else {
+      $('#approverejectmodal').modal('hide');
+    }
 
   }
 
   rejectleave(status) {
-
+    if (status === 'pending') {
     this.approveorejectLeave
       .mutate({
         id: this.tempLv._id,
@@ -374,14 +380,16 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
         if (val.data) {
           this.tempLv = null;
           console.log(val.data);
-          // this.editLeaveadminForm.reset();
-          // $('#edit_leave').modal('hide');
-          // this.toastr.success('Leave Updated sucessfully...!', 'Success');
-          // this.loadallLeaveApplied();
-          // this.cdRef.detectChanges();
+          this.editLeaveadminForm.reset();
+          $('#approverejectmodal').modal('hide');
+          this.toastr.success('Leave Updated sucessfully...!', 'Success');
+          this.loadallLeaveApplied();
+          this.cdRef.detectChanges();
         }
       }, error => this.toastr.error(error, 'Error'));
-
+    } else {
+      $('#approverejectmodal').modal('hide');
+    }
   }
 
   ngOnDestroy(): void {

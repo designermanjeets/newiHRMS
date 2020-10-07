@@ -4,7 +4,8 @@ const Audit = require('../../../models/Audit');
 const deleteLeave = (_, {
   id,
   user_ID,
-  modified
+  modified,
+  status
 },{me,secret}) => new Promise(async (resolve, reject) => {
   const user = await User.findOne(
     { $and: [ {_id: user_ID }, { 'leaveApplied._id': id} ] },
@@ -19,7 +20,12 @@ const deleteLeave = (_, {
       user.leaveApplied.forEach((va, index) => {
         if(va._id.toHexString() === id) {
           lprms = va;
-          remn = va.remainingleaves + va.nofdays;
+
+          if(status !== 'rejected') {
+            remn = va.remainingleaves + va.nofdays;
+          } else {
+            remn = va.remainingleaves
+          }
 
           // Update Designation Remaining Leaves
           user.designation.leavetype.forEach(va => {

@@ -41,6 +41,7 @@ const approveorejectLeave = (_, {
             if (!va.approvedBy) va.approvedBy = {};
             va.approvedBy.approvedByID =  params.approvedBy.approvedByID
             va.approvedBy.approvedByUserName =  params.approvedBy.approvedByUserName
+            va.status =  params.status
           }
           if(status === 'rejected' && params.rejectedBy && params.rejectedBy.rejectedByID) {
             // Rejected By Details
@@ -50,6 +51,7 @@ const approveorejectLeave = (_, {
 
             va.remainingleaves = va.remainingleaves + params.nofdays; // Increase because Rejected
             remn = va.remainingleaves;
+            va.status =  params.status
 
             // Update Designation Remaining Leaves
             user.designation.leavetype.forEach(va => {

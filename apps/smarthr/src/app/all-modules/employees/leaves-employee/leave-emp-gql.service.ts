@@ -160,11 +160,13 @@ export class DeleteLeaveGQL extends Mutation {
     mutation deleteLeave(
       $id: ID!,
       $user_ID: String!
+      $status: String!
       $modified: [modifiedInputs]
     ) {
       deleteLeave(
         id: $id,
         user_ID: $user_ID
+        status: $status
         modified: $modified
       ) {
         _id
@@ -196,6 +198,14 @@ export const GET_USERLEAVES_QUERY = gql`
         approvers {
           approverID
           approverUserName
+        }
+        approvedBy {
+          approvedByID
+          approvedByUserName
+        }
+        rejectedBy {
+          rejectedByID
+          rejectedByUserName
         }
       }
   }

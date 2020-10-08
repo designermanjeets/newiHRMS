@@ -18,9 +18,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { RoledetailsComponent } from './role/roledetails/roledetails.component';
 
 @NgModule({
-  declarations: [SettingsComponent, CompanySettingsComponent, LocalizationComponent, ThemeSettingsComponent, RoleComponent, EmailSettingsComponent, InvoiceSettingsComponent, SalarySettingsComponent, NotificationsComponent, ChangePasswordComponent, LeaveTypeComponent],
+  declarations: [SettingsComponent, CompanySettingsComponent, LocalizationComponent, ThemeSettingsComponent, RoleComponent, EmailSettingsComponent, InvoiceSettingsComponent, SalarySettingsComponent, NotificationsComponent, ChangePasswordComponent, LeaveTypeComponent, RoledetailsComponent],
   imports: [
     CommonModule,
     SettingsRoutingModule,

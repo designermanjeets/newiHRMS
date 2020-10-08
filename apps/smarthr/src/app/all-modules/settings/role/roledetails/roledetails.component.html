@@ -1,0 +1,197 @@
+<form class="m-b-30" [formGroup]="roledetailForm" (ngSubmit)="manageRole(roledetailForm)" novalidate>
+<div class="m-b-30">
+  {{roleID}}
+    <input type="hidden" formControlName="_id">
+  <ul class="list-group notification-list">
+    <li class="list-group-item">
+      Employee
+      <div class="status-toggle">
+        <input type="checkbox" id="staff_module" class="check" formControlName="mod_employee">
+        <label for="staff_module" class="checktoggle">checkbox</label>
+      </div>
+    </li>
+    <li class="list-group-item">
+      Holidays
+      <div class="status-toggle">
+        <input type="checkbox" id="holidays_module" class="check" formControlName="mod_holidays">
+        <label for="holidays_module" class="checktoggle">checkbox</label>
+      </div>
+    </li>
+    <li class="list-group-item">
+      Leaves
+      <div class="status-toggle">
+        <input type="checkbox" id="leave_module" class="check" formControlName="mod_leaves">
+        <label for="leave_module" class="checktoggle">checkbox</label>
+      </div>
+    </li>
+    <li class="list-group-item">
+      Events
+      <div class="status-toggle">
+        <input type="checkbox" id="events_module" class="check" formControlName="mod_events">
+        <label for="events_module" class="checktoggle">checkbox</label>
+      </div>
+    </li>
+    <li class="list-group-item">
+      Jobs
+      <div class="status-toggle">
+        <input type="checkbox" id="job_module" class="check" formControlName="mod_jobs">
+        <label for="job_module" class="checktoggle">checkbox</label>
+      </div>
+    </li>
+    <li class="list-group-item">
+      Assets
+      <div class="status-toggle">
+        <input type="checkbox" id="assets_module" class="check" formControlName="mod_assets">
+        <label for="assets_module" class="checktoggle">checkbox</label>
+      </div>
+    </li>
+  </ul>
+</div>
+  <div class="table-responsive m-t-15">
+    <table class="table table-striped custom-table">
+      <thead>
+      <tr>
+        <th>Module Permission</th>
+        <th class="text-center">Read</th>
+        <th class="text-center">Write</th>
+        <th class="text-center">Create</th>
+        <th class="text-center">Delete</th>
+        <th class="text-center">Import</th>
+        <th class="text-center">Export</th>
+      </tr>
+      </thead>
+      <tbody formArrayName="permissions">
+      <tr formGroupName="employees">
+        <td>Employees</td>
+        <td class="text-center">
+          <input formControlName="read" type="checkbox">
+        </td>
+        <td class="text-center">
+          <input formControlName="write" type="checkbox">
+        </td>
+        <td class="text-center">
+          <input formControlName="create" type="checkbox">
+        </td>
+        <td class="text-center">
+          <input formControlName="delete" type="checkbox">
+        </td>
+        <td class="text-center">
+          <input formControlName="import" type="checkbox">
+        </td>
+        <td class="text-center">
+          <input formControlName="export" type="checkbox">
+        </td>
+      </tr>
+      <tr formGroupName="holiday">
+        <td>Holidays</td>
+        <td class="text-center">
+          <input formControlName="read" type="checkbox">
+        </td>
+        <td class="text-center">
+          <input formControlName="write" type="checkbox">
+        </td>
+        <td class="text-center">
+          <input formControlName="create" type="checkbox">
+        </td>
+        <td class="text-center">
+          <input formControlName="delete" type="checkbox">
+        </td>
+        <td class="text-center">
+          <input formControlName="import" type="checkbox">
+        </td>
+        <td class="text-center">
+          <input formControlName="export" type="checkbox">
+        </td>
+      </tr>
+      <tr formGroupName="leave">
+        <td>Leaves</td>
+        <td class="text-center">
+          <input formControlName="read" type="checkbox">
+        </td>
+        <td class="text-center">
+          <input formControlName="write" type="checkbox">
+        </td>
+        <td class="text-center">
+          <input formControlName="create" type="checkbox">
+        </td>
+        <td class="text-center">
+          <input formControlName="delete" type="checkbox">
+        </td>
+        <td class="text-center">
+          <input formControlName="import" type="checkbox">
+        </td>
+        <td class="text-center">
+          <input formControlName="export" type="checkbox">
+        </td>
+      </tr>
+      <tr formGroupName="events">
+        <td>Events</td>
+        <td class="text-center">
+          <input formControlName="read" type="checkbox">
+        </td>
+        <td class="text-center">
+          <input formControlName="write" type="checkbox">
+        </td>
+        <td class="text-center">
+          <input formControlName="create" type="checkbox">
+        </td>
+        <td class="text-center">
+          <input formControlName="delete" type="checkbox">
+        </td>
+        <td class="text-center">
+          <input formControlName="import" type="checkbox">
+        </td>
+        <td class="text-center">
+          <input formControlName="export" type="checkbox">
+        </td>
+      </tr>
+      <tr formGroupName="jobs">
+        <td>Jobs</td>
+        <td class="text-center">
+          <input formControlName="read" type="checkbox">
+        </td>
+        <td class="text-center">
+          <input formControlName="write" type="checkbox">
+        </td>
+        <td class="text-center">
+          <input formControlName="create" type="checkbox">
+        </td>
+        <td class="text-center">
+          <input formControlName="delete" type="checkbox">
+        </td>
+        <td class="text-center">
+          <input formControlName="import" type="checkbox">
+        </td>
+        <td class="text-center">
+          <input formControlName="export" type="checkbox">
+        </td>
+      </tr>
+      <tr formGroupName="assets">
+        <td>Assets</td>
+        <td class="text-center">
+          <input formControlName="read" type="checkbox">
+        </td>
+        <td class="text-center">
+          <input formControlName="write" type="checkbox">
+        </td>
+        <td class="text-center">
+          <input formControlName="create" type="checkbox">
+        </td>
+        <td class="text-center">
+          <input formControlName="delete" type="checkbox">
+        </td>
+        <td class="text-center">
+          <input formControlName="import" type="checkbox">
+        </td>
+        <td class="text-center">
+          <input formControlName="export" type="checkbox">
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    <div class="text-center">
+      <button class="btn btn-primary submit-btn" type="submit">Save</button>
+    </div>
+    <br>
+  </div>
+</form>

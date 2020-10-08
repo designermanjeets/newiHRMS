@@ -11,51 +11,54 @@ import { SalarySettingsComponent } from './salary-settings/salary-settings.compo
 import { NotificationsComponent } from './notifications/notifications.component';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { LeaveTypeComponent } from './leave-type/leave-type.component';
+import { RoledetailsComponent } from './role/roledetails/roledetails.component';
 
 const routes: Routes = [
   {
-    path:"",
-    component:SettingsComponent,
-    children:[
+    path: '',
+    component: SettingsComponent,
+    children: [
       {
-        path:"company-settings",
-        component:CompanySettingsComponent
+        path: 'company-settings',
+        component: CompanySettingsComponent
       },
       {
-        path:"localization",
-        component:LocalizationComponent
+        path: 'localization',
+        component: LocalizationComponent
       },
       {
-        path:"theme-settings",
-        component:ThemeSettingsComponent
+        path: 'theme-settings',
+        component: ThemeSettingsComponent
       },
       {
-        path:"role",
-        component:RoleComponent
+        path: 'role',
+        component: RoleComponent, children: [
+          { path: 'roledetails', component: RoledetailsComponent }
+        ]
       },
       {
-        path:"email-settings",
-        component:EmailSettingsComponent
+        path: 'email-settings',
+        component: EmailSettingsComponent
       },
       {
-        path:"invoice-settings",
-        component:InvoiceSettingsComponent
+        path: 'invoice-settings',
+        component: InvoiceSettingsComponent
       },
       {
-        path:"salary-settings",
-        component:SalarySettingsComponent
+        path: 'salary-settings',
+        component: SalarySettingsComponent
       },
       {
-        path:"notifications",
-        component:NotificationsComponent
+        path: 'notifications',
+        component: NotificationsComponent
       },
       {
-        path:"change-password",
-        component:ChangePasswordComponent
+        path: 'change-password',
+        component: ChangePasswordComponent
       },
       {
-        path:"leave-type",
-        component:LeaveTypeComponent
+        path: 'leave-type',
+        component: LeaveTypeComponent
       }
     ]
   }

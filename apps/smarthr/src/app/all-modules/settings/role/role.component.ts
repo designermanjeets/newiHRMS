@@ -1,21 +1,21 @@
-import { Component, OnInit } from "@angular/core";
-import { AllModulesService } from "../../all-modules.service";
+import { Component, OnInit } from '@angular/core';
+import { AllModulesService } from '../../all-modules.service';
 import {
   FormBuilder,
   FormGroup,
   FormControl,
   Validators,
-} from "@angular/forms";
-import { ToastrService } from "ngx-toastr";
+} from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 
 declare const $: any;
 @Component({
-  selector: "app-role",
-  templateUrl: "./role.component.html",
-  styleUrls: ["./role.component.css"],
+  selector: 'app-role',
+  templateUrl: './role.component.html',
+  styleUrls: ['./role.component.css'],
 })
 export class RoleComponent implements OnInit {
-  public url: any = "roles";
+  public url: any = 'roles';
   public allroles: any = [];
   public addRoles: FormGroup;
   public editRoles: FormGroup;
@@ -34,13 +34,13 @@ export class RoleComponent implements OnInit {
     // Add Provident Form Validation And Getting Values
 
     this.addRoles = this.formBuilder.group({
-      addRoleName: ["", [Validators.required]],
+      addRoleName: ['', [Validators.required]],
     });
 
     // Edit Provident Form Validation And Getting Values
 
     this.editRoles = this.formBuilder.group({
-      editRoleName: ["", [Validators.required]],
+      editRoleName: ['', [Validators.required]],
     });
   }
 
@@ -54,23 +54,23 @@ export class RoleComponent implements OnInit {
 
   addRolesSubmit() {
     if (this.addRoles.valid) {
-      let obj = { roleName: this.addRoles.value.addRoleName };
+      const obj = { roleName: this.addRoles.value.addRoleName };
       this.allModuleService.add(obj, this.url).subscribe((data) => {});
       this.getRoles();
-      $("#add_role").modal("hide");
+      $('#add_role').modal('hide');
       this.addRoles.reset();
-      this.toastr.success("Roles is added", "Success");
+      this.toastr.success('Roles is added', 'Success');
     }
   }
 
   // Edit Provident Modal Api Call
 
   editRolesSubmit() {
-    let obj = { roleName: this.editRoles.value.editRoleName, id: this.editId };
+    const obj = { roleName: this.editRoles.value.editRoleName, id: this.editId };
     this.allModuleService.update(obj, this.url).subscribe((data1) => {});
     this.getRoles();
-    $("#edit_role").modal("hide");
-    this.toastr.success("Roles is edited", "Success");
+    $('#edit_role').modal('hide');
+    this.toastr.success('Roles is edited', 'Success');
   }
 
   edit(value) {
@@ -78,7 +78,7 @@ export class RoleComponent implements OnInit {
     const index = this.allroles.findIndex((item) => {
       return item.id === value;
     });
-    let toSetValues = this.allroles[index];
+    const toSetValues = this.allroles[index];
     this.editRoles.setValue({
       editRoleName: toSetValues.roleName,
     });
@@ -89,8 +89,8 @@ export class RoleComponent implements OnInit {
   deleteRoles() {
     this.allModuleService.delete(this.tempId, this.url).subscribe((data) => {
       this.getRoles();
-      $("#delete_role").modal("hide");
-      this.toastr.success("Roles is deleted", "Success");
+      $('#delete_role').modal('hide');
+      this.toastr.success('Roles is deleted', 'Success');
     });
   }
 }

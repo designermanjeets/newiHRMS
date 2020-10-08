@@ -3,18 +3,25 @@ const Audit = require('../../../models/Audit');
 
 const updateRole = (_, {
   id,
-  title,
-  date,
-  day,
-  paid,
+  role_name,
+  mod_employee,
+  mod_holidays,
+  mod_leaves,
+  mod_events,
+  mod_jobs,
+  mod_assets,
+  permissions,
   modified
 }, {me,secret}) => new Promise(async (resolve, reject) => {
   try{
     let param ={
-      title,
-      date,
-      day,
-      paid,
+      mod_employee,
+      mod_holidays,
+      mod_leaves,
+      mod_events,
+      mod_jobs,
+      mod_assets,
+      permissions
     }
     const rol = await Role.findById(id);
     let changeFields = {};
@@ -48,18 +55,14 @@ const updateRole = (_, {
               if(val.length) {
                 Audit.findOneAndUpdate(
                   { },
-                  { $push: { roleAudit: modifiedObj  }  }, { new: true }).then(
-                  res => resolve(res)
-                );
+                  { $push: { roleAudit: modifiedObj  }  }, { new: true })
+                  .then();
               } else {
-                Audit.create({ roleAudit: modifiedObj  }, { new: true }).then(
-                  res => resolve(res)
-                );
+                Audit.create({ roleAudit: modifiedObj  }, { new: true })
+                  .then();
               }
               resolve(result);
             });
-            resolve(result);
-          } else {
             resolve(result);
           }
         })

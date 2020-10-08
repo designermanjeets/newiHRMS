@@ -9,6 +9,7 @@ const subSchema = mongoose.Schema({
 
 const roleSchema = new Schema({
   id: String,
+  role_name: String,
   mod_employee: Boolean,
   mod_holidays: Boolean,
   mod_leaves: Boolean,

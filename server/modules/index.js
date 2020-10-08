@@ -7,6 +7,7 @@ const leavetype = require('./leavetype')
 const designation = require('./designation')
 const department = require('./department')
 const leaveapplied = require('./leaveapplied')
+const roles = require('./roles')
 
 module.exports = makeExecutableSchemaFromModules({
   modules: [
@@ -17,5 +18,6 @@ module.exports = makeExecutableSchemaFromModules({
     designation,
     department,
     leaveapplied,
+    roles
   ]
 })

@@ -11,6 +11,7 @@ const typeDefs = gql`
   extend type Mutation {
 
     createRole (
+      role_name: String!,
       mod_employee: Boolean,
       mod_holidays: Boolean,
       mod_leaves: Boolean,
@@ -24,6 +25,7 @@ const typeDefs = gql`
 
     updateRole(
       id: ID!,
+      role_name: String!,
       mod_employee: Boolean,
       mod_holidays: Boolean,
       mod_leaves: Boolean,
@@ -36,11 +38,12 @@ const typeDefs = gql`
       modified: [modifiedInputs]
     ): Role,
 
-    deleteRole( id: ID!, modified: [modifiedInputs] ): Role,
+    deleteRole( id: ID!, role_name: String, modified: [modifiedInputs] ): Role,
   }
 
   type Role{
     _id: ID,
+    role_name: String,
     mod_employee: Boolean,
     mod_holidays: Boolean,
     mod_leaves: Boolean,

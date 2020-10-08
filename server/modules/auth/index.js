@@ -31,7 +31,6 @@ const typeDefs = gql`
       department_ID: String,
       designation: designationInputs,
       designation_ID: String,
-      permissions: PermissionsInput,
       created_by: String,
       created_at: ISODate
     ): User
@@ -56,7 +55,6 @@ const typeDefs = gql`
       department_ID: String,
       designation: designationInputs,
       designation_ID: String,
-      permissions: PermissionsInput,
       modified: [modifiedInputs]
       ): User
 
@@ -97,7 +95,6 @@ const typeDefs = gql`
     department_ID: String,
     designation: Designation,
     designation_ID: String,
-    permissions: permissions,
     created_at: ISODate,
     created_by: String,
     modified: [modifiedTypes]
@@ -134,7 +131,6 @@ const typeDefs = gql`
     designation_ID: String,
     mobile: String,
     joiningdate: ISODate,
-    permissions: PermissionsInput,
     created_at: ISODate,
     created_by: String
   }
@@ -195,8 +191,11 @@ const typeDefs = gql`
   },
 
   type permissions {
-    holiday:PermissInput,
-    leave:PermissInput,
+    employees:PermissInput,
+    holidays:PermissInput,
+    leaves:PermissInput,
+    events:PermissInput,
+    jobs:PermissInput,
     assets:PermissInput
   }
   type modifiedTypes {
@@ -204,8 +203,11 @@ const typeDefs = gql`
     modified_by: String
   }
   input PermissionsInput {
-    holiday:permiss,
-    leave:permiss,
+    employees:permiss,
+    holidays:permiss,
+    leaves:permiss,
+    events:permiss,
+    jobs:permiss,
     assets:permiss
   }
   type PermissInput {

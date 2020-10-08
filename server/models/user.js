@@ -74,40 +74,6 @@ const userSchema = new Schema({
   designation: designationSchema,
   leaveApplied: [leaveAppliedSchema],
   designation_ID: String,
-  permissions:{
-    holiday: {
-      read: { type: Boolean, default: false },
-      write: { type: Boolean, default: false },
-      create: { type: Boolean, default: false },
-      delete: { type: Boolean, default: false },
-      import: { type: Boolean, default: false },
-      export: { type: Boolean, default: false }
-    },
-    leave:{
-      read: { type: Boolean, default: false },
-      write: { type: Boolean, default: false },
-      create: { type: Boolean, default: false },
-      delete: { type: Boolean, default: false },
-      import: { type: Boolean, default: false },
-      export: { type: Boolean, default: false }
-    },
-    assets:{
-      read: { type: Boolean, default: false },
-      write: { type: Boolean, default: false },
-      create: { type: Boolean, default: false },
-      delete: { type: Boolean, default: false },
-      import: { type: Boolean, default: false },
-      export: { type: Boolean, default: false }
-    },
-    events:{
-      read: { type: Boolean, default: false },
-      write: { type: Boolean, default: false },
-      create: { type: Boolean, default: false },
-      delete: { type: Boolean, default: false },
-      import: { type: Boolean, default: false },
-      export: { type: Boolean, default: false }
-    }
-  },
   created_at: Date,
   modified : [subSchema],
 }, { collection:'User' });

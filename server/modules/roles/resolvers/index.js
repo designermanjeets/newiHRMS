@@ -1,17 +1,17 @@
-const getHolidays = require('./roles')
-const createHoliday = require('./createholiday')
-const updateHoliday = require('./updaterole')
-const deleteHoliday = require('./deleterole')
+const getRoles = require('./roles')
+const createRole = require('./createrole')
+const updateRole = require('./updaterole')
+const deleteRole = require('./deleterole')
 
 
 const resolvers = {
   Query: {
-    getHolidays
+    getRoles
   },
   Mutation: {
-    createHoliday,
-    updateHoliday,
-    deleteHoliday
+    createRole,
+    updateRole,
+    deleteRole
   }
 }
 

@@ -1,5 +1,6 @@
 const User = require('../../../models/user')
 const Audit = require('../../../models/Audit');
+const Role = require('../../../models/role');
 const Designation = require('../../../models/designation');
 const bcrypt = require('bcrypt')
 const jsonwebtoken = require('jsonwebtoken')
@@ -28,7 +29,7 @@ const signup = (_, {
   if (user) {
     reject(new Error('user already exist'));
   } else {
-    const newUser = await User.create({
+    User.create({
         username,
         email,
         password: await bcrypt.hash(password, 10),
@@ -45,42 +46,54 @@ const signup = (_, {
         permissions,
         created_at
       }
-    )
-    await createToken({ id: newUser.id,role:newUser.role,username:newUser.username, emmpid},secret,'1d')
+    ).then(result => {
+      createToken({ id: result.id,role:result.role,username:result.username, emmpid},secret,'1d')
+        .then(tokn =>{
 
-    if(newUser) {
-      Designation.findById({_id: designation_ID}).then( val =>{
-        result.designation = {}; // Because only one Designation
-        result.designation = val;
-        result.save();
-        resolve(result);
-      });
-    }
-
-    const nmodified = {
-      newuser_ID: newUser._id,
-      action: 'User Created!',
-      created_by: created_by,
-      created_at: created_at,
-      createdUser: newUser
-    }
-    Audit.find({}).then(val =>{
-      if(val.length) {
-        Audit.findOneAndUpdate(
-          { },
-          { $push: { userAudit: nmodified  }  }, { new: true })
-          .then((result) => {
+          Designation.findById({_id: designation_ID}).then( val =>{
+            result.designation = {}; // Because only one Designation
+            result.designation = val;
+            result.save();
             resolve(result);
           });
-      } else {
-        Audit.create({ userAudit: nmodified  })
-          .then((result) => {
+
+          // Role Update
+          Role.findById({_id: role}).then( val =>{
+            let alldata = new User(result);
+            result.Role = {};
+            alldata.Role = val;
+            alldata.save();
             resolve(result);
           });
-      }
+
+          const nmodified = {
+            newuser_ID: result._id,
+            action: 'User Created!',
+            created_by: created_by,
+            created_at: created_at,
+            createdUser: result
+          }
+          Audit.find({}).then(val =>{
+            if(val.length) {
+              Audit.findOneAndUpdate(
+                { },
+                { $push: { userAudit: nmodified  }  }, { new: true })
+                .then((result) => {
+                  resolve(result);
+                });
+            } else {
+              Audit.create({ userAudit: nmodified  })
+                .then((result) => {
+                  resolve(result);
+                });
+            }
+          });
+
+          resolve(result);
+
+        });
+      resolve(result);
     });
-    resolve(newUser);
-    return newUser;
   }
 })
 

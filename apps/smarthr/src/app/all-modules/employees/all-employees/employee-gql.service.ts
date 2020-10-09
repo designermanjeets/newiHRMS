@@ -50,30 +50,64 @@ export const GET_USERS_QUERY = gql`
           designation
         },
         _id,
-        permissions {
-          holiday {
-            read
-            write,
-            create
-            delete
-            import
-            export
-          }
-          leave {
-            read
-            write,
-            create
-            delete
-            import
-            export
-          }
-          assets {
-            read
-            write,
-            create
-            delete
-            import
-            export
+        Role {
+          _id
+          role_name
+          mod_employee
+          mod_holidays
+          mod_leaves
+          mod_events
+          mod_jobs
+          mod_assets
+          permissions {
+            employees {
+              read
+              write
+              create
+              delete
+              import
+              export
+            },
+            holidays {
+              read
+              write
+              create
+              delete
+              import
+              export
+            },
+            leaves {
+              read
+              write
+              create
+              delete
+              import
+              export
+            },
+            events {
+              read
+              write
+              create
+              delete
+              import
+              export
+            },
+            jobs {
+              read
+              write
+              create
+              delete
+              import
+              export
+            },
+            assets {
+              read
+              write
+              create
+              delete
+              import
+              export
+            }
           }
         }
       }
@@ -108,30 +142,64 @@ export class GET_USER_QUERY extends Query<Response> {
           designation
         },
         _id,
-        permissions {
-          holiday {
-            read
-            write,
-            create
-            delete
-            import
-            export
-          }
-          leave {
-            read
-            write,
-            create
-            delete
-            import
-            export
-          }
-          assets {
-            read
-            write,
-            create
-            delete
-            import
-            export
+        Role {
+          _id
+          role_name
+          mod_employee
+          mod_holidays
+          mod_leaves
+          mod_events
+          mod_jobs
+          mod_assets
+          permissions {
+            employees {
+              read
+              write
+              create
+              delete
+              import
+              export
+            },
+            holidays {
+              read
+              write
+              create
+              delete
+              import
+              export
+            },
+            leaves {
+              read
+              write
+              create
+              delete
+              import
+              export
+            },
+            events {
+              read
+              write
+              create
+              delete
+              import
+              export
+            },
+            jobs {
+              read
+              write
+              create
+              delete
+              import
+              export
+            },
+            assets {
+              read
+              write
+              create
+              delete
+              import
+              export
+            }
           }
         }
       }
@@ -162,7 +230,6 @@ export class EmpdetailGQLService extends Mutation {
       $department_ID: String
       $designation: designationInputs
       $designation_ID: String
-      $permissions:PermissionsInput
       $modified: [modifiedInputs]
     ) {
     updateUser(
@@ -181,7 +248,6 @@ export class EmpdetailGQLService extends Mutation {
         department_ID: $department_ID
         designation: $designation
         designation_ID: $designation_ID
-        permissions: $permissions,
         modified: $modified
     ) {
         username,
@@ -200,30 +266,64 @@ export class EmpdetailGQLService extends Mutation {
           designation
         },
         designation_ID,
-        permissions {
-          holiday {
-            read
-            write,
-            create
-            delete
-            import
-            export
-          }
-          leave {
-            read
-            write,
-            create
-            delete
-            import
-            export
-          }
-          assets {
-            read
-            write,
-            create
-            delete
-            import
-            export
+        Role {
+          _id
+          role_name
+          mod_employee
+          mod_holidays
+          mod_leaves
+          mod_events
+          mod_jobs
+          mod_assets
+          permissions {
+            employees {
+              read
+              write
+              create
+              delete
+              import
+              export
+            },
+            holidays {
+              read
+              write
+              create
+              delete
+              import
+              export
+            },
+            leaves {
+              read
+              write
+              create
+              delete
+              import
+              export
+            },
+            events {
+              read
+              write
+              create
+              delete
+              import
+              export
+            },
+            jobs {
+              read
+              write
+              create
+              delete
+              import
+              export
+            },
+            assets {
+              read
+              write
+              create
+              delete
+              import
+              export
+            }
           }
         }
       }
@@ -251,7 +351,6 @@ export class CreateUserGQL extends Mutation {
       $designation: designationInputs,
       $designation_ID: String,
       $mobile: String
-      $permissions: PermissionsInput
     ) {
     signup(
         username: $username,
@@ -268,7 +367,6 @@ export class CreateUserGQL extends Mutation {
         designation: $designation
         designation_ID: $designation_ID
         mobile: $mobile,
-        permissions: $permissions,
     ) {
         username,
         email,
@@ -286,30 +384,64 @@ export class CreateUserGQL extends Mutation {
         },
         designation_ID,
         mobile,
-        permissions {
-          holiday {
-            read
-            write,
-            create
-            delete
-            import
-            export
-          }
-          leave {
-            read
-            write,
-            create
-            delete
-            import
-            export
-          }
-          assets {
-            read
-            write,
-            create
-            delete
-            import
-            export
+        Role {
+          _id
+          role_name
+          mod_employee
+          mod_holidays
+          mod_leaves
+          mod_events
+          mod_jobs
+          mod_assets
+          permissions {
+            employees {
+              read
+              write
+              create
+              delete
+              import
+              export
+            },
+            holidays {
+              read
+              write
+              create
+              delete
+              import
+              export
+            },
+            leaves {
+              read
+              write
+              create
+              delete
+              import
+              export
+            },
+            events {
+              read
+              write
+              create
+              delete
+              import
+              export
+            },
+            jobs {
+              read
+              write
+              create
+              delete
+              import
+              export
+            },
+            assets {
+              read
+              write
+              create
+              delete
+              import
+              export
+            }
           }
         }
       }
@@ -361,6 +493,19 @@ export const GET_COMPANIES_QUERY = gql`
       query: $pagination,
     ) {
         corporateid,
+      }
+  }
+`;
+
+export const GET_ROLES_QUERY = gql`
+   query getRoles(
+      $pagination: Pagination!
+    ) {
+    getRoles(
+      query: $pagination,
+    ) {
+        _id
+        role_name
       }
   }
 `;

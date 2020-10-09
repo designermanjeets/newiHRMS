@@ -1,6 +1,7 @@
 const User = require('../../../models/user');
 const Audit = require('../../../models/Audit');
 const Designation = require('../../../models/designation');
+const Role = require('../../../models/role');
 const bcrypt = require('bcrypt')
 const paramHandler = require('../../../utils/paramhandler');
 
@@ -78,6 +79,14 @@ const updateUser = (_, {
             result.designation = {}; // Because only one Designation
             result.designation = val;
             result.save();
+            resolve(result);
+          });
+          // Role Update
+          Role.findById({_id: role}).then( val =>{
+            let alldata = new User(result);
+            result.Role = {};
+            alldata.Role = val;
+            alldata.save();
             resolve(result);
           });
         }

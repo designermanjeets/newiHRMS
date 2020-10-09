@@ -1,6 +1,10 @@
 import {Injectable} from '@angular/core';
-import { Mutation, Query } from 'apollo-angular';
+import { Mutation } from 'apollo-angular';
 import gql from 'graphql-tag';
+
+import { Router } from '@angular/router';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { User } from '../_helpers/_models/user';
 
 @Injectable({
   providedIn: 'root',
@@ -16,7 +20,7 @@ export class RegisterGQL extends Mutation {
       $lastname: String
       $emmpid: String
       $corporateid: String
-      $permissions: PermissionsInput
+      $Role: RoleInput
     ) {
     signup(
         username: $username,
@@ -27,7 +31,7 @@ export class RegisterGQL extends Mutation {
         lastname: $lastname,
         emmpid: $emmpid,
         corporateid: $corporateid,
-        permissions: $permissions,
+        Role: $Role,
     ) {
         username,
         email,
@@ -36,13 +40,7 @@ export class RegisterGQL extends Mutation {
         firstname,
         lastname,
         emmpid,
-        corporateid,
-        permissions {
-          holiday {
-            read
-            write
-          }
-        }
+        corporateid
       }
   }
   `;
@@ -71,4 +69,36 @@ export class LoginGQL extends Mutation {
       }
     }
   `;
+}
+
+
+@Injectable({
+  providedIn: 'root'
+})
+export class AuthenticationService {
+  private userSubject: BehaviorSubject<User>;
+  public user: Observable<User>;
+
+  constructor(
+    private router: Router
+  ) {
+    this.userSubject = new BehaviorSubject<User>(JSON.parse(sessionStorage.getItem('user')));
+    this.user = this.userSubject.asObservable();
+  }
+
+  public get userValue(): User {
+    return this.userSubject.value;
+  }
+
+  setLogin(user) {
+    // store user details and jwt token in local storage to keep user logged in between page refreshes
+    this.userSubject.next(user);
+  }
+
+  logout() {
+    // remove user from local storage to log user out
+    sessionStorage.removeItem('user');
+    this.userSubject.next(null);
+    this.router.navigate(['/login']);
+  }
 }

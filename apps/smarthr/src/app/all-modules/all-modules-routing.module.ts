@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AllModulesComponent } from './all-modules.component';
+import { AuthGuard } from '../_helpers/auth.guard';
+import { Role } from '../_helpers/_models/user';
 
 const routes: Routes = [
   {
@@ -22,7 +24,9 @@ const routes: Routes = [
       },
       {
         path: 'employees',
-        loadChildren: () => import('./employees/employees.module').then(m => m.EmployeesModule)
+        loadChildren: () => import('./employees/employees.module').then(m => m.EmployeesModule),
+        // canActivate: [AuthGuard],
+        // data: { roles: [Role.ADMIN] }
       },
       {
         path: 'clients',
@@ -120,7 +124,7 @@ const routes: Routes = [
         path: 'tables',
         loadChildren: () => import('./tables/tables.module').then(m => m.TablesModule)
       },
-     
+
     ]
   }
 ];

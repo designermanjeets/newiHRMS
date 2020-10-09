@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Event, NavigationStart } from '@angular/router'
 import { ToastrService } from 'ngx-toastr';
-import { timeout } from 'rxjs/operators';
+import { Role, User } from './_helpers/_models/user';
+import { AuthenticationService } from './login/login.service';
 
 @Component({
   selector: 'app-root',
@@ -10,16 +11,24 @@ import { timeout } from 'rxjs/operators';
 })
 export class AppComponent implements OnInit {
   title = 'MsSmartHRMS';
+  user: User;
 
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private toastr: ToastrService,
+    private authenticationService: AuthenticationService
   ) {
 
     if (!sessionStorage.getItem(('JWT_TOKEN'))) {
       this.router.navigateByUrl('./pages/login');
+    } else {
+      this.authenticationService.user.subscribe(x => {
+        this.user = x;
+        console.log(x);
+      });
     }
+
     if (sessionStorage.getItem(('JWT_TOKEN')) && sessionStorage.getItem('sessionExpire')) {
       this.toastr.error('Your Session Expired, please login again.', 'Error');
       setTimeout(_ => {
@@ -66,4 +75,9 @@ export class AppComponent implements OnInit {
       }
     });
   }
+
+  get isAdmin() {
+    return this.user && this.user.role === Role.ADMIN;
+  }
+
 }

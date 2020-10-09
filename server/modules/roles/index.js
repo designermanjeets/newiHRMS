@@ -55,6 +55,22 @@ const typeDefs = gql`
     permissions: permissions
     modified: [modifiedTypes]
   }
+
+
+  input RoleInput{
+    _id: ID,
+    role_name: String,
+    mod_employee: Boolean,
+    mod_holidays: Boolean,
+    mod_leaves: Boolean,
+    mod_events: Boolean,
+    mod_jobs: Boolean,
+    mod_assets: Boolean,
+    created_by: String,
+    created_at: ISODate,
+    permissions: PermissionsInput
+    modified: [modifiedInputs]
+  }
 `
 
 const resolvers = require('./resolvers')

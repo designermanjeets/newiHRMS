@@ -1,27 +1,34 @@
 import { Component, OnInit } from '@angular/core';
 
-import { LoginGQL, RegisterGQL } from '../login.service';
+import { AuthenticationService, LoginGQL, RegisterGQL } from '../login.service';
 import { Router} from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { User } from '../../_helpers/_models/user';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
+
 export class LoginComponent implements OnInit {
 
   loginForm: FormGroup;
   isloggedin: boolean;
   ispwdreset: boolean;
 
+  private userSubject: BehaviorSubject<User>;
+  public user: Observable<User>;
+
   constructor(
     private registerGQL: RegisterGQL,
     private loginGQL: LoginGQL,
     private router: Router,
     private fb: FormBuilder,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private authenticationService: AuthenticationService
   ) {
     if (sessionStorage.getItem('resetpwd')) {
       this.ispwdreset = true;
@@ -83,12 +90,22 @@ export class LoginComponent implements OnInit {
             emmpid: val.data.login.user.emmpid,
             corporateid: val.data.login.user.corporateid
           }));
+
+          this.authenticationService.setLogin(val.data.login.user);
+
           this.toastr.success('Login Success', 'Success', { timeOut: 3000 });
           setTimeout(_ => this.router.navigateByUrl('/dashboard'), 2000);
         }
       }, error => {
         this.toastr.error(error, 'Error', { timeOut: 3000 });
       });
+  }
+
+  logout() {
+    // remove user from local storage to log user out
+    sessionStorage.removeItem('user');
+    this.authenticationService.setLogin(null);
+    this.router.navigate(['/login']);
   }
 
 }

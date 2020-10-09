@@ -96,7 +96,7 @@
                     {{value | date}}
                   </ng-template>
                 </ngx-datatable-column>
-                <ngx-datatable-column name="Role" prop="role">
+                <ngx-datatable-column name="Role" prop="Role.role_name">
                   <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
                     <a class="btn btn-block btn-white btn-sm btn-rounded">{{value}}</a>
                   </ng-template>
@@ -258,9 +258,7 @@
                       <label class="control-label">Role<span class="text-danger m-l-5">*</span></label>
                       <select class="select form-control" formControlName="role" required>
                         <option value="">--Select--</option>
-                        <option value="Admin">Admin</option>
-                        <option value="Management">Management</option>
-                        <option value="Employee">Employee</option>
+                        <option *ngFor="let opt of allRoles" [value]="opt._id">{{opt.role_name}}</option>
                       </select>
                       <span class="help-block" *ngIf="editForm.controls['role'].errors && editForm.controls['role'].touched">
                    Role is invalid
@@ -311,7 +309,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="table-responsive m-t-15">
+                <div class="table-responsive m-t-15" *ngIf="false"> <!--Moved to Roles-->
                   <table class="table table-striped custom-table">
                     <thead>
                     <tr>
@@ -540,9 +538,7 @@
                       <label class="control-label">Role<span class="text-danger m-l-5">*</span></label>
                       <select class="select form-control" formControlName="role" required>
                         <option value="">--Select--</option>
-                        <option value="Admin">Admin</option>
-                        <option value="Management">Management</option>
-                        <option value="Employee">Employee</option>
+                        <option *ngFor="let opt of allRoles" [value]="opt._id">{{opt.role_name}}</option>
                       </select>
                       <span class="help-block" *ngIf="editForm.controls['role'].errors && editForm.controls['role'].touched">
                    Role is invalid
@@ -593,88 +589,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="table-responsive m-t-15">
-                  <table class="table table-striped custom-table">
-                    <thead>
-                    <tr>
-                      <th>Module Permission</th>
-                      <th class="text-center">Read</th>
-                      <th class="text-center">Write</th>
-                      <th class="text-center">Create</th>
-                      <th class="text-center">Delete</th>
-                      <th class="text-center">Import</th>
-                      <th class="text-center">Export</th>
-                    </tr>
-                    </thead>
-                    <tbody formArrayName="permissions">
-                    <tr formGroupName="holiday">
-                      <td>Holidays</td>
-                      <td class="text-center">
-                        <input formControlName="read" type="checkbox">
-                      </td>
-                      <td class="text-center">
-                        <input formControlName="write" type="checkbox">
-                      </td>
-                      <td class="text-center">
-                        <input formControlName="create" type="checkbox">
-                      </td>
-                      <td class="text-center">
-                        <input formControlName="delete" type="checkbox">
-                      </td>
-                      <td class="text-center">
-                        <input formControlName="import" type="checkbox">
-                      </td>
-                      <td class="text-center">
-                        <input formControlName="export" type="checkbox">
-                      </td>
-                    </tr>
-                    <tr formGroupName="leave">
-                      <td>Leave Request</td>
-                      <td class="text-center">
-                        <input formControlName="read" type="checkbox">
-                      </td>
-                      <td class="text-center">
-                        <input formControlName="write" type="checkbox">
-                      </td>
-                      <td class="text-center">
-                        <input formControlName="create" type="checkbox">
-                      </td>
-                      <td class="text-center">
-                        <input formControlName="delete" type="checkbox">
-                      </td>
-                      <td class="text-center">
-                        <input formControlName="import" type="checkbox">
-                      </td>
-                      <td class="text-center">
-                        <input formControlName="export" type="checkbox">
-                      </td>
-                    </tr>
-                    <tr formGroupName="assets">
-                      <td>Assets</td>
-                      <td class="text-center">
-                        <input formControlName="read" type="checkbox">
-                      </td>
-                      <td class="text-center">
-                        <input formControlName="write" type="checkbox">
-                      </td>
-                      <td class="text-center">
-                        <input formControlName="create" type="checkbox">
-                      </td>
-                      <td class="text-center">
-                        <input formControlName="delete" type="checkbox">
-                      </td>
-                      <td class="text-center">
-                        <input formControlName="import" type="checkbox">
-                      </td>
-                      <td class="text-center">
-                        <input formControlName="export" type="checkbox">
-                      </td>
-                    </tr>
-                    </tbody>
-                  </table>
-                  <br>
 
-                </div>
                 <div class="m-t-20 text-center">
                   <div *ngIf="uptEmployeeValidation" class="alert alert-info m-t-10">
                     <strong>Warning!</strong> Must Fill all Mandatory Fields.

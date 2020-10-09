@@ -33,6 +33,7 @@ const typeDefs = gql`
       designation_ID: String,
       created_by: String,
       created_at: ISODate
+      Role: RoleInput
     ): User
 
     uploadFile(file: Upload!): [User]
@@ -56,6 +57,7 @@ const typeDefs = gql`
       designation: designationInputs,
       designation_ID: String,
       modified: [modifiedInputs]
+      Role: RoleInput
       ): User
 
       deleteUser (email: String!, modified: [modifiedInputs]): User,
@@ -97,7 +99,8 @@ const typeDefs = gql`
     designation_ID: String,
     created_at: ISODate,
     created_by: String,
-    modified: [modifiedTypes]
+    modified: [modifiedTypes],
+    Role: Role
   }
 
   type ChangePasswordUser{
@@ -133,6 +136,7 @@ const typeDefs = gql`
     joiningdate: ISODate,
     created_at: ISODate,
     created_by: String
+    Role: RoleInput
   }
 
   input modifiedInputs {

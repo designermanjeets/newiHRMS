@@ -14,7 +14,7 @@ import {
   CreateUserGQL,
   DeleteUserGQL,
   EmpdetailGQLService,
-  EmployeeGQLService, GET_COMPANIES_QUERY,
+  EmployeeGQLService, GET_COMPANIES_QUERY, GET_ROLES_QUERY,
   GET_USERS_QUERY,
   ImportUsersGQL
 } from '../employee-gql.service';
@@ -61,6 +61,7 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
   departments: any;
   designations: any;
   allDesignations: any;
+  allRoles: any;
   isModal: boolean;
   actionParams: any;
 
@@ -105,6 +106,7 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
     this.getUsers();
     this.getCompanies();
     this.getDepartments();
+    this.getRoles();
 
     // for floating label
 
@@ -132,33 +134,7 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
       role: ['', Validators.required],
       department: ['', Validators.required],
       designation: ['', Validators.required],
-      mobile: [''],
-      permissions: this.fb.group({
-        holiday: this.fb.group({
-          read: [],
-          write: [],
-          create: [],
-          delete: [],
-          import: [],
-          export: []
-        }),
-        leave: this.fb.group({
-          read: [],
-          write: [],
-          create: [],
-          delete: [],
-          import: [],
-          export: []
-        }),
-        assets: this.fb.group({
-          read: [],
-          write: [],
-          create: [],
-          delete: [],
-          import: [],
-          export: []
-        }),
-      }),
+      mobile: ['']
     }, { validator: this.checkPasswords });
 
     // edit form validation
@@ -193,32 +169,6 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
         },
         designation_ID: desig._id,
         mobile: data.mobile,
-        permissions: {
-          holiday: {
-            read: data.permissions && data.permissions.holiday.read,
-            write: data.permissions && data.permissions.holiday.write,
-            create: data.permissions && data.permissions.holiday.create,
-            delete: data.permissions && data.permissions.holiday.delete,
-            import: data.permissions && data.permissions.holiday.import,
-            export: data.permissions && data.permissions.holiday.export
-          },
-          leave: {
-            read: data.permissions && data.permissions.leave.read,
-            write: data.permissions && data.permissions.leave.write,
-            create: data.permissions && data.permissions.leave.create,
-            delete: data.permissions && data.permissions.leave.delete,
-            import: data.permissions && data.permissions.leave.import,
-            export: data.permissions && data.permissions.leave.export
-          },
-          assets: {
-            read: data.permissions && data.permissions.assets.read,
-            write: data.permissions && data.permissions.assets.write,
-            create: data.permissions && data.permissions.assets.create,
-            delete: data.permissions && data.permissions.assets.delete,
-            import: data.permissions && data.permissions.assets.import,
-            export: data.permissions && data.permissions.assets.export
-          }
-        },
         modified : []
       })
       .subscribe( (val: any) => {
@@ -252,32 +202,6 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
         lastname: f.value.lastname,
         joiningdate: f.value.joiningdate,
         mobile: f.value.mobile,
-        permissions: {
-          holiday: {
-            read: f.value.permissions && f.value.permissions.holiday.read,
-            write: f.value.permissions && f.value.permissions.holiday.write,
-            create: f.value.permissions && f.value.permissions.holiday.create,
-            delete: f.value.permissions && f.value.permissions.holiday.delete,
-            import: f.value.permissions && f.value.permissions.holiday.import,
-            export: f.value.permissions && f.value.permissions.holiday.export
-          },
-          leave: {
-            read: f.value.permissions && f.value.permissions.leave.read,
-            write: f.value.permissions && f.value.permissions.leave.write,
-            create: f.value.permissions && f.value.permissions.leave.create,
-            delete: f.value.permissions && f.value.permissions.leave.delete,
-            import: f.value.permissions && f.value.permissions.leave.import,
-            export: f.value.permissions && f.value.permissions.leave.export
-          },
-          assets: {
-            read: f.value.permissions && f.value.permissions.assets.read,
-            write: f.value.permissions && f.value.permissions.assets.write,
-            create: f.value.permissions && f.value.permissions.assets.create,
-            delete: f.value.permissions && f.value.permissions.assets.delete,
-            import: f.value.permissions && f.value.permissions.assets.import,
-            export: f.value.permissions && f.value.permissions.assets.export
-          }
-        },
         modified: {
           modified_by: JSON.parse(sessionStorage.getItem('user')).username,
           modified_at: Date.now()
@@ -364,6 +288,24 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
     }, error => this.toastr.error(error, 'Error'));
   }
 
+
+  getRoles() {
+    this.apollo.watchQuery({
+      query: GET_ROLES_QUERY,
+      variables: {
+        pagination: {
+          limit: 100
+        }
+      },
+    }).valueChanges.subscribe((response: any) => {
+      if (response.data) {
+        this.allRoles = response.data.getRoles;
+        console.log(this.allRoles);
+        this.cdref.detectChanges();
+      }
+    }, error => this.toastr.error(error, 'Error'));
+  }
+
   onDepartChange(event) {
     this.designations = _.filter(this.allDesignations, person => person.department_ID === event.value);
     console.log(this.designations);
@@ -374,16 +316,17 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
   add() {
     $('#add_employee').modal('show');
     this.editForm.reset();
-    const permArr = this.editForm.get('permissions') as FormArray;
-
-    _.forEach(['assets', 'holiday', 'leave'], grp => {
-      permArr.get(grp).get('read').patchValue(false);
-      permArr.get(grp).get('write').patchValue(false);
-      permArr.get(grp).get('create').patchValue(false);
-      permArr.get(grp).get('delete').patchValue(false);
-      permArr.get(grp).get('import').patchValue(false);
-      permArr.get(grp).get('export').patchValue(false);
-    });
+    this.editForm.get('designation').disable();
+    // const permArr = this.editForm.get('permissions') as FormArray;
+    //
+    // _.forEach(['assets', 'holiday', 'leave'], grp => {
+    //   permArr.get(grp).get('read').patchValue(false);
+    //   permArr.get(grp).get('write').patchValue(false);
+    //   permArr.get(grp).get('create').patchValue(false);
+    //   permArr.get(grp).get('delete').patchValue(false);
+    //   permArr.get(grp).get('import').patchValue(false);
+    //   permArr.get(grp).get('export').patchValue(false);
+    // });
 
   }
 
@@ -396,7 +339,7 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
   edit(value) {
     this.editForm.reset();
 
-    const permArr = this.editForm.get('permissions') as FormArray;
+    // const permArr = this.editForm.get('permissions') as FormArray;
 
     this.editId = value;
     const index = this.lstEmployee.findIndex((item) => {
@@ -405,6 +348,7 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
     const toSetValues = this.lstEmployee[index];
 
     this.editForm.patchValue(value);
+    this.editForm.get('emmpid').disable();
     this.editForm.get('password2').patchValue(value.password);
     this.editForm.get('department').patchValue(value.department_ID);
     this.onDepartChange({value: value.department_ID});

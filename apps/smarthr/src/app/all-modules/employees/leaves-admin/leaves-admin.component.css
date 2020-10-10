@@ -1,0 +1,10 @@
+.overlay {position: absolute;
+  left: 0;
+  top: -12px;
+  opacity: .4;
+  width: 100%;
+  height: calc(100% + 24px);
+  cursor: not-allowed;
+  background-color: #eee;
+  filter: blur(25px);
+}

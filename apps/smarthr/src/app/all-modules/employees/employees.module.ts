@@ -26,6 +26,9 @@ import { MatDatepickerModule, MatNativeDateModule } from '@angular/material';
 import { NgxUploaderModule } from 'ngx-uploader';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { NgxMaskModule, IConfig } from 'ngx-mask';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 
@@ -44,6 +47,9 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
     MatNativeDateModule,
     NgxUploaderModule,
     NgxDatatableModule,
+    MatAutocompleteModule,
+    MatFormFieldModule,
+    MatInputModule,
     NgxMaskModule.forRoot(),
   ]
 })

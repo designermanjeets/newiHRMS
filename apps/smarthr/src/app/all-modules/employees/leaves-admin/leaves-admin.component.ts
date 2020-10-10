@@ -2,10 +2,11 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@ang
 import { FormBuilder, Validators, FormGroup, FormControl } from '@angular/forms';
 import { AllModulesService } from '../../all-modules.service';
 import { ToastrService } from 'ngx-toastr';
-import { Subject, Subscription } from 'rxjs';
+import { Observable, Subject, Subscription } from 'rxjs';
 import { DatePipe } from '@angular/common';
-import { distinctUntilChanged, pairwise } from 'rxjs/operators';
+import { distinctUntilChanged, pairwise, map, startWith } from 'rxjs/operators';
 import {
+  ApproveORejectLeaveGQL,
   DeleteLeaveGQL,
   GET_USER_QUERY,
   GET_USERLEAVES_QUERY,
@@ -18,6 +19,8 @@ import { ColumnMode, SelectionType } from '@swimlane/ngx-datatable';
 declare const $: any;
 import * as _ from 'lodash';
 import * as moment from 'moment';
+import { GET_USERS_QUERY } from '../all-employees/employee-gql.service';
+import { MatAutocompleteSelectedEvent } from '@angular/material';
 
 @Component({
   selector: 'app-leaves-admin',
@@ -52,6 +55,12 @@ export class LeavesAdminComponent implements OnInit, OnDestroy {
   checkPendingLeaveForUser: any;
   remainTemp: any;
   nofSub: Subscription;
+  tempLv: any;
+  allusers: [] = [];
+  selectedUser: any;
+
+  useroptions: any[] = [];
+  filteredOptions: Observable<string[]>;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -61,6 +70,7 @@ export class LeavesAdminComponent implements OnInit, OnDestroy {
     private registerLeaveGQL: RegisterLeaveGQL,
     private updateLeaveGQL: UpdateLeaveGQL,
     private deleteLeaveGQL: DeleteLeaveGQL,
+    private approveorejectLeave: ApproveORejectLeaveGQL,
     private cdRef: ChangeDetectorRef
   ) {}
 
@@ -68,17 +78,41 @@ export class LeavesAdminComponent implements OnInit, OnDestroy {
 
     this.loadallLeaveTypes();
     this.loadallLeaveApplied();
+    this.loadallUsers();
 
     this.editLeaveadminForm = this.formBuilder.group({
       _id: [''],
+      selectEmp: ['', [Validators.required]],
       leavetype: ['', [Validators.required]],
       from: ['', [Validators.required]],
       to: ['', [Validators.required]],
       nofdays: ['', [Validators.required]],
       remainingleaves: ['', [Validators.required]],
       reason: ['', [Validators.required]],
-    },{ validator: this.checkLeaveDays });
+    }, { validator: this.checkLeaveDays });
+
     this.calcRemainingOnFly();
+
+    this.filteredOptions = this.editLeaveadminForm.get('selectEmp').valueChanges
+      .pipe(
+        startWith(''),
+        map(value => this._filter(value))
+      );
+  }
+
+  private _filter(value: string): string[] {
+    if (value) {
+      const filterValue = value && value.toLowerCase();
+
+      return this.useroptions.filter(option => option.email.toLowerCase().includes(filterValue));
+    }
+  }
+
+  onSelectionChanged(event: MatAutocompleteSelectedEvent) {
+    console.log(event.option.value);
+    const usr = _.filter(this.allusers, v => v.email === event.option.value);
+    this.selectedUser = usr[0];
+    this.getUserPendingLeaves();
   }
 
   checkLeaveDays(group: FormGroup) {
@@ -148,12 +182,29 @@ export class LeavesAdminComponent implements OnInit, OnDestroy {
     });
   }
 
+  loadallUsers() {
+    this.apollo.watchQuery({
+      query: GET_USERS_QUERY,
+      variables: {
+        pagination: {
+          limit: 100
+        }
+      },
+    }).valueChanges.subscribe((response: any) => {
+      if (response.data.users) {
+        this.allusers = response.data.users;
+        this.useroptions = [];
+        _.forEach(this.allusers, val => this.useroptions.push({ _id: val._id ,email: val.email }));
+        this.cdRef.detectChanges();
+      }
+    });
+  }
+
   addReset() {
     this.isEdit = false;
     this.editLeaveadminForm.reset();
-    this.tempEditUserID = JSON.parse(sessionStorage.getItem('user')).userid;
+    // this.tempEditUserID = JSON.parse(sessionStorage.getItem('user')).userid;
     this.editLeaveadminForm.get('leavetype').enable();
-    this.getUserPendingLeaves();
   }
 
   onltypechange(value) {
@@ -174,7 +225,7 @@ export class LeavesAdminComponent implements OnInit, OnDestroy {
       query: GET_USER_QUERY,
       variables: {
         query: {
-          id: this.tempEditUserID
+          id: this.selectedUser._id
         }
       },
     }).valueChanges.subscribe((response: any) => {
@@ -195,13 +246,14 @@ export class LeavesAdminComponent implements OnInit, OnDestroy {
   addleaves(f) {
 
     const lv = _.filter(this.allLeaveTypes, p => p._id === f.value.leavetype);
+    const us = _.filter(this.allusers, p => p.email === f.value.selectEmp);
 
     this.registerLeaveGQL
       .mutate({
-        user_ID: JSON.parse(sessionStorage.getItem('user')).userid,
-        username: JSON.parse(sessionStorage.getItem('user')).username,
-        email: JSON.parse(sessionStorage.getItem('user')).email,
-        emmpid: JSON.parse(sessionStorage.getItem('user')).emmpid,
+        user_ID: us[0]._id,
+        username: us[0].username,
+        email: us[0].email,
+        emmpid: us[0].emmpid,
         leavetype: lv[0].leavetype,
         leave_ID: lv[0]._id,
         nofdays: f.value.nofdays,
@@ -266,11 +318,12 @@ export class LeavesAdminComponent implements OnInit, OnDestroy {
   // Delete leaves Modal Api Call
 
   deleteleave() {
-
+    if (this.tempId.status === 'pending') {
     this.deleteLeaveGQL
       .mutate({
-        id: this.tempId,
-        user_ID: JSON.parse(sessionStorage.getItem('user')).userid,
+        id: this.tempId._id,
+        status: this.tempId.status,
+        user_ID: this.tempId.user_ID,
         modified: {
           modified_by: JSON.parse(sessionStorage.getItem('user')).username,
           modified_at: Date.now()
@@ -285,6 +338,7 @@ export class LeavesAdminComponent implements OnInit, OnDestroy {
         }, error =>
           this.toastr.error(error, 'Error')
       );
+    }
   }
 
   // To Get The leaves Edit Id And Set Values To Edit Modal Form
@@ -368,6 +422,79 @@ export class LeavesAdminComponent implements OnInit, OnDestroy {
   // getting the status value
   getStatus(data) {
     this.statusValue = data;
+  }
+
+  apprRejctedit(lv) {
+    this.tempLv = lv;
+  }
+
+  approveleave(status) {
+    if (this.tempLv.status === 'pending') {
+      this.approveorejectLeave
+        .mutate({
+          id: this.tempLv._id,
+          user_ID: this.tempLv.user_ID,
+          leavetype: this.tempLv.leavetype,
+          leave_ID: this.tempLv.leave_ID,
+          nofdays: this.tempLv.nofdays,
+          status: status,
+          approvedBy: {
+            approvedByID: JSON.parse(sessionStorage.getItem('user')).userid,
+            approvedByUserName: JSON.parse(sessionStorage.getItem('user')).username
+          },
+          modified: {
+            modified_at: Date.now(),
+            modified_by: JSON.parse(sessionStorage.getItem('user')).username
+          }
+        })
+        .subscribe( (val: any) => {
+          if (val.data) {
+            this.tempLv = null;
+            this.editLeaveadminForm.reset();
+            $('#approverejectmodal').modal('hide');
+            this.toastr.success('Leave Updated sucessfully...!', 'Success');
+            this.loadallLeaveApplied();
+            this.cdRef.detectChanges();
+          }
+        }, error => this.toastr.error(error, 'Error'));
+    } else {
+      $('#approverejectmodal').modal('hide');
+    }
+
+  }
+
+  rejectleave(status) {
+    if (this.tempLv.status === 'pending') {
+      this.approveorejectLeave
+        .mutate({
+          id: this.tempLv._id,
+          user_ID: this.tempLv.user_ID,
+          leavetype: this.tempLv.leavetype,
+          leave_ID: this.tempLv.leave_ID,
+          nofdays: this.tempLv.nofdays,
+          status: status,
+          rejectedBy: {
+            rejectedByID: JSON.parse(sessionStorage.getItem('user')).userid,
+            rejectedByUserName: JSON.parse(sessionStorage.getItem('user')).username
+          },
+          modified: {
+            modified_at: Date.now(),
+            modified_by: JSON.parse(sessionStorage.getItem('user')).username
+          }
+        })
+        .subscribe( (val: any) => {
+          if (val.data) {
+            this.tempLv = null;
+            this.editLeaveadminForm.reset();
+            $('#approverejectmodal').modal('hide');
+            this.toastr.success('Leave Updated sucessfully...!', 'Success');
+            this.loadallLeaveApplied();
+            this.cdRef.detectChanges();
+          }
+        }, error => this.toastr.error(error, 'Error'));
+    } else {
+      $('#approverejectmodal').modal('hide');
+    }
   }
 
   ngOnDestroy(): void {

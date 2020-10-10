@@ -55,6 +55,7 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
   remainTemp: any;
   tempLv: any;
   nofSub: Subscription;
+  currUser: any;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -70,8 +71,7 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
 
-    this.loadallLeaveTypes();
-    this.loadallLeaveApplied();
+    this.getUser();
 
     this.editLeaveadminForm = this.formBuilder.group({
       _id: [''],
@@ -117,36 +117,19 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
     };
   }
 
-  loadallLeaveApplied() {
+  getUser() {
     this.apollo.watchQuery({
-      query: GET_USERLEAVES_QUERY,
+      query: GET_USER_QUERY,
       variables: {
-        pagination: {
-          limit: 100
+        query: {
+          id: JSON.parse(sessionStorage.getItem('user')).userid
         }
       },
     }).valueChanges.subscribe((response: any) => {
-      if (response.data.getLeavesApplied) {
-        this.allLeaveApplied = response.data.getLeavesApplied;
-        this.rows = this.allLeaveApplied;
-        this.srch = [...this.rows];
-        this.cdRef.detectChanges();
-      }
-    });
-  }
-
-
-  loadallLeaveTypes() {
-    this.apollo.watchQuery({
-      query: GET_LEAVETYPES_QUERY,
-      variables: {
-        pagination: {
-          limit: 100
-        }
-      },
-    }).valueChanges.subscribe((response: any) => {
-      if (response.data.getLeaveTypes) {
-        this.allLeaveTypes = response.data.getLeaveTypes;
+      if (response.data.users) {
+        this.currUser = response.data.users[0];
+        this.rows = this.currUser.leaveApplied;
+        // this.srch = [...this.rows];
         this.cdRef.detectChanges();
       }
     });
@@ -174,31 +157,20 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
   }
 
   getUserPendingLeaves(l?) { // Para for Edit Only
-    this.apollo.watchQuery({
-      query: GET_USER_QUERY,
-      variables: {
-        query: {
-          id: this.tempEditUserID
-        }
-      },
-    }).valueChanges.subscribe((response: any) => {
-      if (response.data.users) {
-        this.checkPendingLeaveForUser = response.data.users[0].designation.leavetype;
-        _.forEach(this.checkPendingLeaveForUser, vl => {
-          if (vl.remainingleaves === null || vl.remainingleaves === 'undefined') {
-            vl.remainingleaves = vl.leavedays;
-          }
-        });
-        (this.isEdit && l) && this.onltypechange({value: l.leave_ID}); // Only After Response
-        this.cdRef.detectChanges();
+    this.checkPendingLeaveForUser = this.currUser.designation.leavetype;
+    _.forEach(this.checkPendingLeaveForUser, vl => {
+      if (vl.remainingleaves === null || vl.remainingleaves === 'undefined') {
+        vl.remainingleaves = vl.leavedays;
       }
-    }, error => this.toastr.error(error, 'Error'));
+    });
+    (this.isEdit && l) && this.onltypechange({value: l.leave_ID}); // Only After Response
+    this.cdRef.detectChanges();
   }
 
   // Add leaves for admin Modal Api Call
   addleaves(f) {
 
-    const lv = _.filter(this.allLeaveTypes, p => p._id === f.value.leavetype);
+    const lv = _.filter(this.currUser.designation.leavetype, p => p.leave_ID === f.value.leavetype);
 
     this.registerLeaveGQL
       .mutate({
@@ -207,7 +179,7 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
         email: JSON.parse(sessionStorage.getItem('user')).email,
         emmpid: JSON.parse(sessionStorage.getItem('user')).emmpid,
         leavetype: lv[0].leavetype,
-        leave_ID: lv[0]._id,
+        leave_ID: lv[0].leave_ID,
         nofdays: f.value.nofdays,
         remainingleaves: f.value.remainingleaves,
         reason: f.value.reason,
@@ -221,7 +193,7 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
           this.editLeaveadminForm.reset();
           $('#add_leave').modal('hide');
           this.toastr.success('Leave Applied added sucessfully...!', 'Success');
-          this.loadallLeaveApplied();
+          this.getUser();
           this.cdRef.detectChanges();
         }
       }, error => this.toastr.error(error, 'Error'));
@@ -237,7 +209,7 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
   // Edit leaves Modal Api Call
   editLeaves(f) {
 
-    const lv = _.filter(this.allLeaveApplied, p => p._id === f.value._id);
+    const lv = _.filter(this.currUser.leaveApplied, p => p._id === f.value._id);
 
     this.updateLeaveGQL
       .mutate({
@@ -263,7 +235,7 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
           this.editLeaveadminForm.reset();
           $('#edit_leave').modal('hide');
           this.toastr.success('Leave Updated sucessfully...!', 'Success');
-          this.loadallLeaveApplied();
+          this.getUser();
           this.cdRef.detectChanges();
         }
       }, error => this.toastr.error(error, 'Error'));
@@ -286,8 +258,8 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
         .subscribe((val: any) => {
             if (val.data.deleteLeave) {
               $('#delete_approve').modal('hide');
+              this.getUser();
               this.toastr.success('Leave deleted', 'Success');
-              this.loadallLeaveApplied();
             }
           }, error =>
             this.toastr.error(error, 'Error')
@@ -303,7 +275,7 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
     this.isEdit = true;
     this.tempEditUserID = null;
     this.editLeaveadminForm.reset();
-    const l = this.allLeaveApplied.find((item) => item._id === id);
+    const l = this.currUser.leaveApplied.find((item) => item._id === id);
     console.log(l);
     this.tempEditUserID = l.user_ID;
     this.editLeaveadminForm.patchValue(l);
@@ -318,7 +290,6 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
 
   apprRejctedit(lv) {
     this.tempLv = lv;
-    console.log(lv);
   }
 
   approveleave(status) {
@@ -347,7 +318,6 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
             this.editLeaveadminForm.reset();
             $('#approverejectmodal').modal('hide');
             this.toastr.success('Leave Updated sucessfully...!', 'Success');
-            this.loadallLeaveApplied();
             this.cdRef.detectChanges();
           }
         }, error => this.toastr.error(error, 'Error'));
@@ -383,7 +353,6 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
           this.editLeaveadminForm.reset();
           $('#approverejectmodal').modal('hide');
           this.toastr.success('Leave Updated sucessfully...!', 'Success');
-          this.loadallLeaveApplied();
           this.cdRef.detectChanges();
         }
       }, error => this.toastr.error(error, 'Error'));

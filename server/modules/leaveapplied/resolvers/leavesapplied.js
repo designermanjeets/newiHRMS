@@ -6,10 +6,11 @@ const getLeavesApplied = async (_, args, { me })  => new Promise(async (resolve,
   User.find(param,(err, result) => {
     if (err) reject(err);
     else {
-      const filtrArry = result.map(val => {
-        return val.leaveApplied;
+      const filtrArry = [];
+        result.forEach(val => {
+          val.leaveApplied.length && filtrArry.push(...val.leaveApplied)
       });
-      resolve(filtrArry[0]);
+      resolve(filtrArry);
     }
   }).skip(args.query.offset).limit(args.query.limit)
 });

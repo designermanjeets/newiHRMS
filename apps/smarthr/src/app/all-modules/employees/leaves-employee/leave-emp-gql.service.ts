@@ -230,6 +230,31 @@ export const GET_USER_QUERY = gql`
             remainingleaves
           }
         }
+        leaveApplied {
+          _id
+          user_ID
+          username
+          email
+          emmpid
+          leavetype
+          reason
+          leave_ID
+          nofdays
+          status
+          created_at
+          created_by
+          from
+          to
+          remainingleaves
+          approvedBy {
+            approvedByID
+            approvedByUserName
+          }
+          rejectedBy {
+            rejectedByID
+            rejectedByUserName
+          }
+        }
       }
   }
 `;

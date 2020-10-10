@@ -101,6 +101,7 @@ const typeDefs = gql`
     created_by: String,
     modified: [modifiedTypes],
     Role: Role
+    leaveApplied: [LeaveApplied]
   }
 
   type ChangePasswordUser{

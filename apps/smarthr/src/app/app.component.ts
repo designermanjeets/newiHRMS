@@ -23,10 +23,7 @@ export class AppComponent implements OnInit {
     if (!sessionStorage.getItem(('JWT_TOKEN'))) {
       this.router.navigateByUrl('./pages/login');
     } else {
-      this.authenticationService.user.subscribe(x => {
-        this.user = x;
-        console.log(x);
-      });
+      this.authenticationService.user.subscribe(x => this.user = x);
     }
 
     if (sessionStorage.getItem(('JWT_TOKEN')) && sessionStorage.getItem('sessionExpire')) {
@@ -77,7 +74,7 @@ export class AppComponent implements OnInit {
   }
 
   get isAdmin() {
-    return this.user && this.user.role === Role.ADMIN;
+    return this.user && this.user.Role.role_name === Role.ADMIN;
   }
 
 }

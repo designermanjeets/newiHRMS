@@ -19,7 +19,6 @@ export class LoginComponent implements OnInit {
   isloggedin: boolean;
   ispwdreset: boolean;
 
-  private userSubject: BehaviorSubject<User>;
   public user: Observable<User>;
 
   constructor(
@@ -81,17 +80,18 @@ export class LoginComponent implements OnInit {
       })
       .subscribe( (val: any) => {
         if (val.data.login.user) {
+
           sessionStorage.setItem('JWT_TOKEN', val.data.login.token);
           sessionStorage.setItem('user', JSON.stringify({
             email: val.data.login.user.email,
-            role: val.data.login.user.role,
+            role: val.data.login.user.Role.role_name,
             username: val.data.login.user.username,
             userid: val.data.login.user._id,
             emmpid: val.data.login.user.emmpid,
             corporateid: val.data.login.user.corporateid
           }));
 
-          this.authenticationService.setLogin(val.data.login.user);
+          this.authenticationService.setLogin(JSON.parse(sessionStorage.getItem('user')));
 
           this.toastr.success('Login Success', 'Success', { timeOut: 3000 });
           setTimeout(_ => this.router.navigateByUrl('/dashboard'), 2000);

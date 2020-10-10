@@ -14,6 +14,9 @@ import { DepartmentsComponent } from './departments/departments.component';
 import { DesignationComponent } from './designation/designation.component';
 import { TimesheetComponent } from './timesheet/timesheet.component';
 import { OvertimeComponent } from './overtime/overtime.component';
+import { Role } from '../../_helpers/_models/user';
+import { AuthGuard } from '../../_helpers/auth.guard';
+import { AdminDashboardComponent } from '../dashboard/admin-dashboard/admin-dashboard.component';
 
 const routes: Routes = [
   {
@@ -34,12 +37,16 @@ const routes: Routes = [
       },
       {
         path: 'holidays',
-        component: HolidaysComponent
+        component: HolidaysComponent,
+        canActivate: [AuthGuard],
+        data: { roles: [Role.HRMANAGER] }
       },
       {
         path: 'adminleaves',
-        component: LeavesAdminComponent
-      },
+        component: LeavesAdminComponent,
+        canActivate: [AuthGuard],
+        data: { roles: [Role.ADMIN, Role.HRMANAGER] }
+        },
       {
         path: 'employeeleaves',
         component: LeavesEmployeeComponent
@@ -50,7 +57,9 @@ const routes: Routes = [
       },
       {
         path: 'attendanceadmin',
-        component: AttendanceAdminComponent
+        component: AttendanceAdminComponent,
+        canActivate: [AuthGuard],
+        data: { roles: [Role.ADMIN, Role.HRMANAGER] }
       },
       {
         path: 'attendanceemployee',
@@ -58,11 +67,15 @@ const routes: Routes = [
       },
       {
         path: 'departments',
-        component: DepartmentsComponent
+        component: DepartmentsComponent,
+        canActivate: [AuthGuard],
+        data: { roles: [Role.ADMIN] }
       },
       {
         path: 'designation',
-        component: DesignationComponent
+        component: DesignationComponent,
+        canActivate: [AuthGuard],
+        data: { roles: [Role.ADMIN, Role.HRMANAGER] }
       },
       {
         path: 'timesheet',

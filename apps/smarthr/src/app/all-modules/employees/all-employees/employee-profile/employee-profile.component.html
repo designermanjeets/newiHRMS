@@ -16,7 +16,7 @@
     <!-- /Page Header -->
 
     <div class="card mb-0">
-        <div class="card-body">
+        <div class="card-body" *ngIf="employee">
             <div class="row">
                 <div class="col-md-12">
                     <div class="profile-view">
@@ -29,36 +29,36 @@
                             <div class="row">
                                 <div class="col-md-5">
                                     <div class="profile-info-left">
-                                        <h3 class="user-name m-t-0 mb-0">John Doe</h3>
-                                        <h6 class="text-muted">UI/UX Design Team</h6>
-                                        <small class="text-muted">Web Designer</small>
-                                        <div class="staff-id">Employee ID : FT-0001</div>
-                                        <div class="small doj text-muted">Date of Join : 1st Jan 2013</div>
-                                        <div class="staff-msg"><a class="btn btn-custom" routerLink="/apps/chat">Send
-                                                Message</a></div>
+                                        <h3 class="user-name m-t-0 mb-0">{{employee.firstname}} {{employee.lastname}}</h3>
+                                        <h6 class="text-muted">{{employee.department}}</h6>
+                                        <small class="text-muted">{{employee.designation.designation}}</small>
+                                        <div class="staff-id">Employee ID : {{employee.emmpid}}</div>
+                                        <div class="small doj text-muted">Date of Join : {{employee.joiningdate | date}}</div>
+<!--                                        <div class="staff-msg"><a class="btn btn-custom" routerLink="/apps/chat">Send-->
+<!--                                                Message</a></div>-->
                                     </div>
                                 </div>
                                 <div class="col-md-7">
                                     <ul class="personal-info">
                                         <li>
                                             <div class="title">Phone:</div>
-                                            <div class="text"><a href="">9876543210</a></div>
+                                            <div class="text"><a href="">{{employee.mobile || '921234567'}}</a></div>
                                         </li>
                                         <li>
                                             <div class="title">Email:</div>
-                                            <div class="text"><a href="">johndoe@example.com</a></div>
+                                            <div class="text"><a href="">{{employee.email || 'some@email.com'}}</a></div>
                                         </li>
                                         <li>
                                             <div class="title">Birthday:</div>
-                                            <div class="text">24th July</div>
+                                            <div class="text">{{employee.DOB || currDate | date}}</div>
                                         </li>
                                         <li>
                                             <div class="title">Address:</div>
-                                            <div class="text">1861 Bayonne Ave, Manchester Township, NJ, 08759</div>
+                                            <div class="text">{{employee.address|| 'Address 1, Block 2, house 577'}}</div>
                                         </li>
                                         <li>
                                             <div class="title">Gender:</div>
-                                            <div class="text">Male</div>
+                                            <div class="text">{{employee.gender || 'Male'}}</div>
                                         </li>
                                         <li>
                                             <div class="title">Reports to:</div>
@@ -69,7 +69,7 @@
                                                     </div>
                                                 </div>
                                                 <a routerLink="/employees/employeeprofile">
-                                                    Jeffery Lalor
+                                                    {{employee.approvers && employee.approvers[0] || 'Senior'}}
                                                 </a>
                                             </div>
                                         </li>
@@ -92,8 +92,8 @@
                     <li class="nav-item"><a href="#emp_profile" data-toggle="tab" class="nav-link active">Profile</a>
                     </li>
                     <li class="nav-item"><a href="#emp_projects" data-toggle="tab" class="nav-link">Projects</a></li>
-                    <li class="nav-item"><a href="#bank_statutory" data-toggle="tab" class="nav-link">Bank & Statutory
-                            <small class="text-danger">(Admin Only)</small></a></li>
+<!--                    <li class="nav-item"><a href="#bank_statutory" data-toggle="tab" class="nav-link">Bank & Statutory-->
+<!--                            <small class="text-danger">(Admin Only)</small></a></li>-->
                 </ul>
             </div>
         </div>
@@ -639,7 +639,7 @@
         <!-- /Projects Tab -->
 
         <!-- Bank Statutory Tab -->
-        <div class="tab-pane fade" id="bank_statutory">
+        <div class="tab-pane fade" id="bank_statutory" *ngIf="false">
             <div class="card">
                 <div class="card-body">
                     <h3 class="card-title"> Basic Salary Information</h3>
@@ -1088,7 +1088,7 @@
                     <div class="form-scroll">
                         <div class="card">
                             <div class="card-body">
-                                <h3 class="card-title">Family Member <a 
+                                <h3 class="card-title">Family Member <a
                                         class="delete-icon"><i class="fa fa-trash-o"></i></a></h3>
                                 <div class="row">
                                     <div class="col-md-6">
@@ -1123,7 +1123,7 @@
 
                         <div class="card">
                             <div class="card-body">
-                                <h3 class="card-title">Education Informations <a 
+                                <h3 class="card-title">Education Informations <a
                                         class="delete-icon"><i class="fa fa-trash-o"></i></a></h3>
                                 <div class="row">
                                     <div class="col-md-6">
@@ -1269,7 +1269,7 @@
                     <div class="form-scroll">
                         <div class="card">
                             <div class="card-body">
-                                <h3 class="card-title">Education Informations <a 
+                                <h3 class="card-title">Education Informations <a
                                         class="delete-icon"><i class="fa fa-trash-o"></i></a></h3>
                                 <div class="row">
                                     <div class="col-md-6">
@@ -1453,7 +1453,7 @@
 
                         <div class="card">
                             <div class="card-body">
-                                <h3 class="card-title">Experience Informations <a 
+                                <h3 class="card-title">Experience Informations <a
                                         class="delete-icon"><i class="fa fa-trash-o"></i></a></h3>
                                 <div class="row">
                                     <div class="col-md-6">

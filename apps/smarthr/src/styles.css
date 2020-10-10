@@ -3265,6 +3265,8 @@ table.dataTable thead > tr > td.sorting {
 }
 .personal-info li {
 	margin-bottom: 10px;
+  display: inline-block;
+  width: 100%;
 }
 .personal-info {
 	list-style: none;

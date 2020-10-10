@@ -48,6 +48,13 @@ export const GET_USERS_QUERY = gql`
         designation {
           _id
           designation
+          leavetype {
+            leavetype
+            leave_ID
+            leavedays
+            carryforward
+            carrymax
+          }
         },
         _id,
         Role {

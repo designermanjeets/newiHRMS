@@ -64,6 +64,10 @@ export class LoginGQL extends Mutation {
           username
           corporateid
           _id
+          Role {
+            role_name
+            _id
+          }
         },
         token
       }

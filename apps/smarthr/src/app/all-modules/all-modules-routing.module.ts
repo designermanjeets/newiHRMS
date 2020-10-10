@@ -24,9 +24,7 @@ const routes: Routes = [
       },
       {
         path: 'employees',
-        loadChildren: () => import('./employees/employees.module').then(m => m.EmployeesModule),
-        // canActivate: [AuthGuard],
-        // data: { roles: [Role.ADMIN] }
+        loadChildren: () => import('./employees/employees.module').then(m => m.EmployeesModule)
       },
       {
         path: 'clients',
@@ -50,7 +48,9 @@ const routes: Routes = [
       },
       {
         path: 'payroll',
-        loadChildren: () => import('./payroll/payroll.module').then(m => m.PayrollModule)
+        loadChildren: () => import('./payroll/payroll.module').then(m => m.PayrollModule),
+        canActivate: [AuthGuard],
+        data: { roles: [Role.ADMIN, Role.HRMANAGER] }
       },
       {
         path: 'policies',
@@ -58,7 +58,9 @@ const routes: Routes = [
       },
       {
         path: 'reports',
-        loadChildren: () => import('./reports/reports.module').then(m => m.ReportsModule)
+        loadChildren: () => import('./reports/reports.module').then(m => m.ReportsModule),
+        canActivate: [AuthGuard],
+        data: { roles: [Role.ADMIN, Role.HRMANAGER] }
       },
       {
         path: 'performance',
@@ -86,11 +88,15 @@ const routes: Routes = [
       },
       {
         path: 'assets',
-        loadChildren: () => import('./assets/assets.module').then(m => m.AssetsModule)
+        loadChildren: () => import('./assets/assets.module').then(m => m.AssetsModule),
+        canActivate: [AuthGuard],
+        data: { roles: [Role.ADMIN, Role.HRMANAGER] }
       },
       {
         path: 'jobs',
-        loadChildren: () => import('./jobs/jobs.module').then(m => m.JobsModule)
+        loadChildren: () => import('./jobs/jobs.module').then(m => m.JobsModule),
+        canActivate: [AuthGuard],
+        data: { roles: [Role.ADMIN, Role.HRMANAGER] }
       },
       {
         path: 'knowledgebase',
@@ -106,7 +112,9 @@ const routes: Routes = [
       },
       {
         path: 'settings',
-        loadChildren: () => import('./settings/settings.module').then(m => m.SettingsModule)
+        loadChildren: () => import('./settings/settings.module').then(m => m.SettingsModule),
+        canActivate: [AuthGuard],
+        data: { roles: [Role.ADMIN, Role.HRMANAGER] }
       },
       {
         path: 'pages',

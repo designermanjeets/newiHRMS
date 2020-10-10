@@ -1,5 +1,5 @@
 <!-- Page Content -->
-<div class="content container-fluid">
+<div class="content container-fluid" *ngIf="currUser">
     <div class="row">
         <div class="col-md-12">
             <div class="welcome-box">
@@ -7,8 +7,8 @@
                     <img alt="" src="assets/img/profiles/avatar-02.jpg">
                 </div>
                 <div class="welcome-det">
-                    <h3>Welcome, John Doe</h3>
-                    <p>Monday, 20 May 2019</p>
+                    <h3>Welcome, {{currUser.firstname}} {{currUser.lastname}}</h3>
+                    <p>{{currDate | date:'fullDate'}}</p>
                 </div>
             </div>
         </div>
@@ -176,13 +176,10 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="time-list">
-                                <div class="dash-stats-list">
-                                    <h4>4.5</h4>
-                                    <p>Leave Taken</p>
-                                </div>
-                                <div class="dash-stats-list">
-                                    <h4>12</h4>
-                                    <p>Remaining</p>
+                                <div class="dash-stats-list" *ngFor="let l of currUser.designation.leavetype">
+                                    <h4>{{l.leavetype}}</h4>
+                                    <p>Total: {{l.leavedays}}</p>
+                                    <p>Remaining: {{l.leavedays}}</p>
                                 </div>
                             </div>
                             <div class="request-btn">

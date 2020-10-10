@@ -3,13 +3,17 @@ export class User {
   firstName: string;
   lastName: string;
   username: string;
-  role: Role;
+  role: string;
+  Role: {
+    role_name: Role
+    _id: string
+  };
   token?: string;
 }
 
 export enum Role {
   ADMIN = 'Admin',
-  HRMANAGER = 'Hr Manager',
+  HRMANAGER = 'HR Manager',
   MANAGER = 'Manager',
   EMPLOYEE = 'Employee'
 }

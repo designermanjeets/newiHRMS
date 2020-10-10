@@ -79,15 +79,15 @@
                     </li>
                          <li class="submenu" [ngClass]="{ 'active' : urlComplete.mainUrl === 'employees' && urlComplete.subUrl === 'employeepage'
                          || urlComplete.mainUrl === 'employees' && urlComplete.subUrl === 'holidays' || urlComplete.mainUrl === 'employees' && urlComplete.subUrl === 'adminleaves'
-                        || urlComplete.mainUrl === 'employees' && urlComplete.subUrl === 'employeeleaves' || urlComplete.mainUrl === 'employees' && urlComplete.subUrl === 'leavesettings'
-                        || urlComplete.mainUrl === 'employees' && urlComplete.subUrl === 'attendanceadmin' || urlComplete.mainUrl === 'employees' && urlComplete.subUrl === 'attendanceemployee'
+                        || urlComplete.mainUrl === 'employees' && urlComplete.subUrl === 'leavesettings'
+                        || urlComplete.mainUrl === 'employees' && urlComplete.subUrl === 'attendanceadmin'
                         || urlComplete.mainUrl === 'employees' && urlComplete.subUrl === 'departments' || urlComplete.mainUrl === 'employees' && urlComplete.subUrl === 'designation'
                         || urlComplete.mainUrl === 'employees' && urlComplete.subUrl === 'timesheet' || urlComplete.mainUrl === 'employees' && urlComplete.subUrl === 'overtime'
                         || urlComplete.mainUrl === 'employees' && urlComplete.subUrl === 'employeelist'}">
                         <a href="javascript:" [ngClass]="{ 'subdrop' : urlComplete.mainUrl === 'employees' && urlComplete.subUrl === 'employeepage'
                         || urlComplete.mainUrl === 'employees' && urlComplete.subUrl === 'holidays' || urlComplete.mainUrl === 'employees' && urlComplete.subUrl === 'adminleaves'
-                       || urlComplete.mainUrl === 'employees' && urlComplete.subUrl === 'employeeleaves' || urlComplete.mainUrl === 'employees' && urlComplete.subUrl === 'leavesettings'
-                       || urlComplete.mainUrl === 'employees' && urlComplete.subUrl === 'attendanceadmin' || urlComplete.mainUrl === 'employees' && urlComplete.subUrl === 'attendanceemployee'
+                       || urlComplete.mainUrl === 'employees' && urlComplete.subUrl === 'leavesettings'
+                       || urlComplete.mainUrl === 'employees' && urlComplete.subUrl === 'attendanceadmin'
                        || urlComplete.mainUrl === 'employees' && urlComplete.subUrl === 'departments' || urlComplete.mainUrl === 'employees' && urlComplete.subUrl === 'designation'
                        || urlComplete.mainUrl === 'employees' && urlComplete.subUrl === 'timesheet' || urlComplete.mainUrl === 'employees' && urlComplete.subUrl === 'overtime'
                        || urlComplete.mainUrl === 'employees' && urlComplete.subUrl === 'employeelist'}" class="noti-dot"><i class="la la-user"></i> <span> Employees</span> <span
@@ -95,8 +95,8 @@
                         <ul style="display: none;"
                         [ngStyle]="{ 'display' : urlComplete.mainUrl === 'employees' && urlComplete.subUrl === 'employeepage'
                         || urlComplete.mainUrl === 'employees' && urlComplete.subUrl === 'holidays' || urlComplete.mainUrl === 'employees' && urlComplete.subUrl === 'adminleaves'
-                       || urlComplete.mainUrl === 'employees' && urlComplete.subUrl === 'employeeleaves' || urlComplete.mainUrl === 'employees' && urlComplete.subUrl === 'leavesettings'
-                       || urlComplete.mainUrl === 'employees' && urlComplete.subUrl === 'attendanceadmin' || urlComplete.mainUrl === 'employees' && urlComplete.subUrl === 'attendanceemployee'
+                       || urlComplete.mainUrl === 'employees' && urlComplete.subUrl === 'leavesettings'
+                       || urlComplete.mainUrl === 'employees' && urlComplete.subUrl === 'attendanceadmin'
                        || urlComplete.mainUrl === 'employees' && urlComplete.subUrl === 'departments' || urlComplete.mainUrl === 'employees' && urlComplete.subUrl === 'designation'
                        || urlComplete.mainUrl === 'employees' && urlComplete.subUrl === 'timesheet' || urlComplete.mainUrl === 'employees' && urlComplete.subUrl === 'overtime'
                        || urlComplete.mainUrl === 'employees' && urlComplete.subUrl === 'employeelist' ? 'block' : 'none' }">
@@ -113,11 +113,6 @@
                                     [ngClass]="{ 'active' : urlComplete.subUrl === 'adminleaves'}">Leaves (Admin) <span
                                         class="badge badge-pill bg-primary float-right">1</span></a>
                             </li>
-                            <li routerLink="/employees/employeeleaves">
-                                <a href="javascript:"
-                                    [ngClass]="{ 'active' : urlComplete.subUrl === 'employeeleaves'}">Leaves
-                                    (Employee)</a>
-                            </li>
                             <li routerLink="/employees/leavesettings">
                                 <a href="javascript:"
                                     [ngClass]="{ 'active' : urlComplete.subUrl === 'leavesettings'}">Leave Types</a>
@@ -126,11 +121,6 @@
                                 <a href="javascript:"
                                     [ngClass]="{ 'active' : urlComplete.subUrl === 'attendanceadmin'}">Attendance
                                     (Admin)</a>
-                            </li>
-                            <li routerLink="/employees/attendanceemployee">
-                                <a href="javascript:"
-                                    [ngClass]="{ 'active' : urlComplete.subUrl === 'attendanceemployee'}">Attendance
-                                    (Employee)</a>
                             </li>
                             <li routerLink="/employees/departments">
                                 <a href="javascript:"
@@ -150,6 +140,23 @@
                             </li>
                         </ul>
                     </li>
+
+                  <li [ngClass]="{ 'active' : urlComplete.subUrl === 'employeeprofile' || urlComplete.subUrl === 'employeeprofile' }">
+                    <a routerLink="/employees/employeeprofile">
+                      <i class="las la-user-tie"></i><span>Employee Profile</span> </a>
+                  </li>
+
+                  <li [ngClass]="{ 'active' : urlComplete.subUrl === 'employeeleaves' || urlComplete.subUrl === 'employeeleaves' }">
+                    <a routerLink="/employees/employeeleaves">
+                      <i class="las la-sign-out-alt"></i><span>Leaves (Employee)</span></a>
+                  </li>
+
+                  <li [ngClass]="{ 'active' : urlComplete.subUrl === 'attendanceemployee' || urlComplete.subUrl === 'attendanceemployee' }">
+                    <a routerLink="/employees/attendanceemployee">
+                      <i class="las la-building"></i><span>Attendance (Employee)</span></a>
+                  </li>
+
+
                     <li [ngClass]="{ 'active' : urlComplete.subUrl === 'clientspage' || urlComplete.subUrl === 'clientslist' }">
                         <a routerLink="/clients/clientspage" ><i
                                 class="la la-users"></i> <span>Clients</span></a>
@@ -363,11 +370,11 @@
                     <li class="menu-title">
                         <span>Pages</span>
                     </li>
-                    <li class="submenu" [ngClass]="{ 'active' : urlComplete.mainUrl === 'employees' && urlComplete.subUrl === 'employeeprofile' || urlComplete.mainUrl === 'clients' && urlComplete.subUrl === 'clientsprofile'}">
-                        <a href="javascript:" [ngClass]="{ 'subdrop' : urlComplete.mainUrl === 'employees' && urlComplete.subUrl === 'employeeprofile' || urlComplete.mainUrl === 'clients' && urlComplete.subUrl === 'clientsprofile'}"><i class="la la-user"></i> <span> Profile </span> <span
+                    <li class="submenu" [ngClass]="{ 'active' : urlComplete.mainUrl === 'clients' && urlComplete.subUrl === 'clientsprofile'}">
+                        <a href="javascript:" [ngClass]="{ 'subdrop' : urlComplete.mainUrl === 'clients' && urlComplete.subUrl === 'clientsprofile'}"><i class="la la-user"></i> <span> Profile </span> <span
                                 class="menu-arrow"></span></a>
                         <ul style="display: none;"
-                        [ngStyle]="{ 'display' : urlComplete.mainUrl === 'employees' && urlComplete.subUrl === 'employeeprofile' || urlComplete.mainUrl === 'clients' && urlComplete.subUrl === 'clientsprofile' ? 'block' : 'none' }">
+                        [ngStyle]="{ 'display' : urlComplete.mainUrl === 'clients' && urlComplete.subUrl === 'clientsprofile' ? 'block' : 'none' }">
                             <li routerLink="/employees/employeeprofile">
                                 <a href="javascript:" [ngClass]="{'active' : urlComplete.subUrl === 'employeeprofile'}">
                                     Employee Profile </a>

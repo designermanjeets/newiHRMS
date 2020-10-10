@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { EmployeesComponent } from './employees.component';
 import { EmployeePageContentComponent } from './all-employees/employee-page-content/employee-page-content.component';
 import { EmployeeListComponent } from './all-employees/employee-list/employee-list.component';
@@ -16,7 +16,6 @@ import { TimesheetComponent } from './timesheet/timesheet.component';
 import { OvertimeComponent } from './overtime/overtime.component';
 import { Role } from '../../_helpers/_models/user';
 import { AuthGuard } from '../../_helpers/auth.guard';
-import { AdminDashboardComponent } from '../dashboard/admin-dashboard/admin-dashboard.component';
 
 const routes: Routes = [
   {
@@ -25,11 +24,15 @@ const routes: Routes = [
     children: [
       {
         path: 'employeepage',
-        component: EmployeePageContentComponent
+        component: EmployeePageContentComponent,
+        canActivate: [AuthGuard],
+        data: { roles: [Role.ADMIN, Role.HRMANAGER] }
       },
       {
         path: 'employeelist',
-        component: EmployeeListComponent
+        component: EmployeeListComponent,
+        canActivate: [AuthGuard],
+        data: { roles: [Role.ADMIN, Role.HRMANAGER] }
       },
       {
         path: 'employeeprofile',
@@ -39,7 +42,7 @@ const routes: Routes = [
         path: 'holidays',
         component: HolidaysComponent,
         canActivate: [AuthGuard],
-        data: { roles: [Role.HRMANAGER] }
+        data: { roles: [Role.ADMIN, Role.HRMANAGER] }
       },
       {
         path: 'adminleaves',

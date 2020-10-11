@@ -23,6 +23,30 @@ import { GET_USERS_QUERY } from '../all-employees/employee-gql.service';
 import { MatAutocompleteSelectedEvent } from '@angular/material';
 import { GetUserRoles } from './leave-admin-gql.service';
 
+// Returns an array of dates between the two dates
+export const getDatesBetween = (startDate, endDate) => {
+  const dates = [];
+
+  // Strip hours minutes seconds etc.
+  let currentDate = new Date(
+    startDate.getFullYear(),
+    startDate.getMonth(),
+    startDate.getDate()
+  );
+
+  while (currentDate <= endDate) {
+    dates.push(currentDate);
+
+    currentDate = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      currentDate.getDate() + 1, // Will increase month if over range
+    );
+  }
+
+  return dates;
+};
+
 @Component({
   selector: 'app-leaves-admin',
   templateUrl: './leaves-admin.component.html',
@@ -65,6 +89,9 @@ export class LeavesAdminComponent implements OnInit, OnDestroy {
 
   useroptions: any[] = [];
   filteredOptions: Observable<string[]>;
+  todaysleaves: any;
+  approvedleaves: any;
+  pendingleaves: any;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -168,11 +195,29 @@ export class LeavesAdminComponent implements OnInit, OnDestroy {
         this.allLeaveApplied = response.data.getLeavesApplied;
         this.srch = this.allLeaveApplied;
         this.rows = [...this.srch];
+        this.todaysleaves = [];
+        this.pendingleaves = [];
+        this.approvedleaves = [];
+        _.forEach(this.allLeaveApplied, l => {
+          if ((new Date(l.from) <= new Date(Date.now()) && (new Date(Date.now()) <= new Date(l.to)))) {
+            this.todaysleaves.push(l);
+          }
+          if (l.status === 'pending') {
+            this.pendingleaves.push(l);
+          }
+          if (l.status === 'approved' || l.status === 'authorized') {
+            this.approvedleaves.push(l);
+          }
+        });
+
         this.cdRef.detectChanges();
       }
     });
   }
 
+  getStandAge(startDate) {
+    const age = moment().diff(startDate, 'months'); return isNaN(age) ? null : age;
+  }
 
   loadallLeaveTypes() {
     this.apollo.watchQuery({

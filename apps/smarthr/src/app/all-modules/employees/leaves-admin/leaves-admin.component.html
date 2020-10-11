@@ -23,26 +23,26 @@
     <div class="row">
         <div class="col-md-3">
             <div class="stats-info">
-                <h6>Today Presents</h6>
-                <h4>12 / 5</h4>
+                <h6>Today's Leaves</h6>
+                <h4>{{todaysleaves?.length}}</h4>
             </div>
         </div>
         <div class="col-md-3">
             <div class="stats-info">
-                <h6>Planned Leaves</h6>
-                <h4>8 <span>Today</span></h4>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="stats-info">
-                <h6>Unplanned Leaves</h6>
-                <h4>1 <span>Today</span></h4>
+                <h6>Approved Leaves</h6>
+                <h4>{{approvedleaves?.length}}</h4>
             </div>
         </div>
         <div class="col-md-3">
             <div class="stats-info">
                 <h6>Pending Requests</h6>
-                <h4>12</h4>
+                <h4>{{pendingleaves?.length}}</h4>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-info">
+                <h6>Total Requests</h6>
+                <h4>{{allLeaveApplied?.length}}</h4>
             </div>
         </div>
     </div>

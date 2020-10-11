@@ -60,7 +60,7 @@
         </div>
         <div class="col-sm-6 col-md-3">
             <div class="form-group form-focus select-focus">
-                <select class="select form-control" (input)="searchByDesignation($event.target.value)">
+                <select class="select form-control" (change)="searchByDesignation($event.target.value)">
                     <option value = "">Select Designation</option>
                     <option *ngFor="let d of allDesignations" [value]=d.designation>{{d.designation}}</option>
                 </select>

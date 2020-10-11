@@ -167,8 +167,8 @@ export class LeavesAdminComponent implements OnInit, OnDestroy {
     }).valueChanges.subscribe((response: any) => {
       if (response.data.getLeavesApplied) {
         this.allLeaveApplied = response.data.getLeavesApplied;
-        this.rows = this.allLeaveApplied;
-        this.srch = [...this.rows];
+        this.srch = this.allLeaveApplied;
+        this.rows = [...this.srch];
         this.cdRef.detectChanges();
       }
     });
@@ -372,38 +372,34 @@ export class LeavesAdminComponent implements OnInit, OnDestroy {
 
   // search by name
   searchName(val) {
-    this.rows.splice(0, this.rows.length);
-    const temp = this.srch.filter(d => {
-      val = val.toLowerCase();
-      return d.employeeName.toLowerCase().indexOf(val) !== -1 || !val;
+    this.rows = this.srch.filter(d => {
+      val = val.toString().toLowerCase().trim();
+      return d.username.toLowerCase().indexOf(val) !== -1 || !val;
     });
-    this.rows.push(...temp);
   }
 
   // search by status
   searchType(val) {
-    this.rows.splice(0, this.rows.length);
-    const temp = this.srch.filter(d => {
-      val = val.toLowerCase();
-      return d.leaveType.toLowerCase().indexOf(val) !== -1 || !val;
-    });
-    this.rows.push(...temp);
+      this.rows = this.srch.filter(d => {
+        val = val.toString().toLowerCase().trim();
+        return d.leavetype.toLowerCase().indexOf(val) !== -1 || !val;
+      });
   }
+
   searchStatus(val) {
-    this.rows.splice(0, this.rows.length);
-    const temp = this.srch.filter(d => {
-      val = val.toLowerCase();
+    this.rows = this.srch.filter(d => {
+      val = val.toString().toLowerCase().trim();
       return d.status.toLowerCase().indexOf(val) !== -1 || !val;
     });
-    this.rows.push(...temp);
   }
 
   // search by purchase
   searchByFrom(val) {
-    const mySimpleFormat = this.pipe.transform(val, 'dd-MM-yyyy');
-    this.rows.splice(0, this.rows.length);
-    const temp = this.srch.filter(d => d.from.indexOf(mySimpleFormat) !== -1 || !mySimpleFormat);
-    this.rows.push(...temp);
+
+    this.rows = this.srch.filter(d => {
+      const mySimpleFormat = moment(val).toISOString();
+      return d.from.toLowerCase().indexOf(mySimpleFormat) !== -1 || !mySimpleFormat;
+    });
     $('.floating')
       .on('focus blur', function(e) {
         $(this)
@@ -415,10 +411,12 @@ export class LeavesAdminComponent implements OnInit, OnDestroy {
 
   // search by warranty
   searchByTo(val) {
-    const mySimpleFormat = this.pipe.transform(val, 'dd-MM-yyyy');
-    this.rows.splice(0, this.rows.length);
-    const temp = this.srch.filter(d => d.to.indexOf(mySimpleFormat) !== -1 || !mySimpleFormat);
-    this.rows.push(...temp);
+
+    this.rows = this.srch.filter(d => {
+      const mySimpleFormat = moment(val).toISOString();
+      return d.to.toLowerCase().indexOf(mySimpleFormat) !== -1 || !mySimpleFormat;
+    });
+
     $('.floating')
       .on('focus blur', function(e) {
         $(this)

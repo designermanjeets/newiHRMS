@@ -228,9 +228,9 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
       },
     }).valueChanges.subscribe((response: any) => {
       this.lstEmployee = response.data.users;
-      this.rows = [];
-      this.rows = this.lstEmployee;
-      this.srch = [...this.rows];
+      this.srch = [];
+      this.srch = this.lstEmployee;
+      this.rows = [...this.srch];
       this.employeeGQLService.setUsers(response.data.users);
       this.cdref.detectChanges();
     }, error => this.toastr.error(error, 'Error'));
@@ -300,7 +300,6 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
     }).valueChanges.subscribe((response: any) => {
       if (response.data) {
         this.allRoles = response.data.getRoles;
-        console.log(this.allRoles);
         this.cdref.detectChanges();
       }
     }, error => this.toastr.error(error, 'Error'));
@@ -317,16 +316,6 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
     $('#add_employee').modal('show');
     this.editForm.reset();
     this.editForm.get('designation').disable();
-    // const permArr = this.editForm.get('permissions') as FormArray;
-    //
-    // _.forEach(['assets', 'holiday', 'leave'], grp => {
-    //   permArr.get(grp).get('read').patchValue(false);
-    //   permArr.get(grp).get('write').patchValue(false);
-    //   permArr.get(grp).get('create').patchValue(false);
-    //   permArr.get(grp).get('delete').patchValue(false);
-    //   permArr.get(grp).get('import').patchValue(false);
-    //   permArr.get(grp).get('export').patchValue(false);
-    // });
 
   }
 
@@ -433,30 +422,26 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
 
   // search by Id
   searchId(val) {
-    this.rows.splice(0, this.rows.length);
-    const temp = this.srch.filter(d => d.emmpid && d.emmpid.indexOf(val) !== -1 || !val);
-    this.rows.push(...temp);
-    this.cdref.detectChanges();
+    this.rows = this.srch.filter(d => {
+      val = val.toString().toLowerCase().trim();
+      return d.emmpid && d.emmpid.toLowerCase().indexOf(val) !== -1 || !val;
+    });
   }
 
   // search by name
   searchName(val) {
-    this.rows.splice(0, this.rows.length);
-    const temp = this.srch.filter(d => {
-      val = val.toLowerCase();
+    this.rows = this.srch.filter(d => {
+      val = val.toString().toLowerCase().trim();
       return d.firstname && d.firstname.toLowerCase().indexOf(val) !== -1 || !val;
     });
-    this.rows.push(...temp);
-    this.cdref.detectChanges();
   }
 
   // search by purchase
   searchByDesignation(val) {
-    this.rows.splice(0, this.rows.length);
-    val = val.toLowerCase();
-    const temp = this.srch.filter(d => d.designation && d.designation.designation.toLowerCase().indexOf(val) !== -1 || !val);
-    this.rows.push(...temp);
-    this.cdref.detectChanges();
+    this.rows = this.srch.filter(d => {
+      val = val.toString().toLowerCase().trim();
+      return d.designation && d.designation.designation.toLowerCase().indexOf(val) !== -1 || !val;
+    });
   }
 
   // getting the status value

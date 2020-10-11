@@ -58,22 +58,22 @@
         </div>
         <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">
             <div class="form-group form-focus select-focus">
-                <select class="select floating form-control" (input)="searchType($event.target.value)">
-                    <option> -- Select -- </option>
-                    <option>Casual Leave</option>
-                    <option>Medical Leave</option>
-                    <option>Loss of Pay</option>
+                <select class="select floating form-control" (change)="searchType($event.target.value)">
+                    <option value=""> -- Select -- </option>
+                    <option *ngFor="let l of allLeaveTypes" [value]="l.leavetype">{{l.leavetype}}</option>
                 </select>
                 <label class="focus-label">Leave Type</label>
             </div>
         </div>
         <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">
             <div class="form-group form-focus select-focus">
-                <select class="select floating form-control" (input)="searchStatus($event.target.value)">
-                    <option> -- Select -- </option>
-                    <option> Pending </option>
-                    <option> Approved </option>
-                    <option> Rejected </option>
+                <select class="select floating form-control" (change)="searchStatus($event.target.value)">
+                    <option value=""> -- Select -- </option>
+                    <option value="pending"> Pending </option>
+                    <option value="approved"> Approved </option>
+                    <option value="authorized"> Authorized </option>
+                    <option value="rejected"> Rejected </option>
+                    <option value="declined"> Declined </option>
                 </select>
                 <label class="focus-label">Leave Status</label>
             </div>
@@ -126,37 +126,37 @@
 <!--                  </ng-template>-->
 <!--                </ngx-datatable-column>-->
                 <ngx-datatable-column name="Username" prop="username">
-                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template let-rowIndex="rowIndex">
                     {{value}}
                   </ng-template>
                 </ngx-datatable-column>
                 <ngx-datatable-column name="Leave Type" prop="leavetype">
-                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template let-rowIndex="rowIndex">
                     {{value}}
                   </ng-template>
                 </ngx-datatable-column>
                 <ngx-datatable-column name="From" prop="from">
-                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template let-rowIndex="rowIndex">
                     {{value | date}}
                   </ng-template>
                 </ngx-datatable-column>
                 <ngx-datatable-column name="To" prop="to">
-                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template let-rowIndex="rowIndex">
                     {{value | date}}
                   </ng-template>
                 </ngx-datatable-column>
                 <ngx-datatable-column name="Days" prop="nofdays">
-                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template let-rowIndex="rowIndex">
                     {{value}}
                   </ng-template>
                 </ngx-datatable-column>
                 <ngx-datatable-column name="Reason" prop="reason">
-                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template let-rowIndex="rowIndex">
                     {{value}}
                   </ng-template>
                 </ngx-datatable-column>
                 <ngx-datatable-column name="Status" prop="status">
-                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template let-rowIndex="rowIndex">
                     <a class="btn btn-block btn-white btn-sm btn-rounded"
                        data-toggle="modal"
                        data-target="#approverejectmodal" (click)="apprRejctedit(row)">
@@ -171,31 +171,31 @@
                   </ng-template>
                 </ngx-datatable-column>
                 <ngx-datatable-column name="Approved by" prop="approvedBy.approvedByUserName">
-                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template let-rowIndex="rowIndex">
                     {{value}}
                   </ng-template>
                 </ngx-datatable-column>
 
                 <ngx-datatable-column name="Rejected by" prop="rejectedBy.rejectedByUserName">
-                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template let-rowIndex="rowIndex">
                     {{value}}
                   </ng-template>
                 </ngx-datatable-column>
 
                 <ngx-datatable-column name="Authorized by" prop="authorizedBy.authorizedByUserName">
-                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template let-rowIndex="rowIndex">
                     {{value}}
                   </ng-template>
                 </ngx-datatable-column>
 
                 <ngx-datatable-column name="Declined by" prop="declinedBy.declinedByUserName">
-                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template let-rowIndex="rowIndex">
                     {{value}}
                   </ng-template>
                 </ngx-datatable-column>
 
                 <ngx-datatable-column name="Actions" sortable="false" prop="_id" width="200">
-                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template let-rowIndex="rowIndex">
                     <div class="overlay"
                          *ngIf="(row.status === 'authorized' || row.status === 'declined') || !isAdmin"
                     ></div>

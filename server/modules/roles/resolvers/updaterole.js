@@ -15,6 +15,7 @@ const updateRole = (_, {
 }, {me,secret}) => new Promise(async (resolve, reject) => {
   try{
     let param ={
+      role_name,
       mod_employee,
       mod_holidays,
       mod_leaves,
@@ -39,37 +40,50 @@ const updateRole = (_, {
     }
     if (!rol) throw new Error('Role not found!!')
     if(rol) {
-      await Role.findByIdAndUpdate(id,{$set:{...param}},{new: true})
-        .then((result) => {
-          if(result && Object.keys(changeFields).length !== 0) {
-            // To Update All Departments LeaveTypes: TO:DO
-            const modifiedObj = {
-              role_ID: rol._id,
-              modified_by: modified[0].modified_by,
-              modified_at: modified[0].modified_at,
-              action: 'Changed',
-              changedObj: changeFields,
-              oldRoleData: rol
-            }
-            Audit.find({}).then(val =>{
-              if(val.length) {
-                Audit.findOneAndUpdate(
-                  { },
-                  { $push: { roleAudit: modifiedObj  }  }, { new: true })
-                  .then();
-              } else {
-                Audit.create({ roleAudit: modifiedObj  }, { new: true })
-                  .then();
-              }
-              resolve(result);
-            });
+      if (role_name !== rol.role_name) {
+        const updatedRole = await Role.findByIdAndUpdate(id,
+          {$set:{ role_name: param.role_name}},
+          {new: true}).then(result => {
+            updateresr(result, changeFields, modified, rol);
             resolve(result);
-          }
         })
+      } else {
+        const updatedRole = await Role.findByIdAndUpdate(id,
+          {$set:{ ...param}},
+          {new: true}).then(result => {
+          updateresr(result, changeFields, modified, rol);
+          resolve(result);
+        })
+      }
     }
   } catch(error){
     reject(error);
   }
 });
+
+const updateresr = function(result, changeFields, modified, rol) {
+  if(result && Object.keys(changeFields).length !== 0) {
+    // To Update All Departments LeaveTypes: TO:DO
+    const modifiedObj = {
+      role_ID: rol._id,
+      modified_by: modified[0].modified_by,
+      modified_at: modified[0].modified_at,
+      action: 'Changed',
+      changedObj: changeFields,
+      oldRoleData: rol
+    }
+    Audit.find({}).then(val =>{
+      if(val.length) {
+        Audit.findOneAndUpdate(
+          { },
+          { $push: { roleAudit: modifiedObj  }  }, { new: true })
+          .then();
+      } else {
+        Audit.create({ roleAudit: modifiedObj  }, { new: true })
+          .then();
+      }
+    });
+  }
+}
 
 module.exports = updateRole;

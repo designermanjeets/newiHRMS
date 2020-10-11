@@ -17,14 +17,14 @@
                     class="fa fa-plus"></i> Add Roles</a>
             <div class="roles-menu">
                 <ul>
-                    <li [ngClass]="{ 'active' : i === 0 }" *ngFor="let roles of allroles;let i = index">
-                        <a [routerLink]="['/settings/role/roledetails']" [queryParams]="{id: i}">{{roles.roleName}}
+                    <li [ngClass]="{ 'active' : selectedIndex === i }" *ngFor="let roles of allroles;let i = index">
+                        <a (click)="setForDetail(roles, i)" [routerLink]="['/settings/role/roledetails']" [queryParams]="{id: roles._id}">{{roles.role_name}}
                             <span class="role-action">
-                                <span class="action-circle large" data-toggle="modal" data-target="#edit_role" (click)="edit(roles.id)">
+                                <span class="action-circle large" data-toggle="modal" data-target="#edit_role" (click)="edit(roles)">
                                     <i class="material-icons">edit</i>
                                 </span>
                                 <span class="action-circle large delete-btn" data-toggle="modal"
-                                    data-target="#delete_role" (click)="tempId = roles.id">
+                                    data-target="#delete_role" (click)="tempId = roles">
                                     <i class="material-icons">delete</i>
                                 </span>
                             </span>
@@ -52,7 +52,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form (ngSubmit)="addRolesSubmit()" [formGroup]="addRoles">
+                <form (ngSubmit)="addRolesSubmit(addRoles)" [formGroup]="addRoles">
                     <div class="form-group">
                         <label>Role Name <span class="text-danger">*</span></label>
                         <input class="form-control" type="text" [class.invalid]="addRoles.get('addRoleName').invalid && addRoles.get('addRoleName').touched"
@@ -85,7 +85,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form (ngSubmit)="editRolesSubmit()" [formGroup]="editRoles">
+                <form (ngSubmit)="editRolesSubmit(editRoles)" [formGroup]="editRoles">
                     <div class="form-group">
                         <label>Role Name <span class="text-danger">*</span></label>
                         <input class="form-control" value="Team Leader" type="text" [class.invalid]="editRoles.get('editRoleName').invalid && editRoles.get('editRoleName').touched"

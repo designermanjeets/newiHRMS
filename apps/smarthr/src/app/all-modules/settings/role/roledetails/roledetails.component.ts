@@ -1,30 +1,47 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { Apollo } from 'apollo-angular';
+import { ToastrService } from 'ngx-toastr';
+import { SetGetRolesService } from '../rolesetting-gql.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-roledetails',
   templateUrl: './roledetails.component.html',
-  styleUrls: ['./roledetails.component.css']
+  styleUrls: ['./roledetails.component.css'],
 })
 
-export class RoledetailsComponent implements OnInit {
+export class RoledetailsComponent implements OnInit, OnDestroy {
 
   roleID: string;
   roledetailForm: FormGroup;
+  sub: Subscription;
 
   constructor(
     private route: ActivatedRoute,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private apollo: Apollo,
+    private toastr: ToastrService,
+    private setgetRoleService: SetGetRolesService
   ) {
   }
 
   ngOnInit(): void {
-    this.route.queryParams.subscribe((params: any) => {
-      this.roleID = params.id;
+    this.sub = this.route.queryParams.subscribe(val => {
+      if (val) {
+        this.roleID = val.id;
+      }
     });
 
     this.initForm();
+
+    this.sub = this.setgetRoleService.getRoleDetail.subscribe(val => {
+      if (val) {
+        this.roledetailForm.patchValue(val);
+      }
+    });
+
   }
 
   initForm() {
@@ -90,7 +107,13 @@ export class RoledetailsComponent implements OnInit {
   }
 
   manageRole(form) {
+    form.value._id = this.roleID;
     console.log(form.value);
+    this.setgetRoleService.setRolesValue(form.value);
+  }
+
+  ngOnDestroy() {
+    this.sub && this.sub.unsubscribe();
   }
 
 }

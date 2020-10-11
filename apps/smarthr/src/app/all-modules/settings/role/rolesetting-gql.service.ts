@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Mutation } from 'apollo-angular';
 import gql from 'graphql-tag';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -31,7 +32,7 @@ export class CreateRoleGQL extends Mutation {
       created_at: $created_at,
       created_by: $created_by
     ){
-      id,
+      _id,
       role_name,
       mod_employee,
       mod_holidays,
@@ -75,7 +76,7 @@ export class UpdateRoleGQL extends Mutation {
       permissions: $permissions,
       modified: $modified
     ){
-      id,
+      _id,
       role_name,
       mod_employee,
       mod_holidays,
@@ -105,7 +106,7 @@ export class DeleteRoleGQL extends Mutation {
       role_name: $role_name
       modified: $modified
     ){
-      id,
+      _id,
       role_name,
       mod_employee,
       mod_holidays,
@@ -126,7 +127,7 @@ export const GET_ROLES_QUERY = gql`
       getRoles(
         query: $query
       ){
-        id,
+        _id,
         role_name,
         mod_employee,
         mod_holidays,
@@ -188,3 +189,25 @@ export const GET_ROLES_QUERY = gql`
       }
     }
 `;
+
+
+@Injectable({
+  providedIn: 'root',
+})
+export class SetGetRolesService {
+
+  private roleSource = new BehaviorSubject(null);
+  getRole = this.roleSource.asObservable();
+
+  private roleSourceDetail = new BehaviorSubject(null);
+  getRoleDetail = this.roleSourceDetail.asObservable();
+
+  setRolesValue(role) {
+    this.roleSource.next(role);
+  }
+
+  setRolesForDetail(role) {
+    this.roleSourceDetail.next(role);
+  }
+
+}

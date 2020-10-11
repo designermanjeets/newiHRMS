@@ -118,7 +118,6 @@ export class LeavesAdminComponent implements OnInit, OnDestroy {
   }
 
   onSelectionChanged(event: MatAutocompleteSelectedEvent) {
-    console.log(event.option.value);
     const usr = _.filter(this.allusers, v => v.email === event.option.value);
     this.selectedUser = usr[0];
     this.getUserPendingLeaves();

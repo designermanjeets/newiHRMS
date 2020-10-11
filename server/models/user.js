@@ -37,6 +37,14 @@ const leaveAppliedSchema = mongoose.Schema({
     rejectedByID: String,
     rejectedByUserName: String
   },
+  authorizedBy: {
+    authorizedByID: String,
+    authorizedByUserName: String
+  },
+  declinedBy: {
+    declinedByID: String,
+    declinedByUserName: String
+  },
   reason: String,
   created_at: Date,
   created_by:String,

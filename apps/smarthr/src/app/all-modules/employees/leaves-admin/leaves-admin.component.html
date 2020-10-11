@@ -118,12 +118,13 @@
                 rowHeight="auto"
                 [limit]="10"
                 [rowClass]="getRowClass"
+                columnMode="force"
               >
-                <ngx-datatable-column name="#" prop="#">
-                  <ng-template let-row="row" let-rowIndex="rowIndex" let-value="value" ngx-datatable-cell-template>
-                    {{rowIndex + 1}}
-                  </ng-template>
-                </ngx-datatable-column>
+<!--                <ngx-datatable-column name="#" prop="#">-->
+<!--                  <ng-template let-row="row" let-rowIndex="rowIndex" let-value="value" ngx-datatable-cell-template>-->
+<!--                    {{rowIndex + 1}}-->
+<!--                  </ng-template>-->
+<!--                </ngx-datatable-column>-->
                 <ngx-datatable-column name="Username" prop="username">
                   <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
                     {{value}}
@@ -144,7 +145,7 @@
                     {{value | date}}
                   </ng-template>
                 </ngx-datatable-column>
-                <ngx-datatable-column name="Number of Days" prop="nofdays">
+                <ngx-datatable-column name="Days" prop="nofdays">
                   <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
                     {{value}}
                   </ng-template>
@@ -158,23 +159,52 @@
                   <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
                     <a class="btn btn-block btn-white btn-sm btn-rounded"
                        data-toggle="modal"
-                       data-target="#approverejectmodal" (click)="apprRejctedit(row)">{{value}}</a>
+                       data-target="#approverejectmodal" (click)="apprRejctedit(row)">
+                        <span [ngSwitch]="value">
+                          <span *ngSwitchCase="'pending'">Pending</span>
+                          <span *ngSwitchCase="'approved'">Approved</span>
+                          <span *ngSwitchCase="'authorized'">Authorized</span>
+                          <span *ngSwitchCase="'declined'">Declined</span>
+                          <span *ngSwitchCase="'rejected'">Rejected</span>
+                        </span>
+                    </a>
                   </ng-template>
                 </ngx-datatable-column>
-                <ngx-datatable-column name="Approved by" prop="approver">
+                <ngx-datatable-column name="Approved by" prop="approvedBy.approvedByUserName">
                   <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
                     {{value}}
                   </ng-template>
                 </ngx-datatable-column>
 
-                <ngx-datatable-column name="Actions" sortable="false" prop="_id">
+                <ngx-datatable-column name="Rejected by" prop="rejectedBy.rejectedByUserName">
                   <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
-                    <div class="overlay" *ngIf="row.status === 'rejected' || row.status === 'approved'"></div>
-                    <button class="btn btn-default" data-toggle="modal"
+                    {{value}}
+                  </ng-template>
+                </ngx-datatable-column>
+
+                <ngx-datatable-column name="Authorized by" prop="authorizedBy.authorizedByUserName">
+                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                    {{value}}
+                  </ng-template>
+                </ngx-datatable-column>
+
+                <ngx-datatable-column name="Declined by" prop="declinedBy.declinedByUserName">
+                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                    {{value}}
+                  </ng-template>
+                </ngx-datatable-column>
+
+                <ngx-datatable-column name="Actions" sortable="false" prop="_id" width="200">
+                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                    <div class="overlay"
+                         *ngIf="(row.status === 'authorized' || row.status === 'declined') || !isAdmin"
+                    ></div>
+                    <button *ngIf="(row.status !== 'authorized' && row.status !== 'declined')" class="btn btn-block btn-primary btn-sm btn-rounded" (click)="authLeave(row)">Authorize</button>
+                    <button *ngIf="(row.status !== 'authorized' && row.status !== 'declined')"  class="btn btn-default" data-toggle="modal"
                             data-target="#edit_leave" (click)="edit(row._id)">
                       <i class="fa fa-pencil-square" aria-hidden="true"></i>
                     </button>
-                    <button class="btn btn-default" data-toggle="modal"
+                    <button *ngIf="(row.status !== 'authorized' && row.status !== 'declined')"  class="btn btn-default" data-toggle="modal"
                             data-target="#delete_approve" (click)="tempId = row">
                       <i class="fa fa-trash" aria-hidden="true"></i>
                     </button>
@@ -512,3 +542,30 @@
 </div>
 <!-- /Approve/Reject Modal -->
 
+
+<!-- Authorized Modal -->
+<div class="modal custom-modal fade" id="authdeclinemodal" role="dialog">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="form-header">
+          <h3>Update Status</h3>
+          <p>Approve or Reject the Leave.</p>
+        </div>
+        <div class="modal-btn delete-action">
+          <div class="row">
+            <div class="col-6">
+              <a  class="btn btn-primary continue-btn"
+                  (click)="approveleave('authorized')">Authorize</a>
+            </div>
+            <div class="col-6">
+              <a class="btn btn-primary cancel-btn"
+                 (click)="rejectleave('declined')">Decline</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /Authorized Modal -->

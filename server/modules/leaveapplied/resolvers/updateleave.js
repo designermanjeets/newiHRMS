@@ -46,35 +46,49 @@ const updateLeave = (_, {
 
       user.leaveApplied.forEach(va => {
 
-        if(va._id.toHexString() === id) {
-          va.reason = params.reason;
-          va.from = params.from;
-          va.to = params.to;
 
-          if(va.nofdays < params.nofdays) {
-            va.remainingleaves = (va.remainingleaves - (params.nofdays - va.nofdays))
-          } else {
-            va.remainingleaves = (va.remainingleaves + ( va.nofdays - params.nofdays))
+        if((new Date(va.from) <= new Date(to)) && (new Date(from) <= new Date(va.to))) {
+          if (va.status !== 'declined' && va.status !== 'rejected') {
+            // overlapping dates
+            // console.log('Overlapping);
+            // console.log(l);
+            found = true;
+            reject(new Error(`Leave within selected time period is already exists! Choose another slot.`));
           }
-          va.nofdays = params.nofdays;
-          remn = va.remainingleaves;
+        }
 
-          // Update Designation Remaining Leaves
-          user.designation.leavetype.forEach(va => {
-            if(va.leave_ID === params.leave_ID) {
-              va.remainingleaves = remn;
+        if (!found) {
+
+          if(va._id.toHexString() === id) {
+            va.reason = params.reason;
+            va.from = params.from;
+            va.to = params.to;
+
+            if(va.nofdays < params.nofdays) {
+              va.remainingleaves = (va.remainingleaves - (params.nofdays - va.nofdays))
+            } else {
+              va.remainingleaves = (va.remainingleaves + ( va.nofdays - params.nofdays))
             }
-          });
+            va.nofdays = params.nofdays;
+            remn = va.remainingleaves;
 
-          // Loop for All
-          user.leaveApplied.forEach(va => {
-            if(va.leave_ID === params.leave_ID) {
-              va.remainingleaves = remn;
-            }
-          });
+            // Update Designation Remaining Leaves
+            user.designation.leavetype.forEach(va => {
+              if(va.leave_ID === params.leave_ID) {
+                va.remainingleaves = remn;
+              }
+            });
 
-          user.save();
+            // Loop for All
+            user.leaveApplied.forEach(va => {
+              if(va.leave_ID === params.leave_ID) {
+                va.remainingleaves = remn;
+              }
+            });
 
+            user.save();
+
+          }
         }
       });
 

@@ -21,6 +21,7 @@ import * as _ from 'lodash';
 import * as moment from 'moment';
 import { GET_USERS_QUERY } from '../all-employees/employee-gql.service';
 import { MatAutocompleteSelectedEvent } from '@angular/material';
+import { GetUserRoles } from './leave-admin-gql.service';
 
 @Component({
   selector: 'app-leaves-admin',
@@ -58,6 +59,9 @@ export class LeavesAdminComponent implements OnInit, OnDestroy {
   tempLv: any;
   allusers: [] = [];
   selectedUser: any;
+  isManager: boolean;
+  isAdmin: boolean;
+  isHRManager: boolean;
 
   useroptions: any[] = [];
   filteredOptions: Observable<string[]>;
@@ -71,7 +75,8 @@ export class LeavesAdminComponent implements OnInit, OnDestroy {
     private updateLeaveGQL: UpdateLeaveGQL,
     private deleteLeaveGQL: DeleteLeaveGQL,
     private approveorejectLeave: ApproveORejectLeaveGQL,
-    private cdRef: ChangeDetectorRef
+    private cdRef: ChangeDetectorRef,
+    private getUserRoles: GetUserRoles
   ) {}
 
   ngOnInit() {
@@ -79,6 +84,10 @@ export class LeavesAdminComponent implements OnInit, OnDestroy {
     this.loadallLeaveTypes();
     this.loadallLeaveApplied();
     this.loadallUsers();
+
+    this.isAdmin = this.getUserRoles.isAdmin;
+    this.isHRManager = this.getUserRoles.isHRManager;
+    this.isManager = this.getUserRoles.isManager;
 
     this.editLeaveadminForm = this.formBuilder.group({
       _id: [''],
@@ -461,6 +470,38 @@ export class LeavesAdminComponent implements OnInit, OnDestroy {
       $('#approverejectmodal').modal('hide');
     }
 
+    if (status === 'authorized') {
+      this.approveorejectLeave
+        .mutate({
+          id: this.tempLv._id,
+          user_ID: this.tempLv.user_ID,
+          leavetype: this.tempLv.leavetype,
+          leave_ID: this.tempLv.leave_ID,
+          nofdays: this.tempLv.nofdays,
+          status: status,
+          authorizedBy: {
+            authorizedByID: JSON.parse(sessionStorage.getItem('user')).userid,
+            authorizedByUserName: JSON.parse(sessionStorage.getItem('user')).username
+          },
+          modified: {
+            modified_at: Date.now(),
+            modified_by: JSON.parse(sessionStorage.getItem('user')).username
+          }
+        })
+        .subscribe( (val: any) => {
+          if (val.data) {
+            this.tempLv = null;
+            this.editLeaveadminForm.reset();
+            $('#authdeclinemodal').modal('hide');
+            this.toastr.success('Leave Updated sucessfully...!', 'Success');
+            this.loadallLeaveApplied();
+            this.cdRef.detectChanges();
+          }
+        }, error => this.toastr.error(error, 'Error'));
+    } else {
+      $('#authdeclinemodal').modal('hide');
+    }
+
   }
 
   rejectleave(status) {
@@ -495,6 +536,44 @@ export class LeavesAdminComponent implements OnInit, OnDestroy {
     } else {
       $('#approverejectmodal').modal('hide');
     }
+
+    if (status === 'declined') {
+      this.approveorejectLeave
+        .mutate({
+          id: this.tempLv._id,
+          user_ID: this.tempLv.user_ID,
+          leavetype: this.tempLv.leavetype,
+          leave_ID: this.tempLv.leave_ID,
+          nofdays: this.tempLv.nofdays,
+          status: status,
+          declinedBy: {
+            declinedByID: JSON.parse(sessionStorage.getItem('user')).userid,
+            declinedByUserName: JSON.parse(sessionStorage.getItem('user')).username
+          },
+          modified: {
+            modified_at: Date.now(),
+            modified_by: JSON.parse(sessionStorage.getItem('user')).username
+          }
+        })
+        .subscribe( (val: any) => {
+          if (val.data) {
+            this.tempLv = null;
+            this.editLeaveadminForm.reset();
+            $('#authdeclinemodal').modal('hide');
+            this.toastr.success('Leave Updated sucessfully...!', 'Success');
+            this.loadallLeaveApplied();
+            this.cdRef.detectChanges();
+          }
+        }, error => this.toastr.error(error, 'Error'));
+    } else {
+      $('#authdeclinemodal').modal('hide');
+    }
+
+  }
+
+  authLeave(row) {
+    $('#authdeclinemodal').modal('show');
+    this.tempLv = row;
   }
 
   ngOnDestroy(): void {

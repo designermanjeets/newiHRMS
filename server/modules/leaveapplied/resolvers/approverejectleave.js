@@ -11,6 +11,8 @@ const approveorejectLeave = (_, {
   approvers,
   approvedBy,
   rejectedBy,
+  authorizedBy,
+  declinedBy,
   modified
 },{me,secret}) => new Promise(async (resolve, reject) => {
   let params = {
@@ -22,6 +24,8 @@ const approveorejectLeave = (_, {
     approvers,
     approvedBy,
     rejectedBy,
+    authorizedBy,
+    declinedBy,
     modified
   }
   const user = await User.findOne(
@@ -43,11 +47,44 @@ const approveorejectLeave = (_, {
             va.approvedBy.approvedByUserName =  params.approvedBy.approvedByUserName
             va.status =  params.status
           }
+          if(status === 'authorized' && params.authorizedBy && params.authorizedBy.authorizedByID) {
+            // Authorized By Details
+            if (!va.authorizedBy) va.authorizedBy = {};
+            va.authorizedBy.authorizedByID =  params.authorizedBy.authorizedByID
+            va.authorizedBy.authorizedByUserName =  params.authorizedBy.authorizedByUserName
+            va.status =  params.status
+          }
           if(status === 'rejected' && params.rejectedBy && params.rejectedBy.rejectedByID) {
             // Rejected By Details
             if (!va.rejectedBy) va.rejectedBy = {};
             va.rejectedBy.rejectedByID =  params.rejectedBy.rejectedByID
             va.rejectedBy.rejectedByUserName =  params.rejectedBy.rejectedByUserName
+
+            va.remainingleaves = va.remainingleaves + params.nofdays; // Increase because Rejected
+            remn = va.remainingleaves;
+            va.status =  params.status
+
+            // Update Designation Remaining Leaves
+            user.designation.leavetype.forEach(va => {
+              if(va.leave_ID === params.leave_ID) {
+                va.remainingleaves = remn;
+              }
+            });
+
+            // Loop for All
+            user.leaveApplied.forEach(va => {
+              if(va.leave_ID === params.leave_ID) {
+                va.remainingleaves = remn;
+              }
+            });
+
+          }
+
+          if(status === 'declined' && params.declinedBy && params.declinedBy.declinedByID) {
+            // Rejected By Details
+            if (!va.declinedBy) va.declinedBy = {};
+            va.declinedBy.declinedByID =  params.declinedBy.declinedByID
+            va.declinedBy.declinedByUserName =  params.declinedBy.declinedByUserName
 
             va.remainingleaves = va.remainingleaves + params.nofdays; // Increase because Rejected
             remn = va.remainingleaves;

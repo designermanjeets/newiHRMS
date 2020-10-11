@@ -121,6 +121,8 @@ export class ApproveORejectLeaveGQL extends Mutation {
       $approvers: [approversInput]
       $approvedBy: approvedByInput
       $rejectedBy: rejectedByInput
+      $authorizedBy: authorizedByInput
+      $declinedBy: declinedByInput
       $modified: [modifiedInputs]
     ) {
       approveorejectLeave(
@@ -133,12 +135,18 @@ export class ApproveORejectLeaveGQL extends Mutation {
         approvers: $approvers
         approvedBy: $approvedBy
         rejectedBy: $rejectedBy
+        authorizedBy: $authorizedBy
+        declinedBy: $declinedBy
         modified: $modified
       ) {
         _id
         leavetype
         leave_ID
         status
+        approvers {
+          approverID
+          approverUserName
+        }
         approvedBy {
           approvedByID
           approvedByUserName
@@ -146,6 +154,14 @@ export class ApproveORejectLeaveGQL extends Mutation {
         rejectedBy {
           rejectedByID
           rejectedByUserName
+        }
+        authorizedBy {
+          authorizedByID
+          authorizedByUserName
+        }
+        declinedBy {
+          declinedByID
+          declinedByUserName
         }
       }
     }
@@ -207,6 +223,14 @@ export const GET_USERLEAVES_QUERY = gql`
           rejectedByID
           rejectedByUserName
         }
+        authorizedBy {
+          authorizedByID
+          authorizedByUserName
+        }
+        declinedBy {
+          declinedByID
+          declinedByUserName
+        }
       }
   }
 `;
@@ -246,6 +270,10 @@ export const GET_USER_QUERY = gql`
           from
           to
           remainingleaves
+          approvers {
+            approverID
+            approverUserName
+          }
           approvedBy {
             approvedByID
             approvedByUserName

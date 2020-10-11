@@ -46,11 +46,13 @@ const createLeave = (_, {
       let found = false;
       user.leaveApplied.forEach(l => {
       if((new Date(l.from) <= new Date(to)) && (new Date(from) <= new Date(l.to))) {
-        // overlapping dates
-        // console.log('Overlapping);
-        // console.log(l);
-        found = true;
-        reject(new Error(`Leave within selected time period is already exists! Choose another slot.`));
+        if (l.status !== 'declined' && l.status !== 'rejected') {
+          // overlapping dates
+          // console.log('Overlapping);
+          // console.log(l);
+          found = true;
+          reject(new Error(`Leave within selected time period is already exists! Choose another slot.`));
+        }
       }
     });
     if (!found) {

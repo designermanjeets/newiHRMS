@@ -8331,3 +8331,4 @@ ul.comment-list li ul.children {
 .form-control.mat-form-field-appearance-legacy .mat-form-field-underline {
   display: none;
 }
+.minwidth { min-width: 1350px !important; }

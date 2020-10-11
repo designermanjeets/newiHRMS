@@ -17,6 +17,7 @@ export class HeaderComponent implements OnInit {
   };
   notifications: any;
   messagesData: any;
+  currUser: any;
 
   constructor(private headerService: HeaderService, private router: Router) {}
 
@@ -95,6 +96,9 @@ export class HeaderComponent implements OnInit {
         time: '1 hour ago',
       },
     ];
+
+    this.currUser = JSON.parse(sessionStorage.getItem('user'));
+
   }
 
   getDatas(section) {

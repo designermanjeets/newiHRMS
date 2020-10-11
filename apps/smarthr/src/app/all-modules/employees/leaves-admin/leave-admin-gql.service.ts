@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Mutation, Query } from 'apollo-angular';
 import gql from 'graphql-tag';
+import { AuthenticationService } from '../../../login/login.service';
+import { Role } from '../../../_helpers/_models/user';
 
 @Injectable({
   providedIn: 'root',
@@ -74,6 +76,12 @@ export class UpdateLeaveGQL extends Mutation {
       $nofdays: Int
       $remainingleaves: Int
       $reason: String
+      $approvers: [approversInput]
+      $approvedBy: approvedByInput
+      $rejectedBy: rejectedByInput
+      $modified: [modifiedInputs]
+      $authorizedBy: authorizedByInput
+      $declinedBy: declinedByInput
     ) {
       updateLeave(
         id: $id
@@ -88,6 +96,12 @@ export class UpdateLeaveGQL extends Mutation {
         nofdays: $nofdays
         remainingleaves: $remainingleaves
         reason: $reason
+        approvers: $approvers
+        approvedBy: $approvedBy
+        rejectedBy: $rejectedBy
+        authorizedBy: $authorizedBy
+        declinedByBy: $declinedByBy
+        modified: $modified
       ) {
           user_ID
           username
@@ -146,7 +160,26 @@ export const GET_USERLEAVES_QUERY = gql`
         remainingleaves
         reason
         status
-        approver
+        approvers {
+          approverID
+          approverUserName
+        }
+        approvedBy {
+          approvedByID
+          approvedByUserName
+        }
+        rejectedBy {
+          rejectedByID
+          rejectedByUserName
+        }
+        authorizedBy {
+          authorizedByID
+          authorizedByUserName
+        }
+        declinedBy {
+          declinedByID
+          declinedByUserName
+        }
       }
   }
 `;
@@ -174,3 +207,29 @@ export const GET_USER_QUERY = gql`
   }
 `;
 
+
+@Injectable({
+  providedIn: 'root',
+})
+export class GetUserRoles {
+
+  constructor(
+      private authenticationService: AuthenticationService
+  ) {
+    this.authenticationService.user.subscribe(u => this.user = u);
+  }
+
+  user: any;
+
+  get isAdmin() {
+    return this.user && this.user.role === Role.ADMIN;
+  }
+
+  get isHRManager() {
+    return this.user && this.user.role === Role.HRMANAGER;
+  }
+
+  get isManager() {
+    return this.user && this.user.role === Role.MANAGER;
+  }
+}

@@ -47,6 +47,8 @@ const typeDefs = gql`
       approvers: [approversInput]
       approvedBy: approvedByInput
       rejectedBy: rejectedByInput
+      authorizedBy: authorizedByInput
+      declinedBy: declinedByInput
       modified: [modifiedInputs]
     ): LeaveApplied,
 
@@ -60,6 +62,8 @@ const typeDefs = gql`
       approvers: [approversInput]
       approvedBy: approvedByInput
       rejectedBy: rejectedByInput
+      authorizedBy: authorizedByInput
+      declinedBy: declinedByInput
       modified: [modifiedInputs]
     ): LeaveApplied
 
@@ -85,6 +89,8 @@ const typeDefs = gql`
     approvers: [approversType]
     approvedBy: approvedByType
     rejectedBy: rejectedByType
+    authorizedBy: authorizedByType
+    declinedBy: declinedByType
     modified: [modifiedTypes],
   }
 
@@ -103,6 +109,16 @@ const typeDefs = gql`
       rejectedByUserName: String
   }
 
+  input authorizedByInput {
+      authorizedByID: String,
+      authorizedByUserName: String
+  }
+
+  input declinedByInput {
+      declinedByID: String,
+      declinedByUserName: String
+  }
+
   type approversType {
       approverID: String,
       approverUserName: String
@@ -116,6 +132,16 @@ const typeDefs = gql`
   type rejectedByType {
       rejectedByID: String,
       rejectedByUserName: String
+  }
+
+  type authorizedByType {
+      authorizedByID: String,
+      authorizedByUserName: String
+  }
+
+  type declinedByType {
+      declinedByID: String,
+      declinedByUserName: String
   }
 `
 

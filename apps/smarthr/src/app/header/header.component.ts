@@ -2,6 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HeaderService } from './header.service';
+import { GET_SYSPARAMETERS_QUERY } from '../all-modules/settings/theme-settings/themesetting-gql.service';
+import { map } from 'rxjs/operators';
+import { Apollo } from 'apollo-angular';
+import * as _ from 'lodash';
 
 declare const $: any;
 
@@ -19,14 +23,17 @@ export class HeaderComponent implements OnInit {
   messagesData: any;
   currUser: any;
   currWebName: string;
+  allSysParams: any;
 
-  constructor(private headerService: HeaderService, private router: Router) {}
+  constructor(
+    private headerService: HeaderService,
+    private router: Router,
+    private apollo: Apollo
+  ) { }
 
   ngOnInit() {
     // this.getDatas("notification");
     // this.getDatas("message");
-
-    this.currWebName = sessionStorage.getItem('webName') || 'Demo';
 
     this.notifications = [
       {
@@ -100,8 +107,28 @@ export class HeaderComponent implements OnInit {
       },
     ];
 
+    this.getAllSysParams();
+
     this.currUser = JSON.parse(sessionStorage.getItem('user'));
 
+  }
+
+  getAllSysParams() {
+    this.apollo.watchQuery({
+      query: GET_SYSPARAMETERS_QUERY,
+      variables: {
+        query: {
+          limit: 100
+        }
+      },
+    }).valueChanges.pipe(
+      map((val: any) => val.data.getSysparameters[0].sysparams)
+    ).subscribe((response: any) => {
+      if (response) {
+        this.allSysParams = response;
+        this.currWebName = _.filter(this.allSysParams, val => val.sysparaname === 'websiteName')[0].sysparavalue;
+      }
+    });
   }
 
   getDatas(section) {

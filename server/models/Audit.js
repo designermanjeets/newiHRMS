@@ -17,6 +17,7 @@ const userSchema = new Schema({
   leaveTypeAudit : [auditSchema],
   holidayAudit : [auditSchema],
   leaveAppliedAudit : [auditSchema],
+  sysParaAudit : [auditSchema],
 }, {collection:'Audit'});
 
 

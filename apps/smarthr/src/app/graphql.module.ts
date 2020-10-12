@@ -17,7 +17,7 @@ const link = onError(({ graphQLErrors, networkError }) => {
       // Here you may display a message to indicate graphql error
       // You may use 'sweetalert', 'ngx-toastr' or any of your preference
       console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`);
-      if (message === 'JWT_EXPIRED') {
+      if (message.includes('JWT_EXPIRED')) {
         sessionStorage.setItem('sessionExpire', `${message}`);
       }
     });

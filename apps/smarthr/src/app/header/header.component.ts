@@ -18,12 +18,15 @@ export class HeaderComponent implements OnInit {
   notifications: any;
   messagesData: any;
   currUser: any;
+  currWebName: string;
 
   constructor(private headerService: HeaderService, private router: Router) {}
 
   ngOnInit() {
     // this.getDatas("notification");
     // this.getDatas("message");
+
+    this.currWebName = sessionStorage.getItem('webName') || 'Demo';
 
     this.notifications = [
       {

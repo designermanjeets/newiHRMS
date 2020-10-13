@@ -11,6 +11,13 @@ const createAttendance = (_, {
   created_at,
   created_by
   }, {me,secret}) => new Promise(async (resolve, reject) => {
+
+  const exists = await Attendance.find({$and:[
+      {user_ID }, {date}, {punchIn}, {punchOut}
+  ]})
+
+  if(exists.length) return reject(new Error('Attendance already exist for the same Date!'));
+
   const newAttend= await Attendance.create({
     user_ID,
     user_email,

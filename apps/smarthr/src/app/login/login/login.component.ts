@@ -84,7 +84,7 @@ export class LoginComponent implements OnInit {
           sessionStorage.setItem('JWT_TOKEN', val.data.login.token);
           sessionStorage.setItem('user', JSON.stringify({
             email: val.data.login.user.email,
-            role: val.data.login.user.Role.role_name,
+            role: val.data.login.user.Role && val.data.login.user.Role.role_name,
             username: val.data.login.user.username,
             userid: val.data.login.user._id,
             emmpid: val.data.login.user.emmpid,

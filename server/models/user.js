@@ -4,6 +4,11 @@ const Role = require('./role');
 
 const Schema = mongoose.Schema;
 
+const subSchema = mongoose.Schema({
+  modified_by: String,
+  modified_at: Date
+}); //,{ _id : false }
+
 const leaveTypesSchema = mongoose.Schema({
   leavetype: String,
   leave_ID: String,
@@ -62,10 +67,17 @@ const designationSchema = new Schema({
   leavetype: [leaveTypesSchema]
 }, { strict: false});
 
-const subSchema = mongoose.Schema({
-  modified_by: String,
-  modified_at: Date
-}); //,{ _id : false }
+const attendanceSchema = mongoose.Schema({
+  id: String,
+  date: Date,
+  user_ID: String,
+  user_email: String,
+  punchIn: String,
+  punchOut: String,
+  created_at: Date,
+  created_by: String,
+  modified : [subSchema],
+}, { strict: false});
 
 const roleSchema = new Schema({
   id: String,
@@ -150,6 +162,7 @@ const userSchema = new Schema({
   created_at: Date,
   modified : [subSchema],
   Role: roleSchema,
+  attendance: [attendanceSchema],
 }, { collection:'User' });
 
 

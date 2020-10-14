@@ -15,35 +15,56 @@
     </div>
     <!-- /Page Header -->
 
+  <!-- Upload Attendance   -->
+    <div class="row m-b-10">
+      <div class="col-6">
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="inputGroupFileAddon01">Upload</span>
+          </div>
+          <div class="custom-file">
+            <input
+              class="custom-file-input"
+              aria-describedby="inputGroupFileAddon01"
+              #uploader
+              id="inputGroupFile01"
+              type="file"
+              ngFileSelect
+              [options]="options"
+              (uploadOutput)="onUploadOutput($event)"
+              [uploadInput]="uploadInput"
+              (click)="uploader.value = null"
+            >
+            <label class="custom-file-label" for="inputGroupFile01">Upload Bulk Records - Choose file</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  <!-- ./Upload Attendance   -->
+
     <div class="row">
         <div class="col-md-4">
             <div class="card punch-status">
-                <div class="card-body">
-                    <h5 class="card-title">Timesheet <small class="text-muted">11 Mar 2019</small></h5>
+                <div class="card-body" *ngIf="todayTimeSheet">
+                    <h5 class="card-title">Timesheet <small class="text-muted">{{currDate | date}}</small></h5>
                     <div class="punch-det">
                         <h6>Punch In at</h6>
-                        <p>Wed, 11th Mar 2019 10.00 AM</p>
+                        <p>{{todayTimeSheet.punchIn | date:'medium'}}</p>
                     </div>
                     <div class="punch-info">
                         <div class="punch-hours">
-                            <span>3.45 hrs</span>
+                            <span>Total {{getDifference(todayTimeSheet.punchOut, todayTimeSheet.punchIn)}} hrs</span>
                         </div>
                     </div>
                     <div class="punch-btn-section">
-                        <button type="button" class="btn btn-primary punch-btn">Punch Out</button>
+                        <button type="button" class="btn btn-primary punch-btn">Request Correction</button>
                     </div>
                     <div class="statistics">
                         <div class="row">
-                            <div class="col-md-6 col-6 text-center">
-                                <div class="stats-box">
-                                    <p>Break</p>
-                                    <h6>1.21 hrs</h6>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-6 text-center">
+                            <div class="col-md-12 text-center">
                                 <div class="stats-box">
                                     <p>Overtime</p>
-                                    <h6>3 hrs</h6>
+                                    <h6>0 hrs</h6>
                                 </div>
                             </div>
                         </div>
@@ -52,43 +73,36 @@
             </div>
         </div>
         <div class="col-md-4">
-            <div class="card att-statistics">
+            <div class="card att-statistics" *ngIf="todayTimeSheet">
                 <div class="card-body">
                     <h5 class="card-title">Statistics</h5>
                     <div class="stats-list">
                         <div class="stats-info">
-                            <p>Today <strong>3.45 <small>/ 8 hrs</small></strong></p>
+                            <p>Today <strong>{{getDifference(todayTimeSheet.punchOut, todayTimeSheet.punchIn)}} hrs <small>/ 8 hrs</small></strong></p>
                             <div class="progress">
                                 <div class="progress-bar bg-primary" role="progressbar" style="width: 31%"
                                     aria-valuenow="31" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                         </div>
                         <div class="stats-info">
-                            <p>This Week <strong>28 <small>/ 40 hrs</small></strong></p>
+                            <p>This Week <strong>{{weekHours}} <small>/ 40 hrs</small></strong></p>
                             <div class="progress">
                                 <div class="progress-bar bg-warning" role="progressbar" style="width: 31%"
                                     aria-valuenow="31" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                         </div>
                         <div class="stats-info">
-                            <p>This Month <strong>90 <small>/ 160 hrs</small></strong></p>
+                            <p>This Month <strong>{{monthHours}} <small>/ 160 hrs</small></strong></p>
                             <div class="progress">
                                 <div class="progress-bar bg-success" role="progressbar" style="width: 62%"
                                     aria-valuenow="62" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                         </div>
                         <div class="stats-info">
-                            <p>Remaining <strong>90 <small>/ 160 hrs</small></strong></p>
+                            <p>Overtime <strong>0</strong></p>
                             <div class="progress">
-                                <div class="progress-bar bg-danger" role="progressbar" style="width: 62%"
-                                    aria-valuenow="62" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                        </div>
-                        <div class="stats-info">
-                            <p>Overtime <strong>4</strong></p>
-                            <div class="progress">
-                                <div class="progress-bar bg-info" role="progressbar" style="width: 22%"
-                                    aria-valuenow="22" aria-valuemin="0" aria-valuemax="100"></div>
+                                <div class="progress-bar bg-info" role="progressbar" style="width: 0%"
+                                    aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                         </div>
                     </div>
@@ -96,7 +110,7 @@
             </div>
         </div>
         <div class="col-md-4">
-            <div class="card recent-activity">
+            <div class="card recent-activity" *ngIf="todayTimeSheet">
                 <div class="card-body">
                     <h5 class="card-title">Today Activity</h5>
                     <ul class="res-activity-list">
@@ -104,42 +118,14 @@
                             <p class="mb-0">Punch In at</p>
                             <p class="res-activity-time">
                                 <i class="fa fa-clock-o"></i>
-                                10.00 AM.
+                                {{todayTimeSheet.punchIn | date:'mediumTime'}}.
                             </p>
                         </li>
                         <li>
                             <p class="mb-0">Punch Out at</p>
                             <p class="res-activity-time">
                                 <i class="fa fa-clock-o"></i>
-                                11.00 AM.
-                            </p>
-                        </li>
-                        <li>
-                            <p class="mb-0">Punch In at</p>
-                            <p class="res-activity-time">
-                                <i class="fa fa-clock-o"></i>
-                                11.15 AM.
-                            </p>
-                        </li>
-                        <li>
-                            <p class="mb-0">Punch Out at</p>
-                            <p class="res-activity-time">
-                                <i class="fa fa-clock-o"></i>
-                                1.30 PM.
-                            </p>
-                        </li>
-                        <li>
-                            <p class="mb-0">Punch In at</p>
-                            <p class="res-activity-time">
-                                <i class="fa fa-clock-o"></i>
-                                2.00 PM.
-                            </p>
-                        </li>
-                        <li>
-                            <p class="mb-0">Punch Out at</p>
-                            <p class="res-activity-time">
-                                <i class="fa fa-clock-o"></i>
-                                7.30 PM.
+                              {{todayTimeSheet.punchOut | date:'mediumTime'}}.
                             </p>
                         </li>
                     </ul>
@@ -201,39 +187,66 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="table-responsive">
-                <table class="table table-striped custom-table mb-0">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Date </th>
-                            <th>Punch In</th>
-                            <th>Punch Out</th>
-                            <th>Production</th>
-                            <th>Break</th>
-                            <th>Overtime</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>19 Feb 2019</td>
-                            <td>10 AM</td>
-                            <td>7 PM</td>
-                            <td>9 hrs</td>
-                            <td>1 hrs</td>
-                            <td>0</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>20 Feb 2019</td>
-                            <td>10 AM</td>
-                            <td>7 PM</td>
-                            <td>9 hrs</td>
-                            <td>1 hrs</td>
-                            <td>0</td>
-                        </tr>
-                    </tbody>
-                </table>
+
+              <ngx-datatable
+                class="bootstrap"
+                [rows]="rows"
+                [columnMode]="ColumnMode.force"
+                [columns]="columns"
+                [headerHeight]="50"
+                [footerHeight]="50"
+                rowHeight="auto"
+                [limit]="10"
+              >
+                <ngx-datatable-column name="#" prop="#" [width]="50">
+                  <ng-template let-row="row" let-rowIndex="rowIndex" let-value="value" ngx-datatable-cell-template>
+                    {{rowIndex + 1}}
+                  </ng-template>
+                </ngx-datatable-column>
+
+                <ngx-datatable-column prop="date">
+                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                    {{value | date}}
+                  </ng-template>
+                </ngx-datatable-column>
+
+                <ngx-datatable-column prop="punchIn">
+                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                    {{value | date:'mediumTime'}}
+                  </ng-template>
+                </ngx-datatable-column>
+
+                <ngx-datatable-column prop="punchOut">
+                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                    {{value | date:'mediumTime'}}
+                  </ng-template>
+                </ngx-datatable-column>
+
+                <ngx-datatable-column name="Total Time">
+                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                    {{getDifference(row.punchOut, row.punchIn)}} hrs
+                  </ng-template>
+                </ngx-datatable-column>
+
+                <ngx-datatable-column name="Overtime">
+                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                    {{value || 0}} hrs
+                  </ng-template>
+                </ngx-datatable-column>
+
+<!--                <ngx-datatable-column name="Actions" sortable="false" prop="_id">-->
+<!--                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>-->
+<!--                    <button class="btn btn-default" data-toggle="modal"-->
+<!--                            data-target="#edit_department" (click)="edit(row._id)">-->
+<!--                      <i class="fa fa-pencil-square" aria-hidden="true"></i>-->
+<!--                    </button>-->
+<!--                    <button class="btn btn-default" data-toggle="modal"-->
+<!--                            data-target="#delete_department" (click)="tempId = row._id">-->
+<!--                      <i class="fa fa-trash" aria-hidden="true"></i>-->
+<!--                    </button>-->
+<!--                  </ng-template>-->
+<!--                </ngx-datatable-column>-->
+              </ngx-datatable>
             </div>
         </div>
     </div>

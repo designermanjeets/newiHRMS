@@ -12,55 +12,63 @@ const createAttendance = (_, {
   created_by
   }, {me,secret}) => new Promise(async (resolve, reject) => {
 
-  const exists = await Attendance.find({$and:[
-      {user_ID }, {date}, {punchIn}, {punchOut}
-  ]})
+  try {
 
-  if(exists.length) return reject(new Error('Attendance already exist for the same Date!'));
+    const exists = await Attendance.find({$and:[
+        {user_ID }, {date}, {punchIn}, {punchOut}
+      ]})
 
-  const newAttend= await Attendance.create({
-    user_ID,
-    user_email,
-    date,
-    punchIn,
-    punchOut,
-    created_at,
-    created_by
-  });
+    if(exists.length) return reject(new Error('Attendance already exist for the same Date!'));
 
-  User.findByIdAndUpdate({ _id: user_ID})
-    .then((user) => {
-      if(!user) { reject (new Error('No User Found!')) }
-      else {
-        if (!user.attendance) {
-          user['attendance'] = [];
-          user.attendance.push(newAttend);
-        } else {
-          user.attendance.push(newAttend);
+    const newAttend= await Attendance.create({
+      user_ID,
+      user_email,
+      date,
+      punchIn,
+      punchOut,
+      created_at,
+      created_by
+    });
+
+    User.findByIdAndUpdate({ _id: user_ID})
+      .then((user) => {
+        if(!user) { reject (new Error('No User Found!')) }
+        else {
+          if (!user.attendance) {
+            user['attendance'] = [];
+            user.attendance.push(newAttend);
+          } else {
+            user.attendance.push(newAttend);
+          }
+          user.save();
         }
-        user.save();
-      }
-    })
+      })
 
-  const modifiedObj = {
-    newAttend_ID: newAttend._id,
-    action: 'Attendance Punched In/Out',
-    created_by: created_by,
-    created_at: created_at,
-    createdAttendance: newAttend
-  }
-  Audit.find({}).then(val => {
-    if(val.length) {
-      Audit.findOneAndUpdate(
-        { },
-        { $push: { attendanceAudit: modifiedObj  }  }, { new: true })
-        .then();
-    } else {
-      Audit.create({ attendanceAudit: modifiedObj }, { new: true }).then();
+    const modifiedObj = {
+      newAttend_ID: newAttend._id,
+      action: 'Attendance Punched In/Out',
+      created_by: created_by,
+      created_at: created_at,
+      createdAttendance: newAttend
     }
+    Audit.find({}).then(val => {
+      if(val.length) {
+        Audit.findOneAndUpdate(
+          { },
+          { $push: { attendanceAudit: modifiedObj  }  }, { new: true })
+          .then();
+      } else {
+        Audit.create({ attendanceAudit: modifiedObj }, { new: true }).then();
+      }
+      resolve(newAttend);
+    });
     resolve(newAttend);
-  });
-  resolve(newAttend);
+  }
+  catch (error) {
+    // your catch block code goes here
+    reject(error)
+  }
+
 });
 
 module.exports = createAttendance;

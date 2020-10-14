@@ -5,6 +5,7 @@ const typeDefs = gql`
   extend type Query {
 
     getAttendances(query: Pagination!): [Attendance]
+    getUserAttendances(query: Pagination!): [Attendance]
 
   }
 
@@ -37,12 +38,18 @@ const typeDefs = gql`
       date: ISODate!,
       modified: [modifiedInputs]
     ): Attendance,
+
+    uploadAttendanceFile(file: Upload!): [Attendance]
+
+    insertManyAttendances(input: [AttendanceInput]!): UploadAttendancesPayload
+
   }
 
   type Attendance {
     _id: ID,
     user_ID: String!,
     user_email: String!,
+    emmpid: String,
     date: ISODate!,
     punchIn: String!,
     punchOut: String!,
@@ -55,7 +62,7 @@ const typeDefs = gql`
   input AttendanceInput {
     _id: ID,
     user_ID: String!,
-    user_email: String!,
+    user_email: String,
     date: ISODate!,
     punchIn: String!,
     punchOut: String!,
@@ -63,6 +70,11 @@ const typeDefs = gql`
     created_at: ISODate,
     modified: [modifiedInputs]
   }
+
+  type UploadAttendancesPayload {
+    attendances: [Attendance]
+  }
+
 `
 
 const resolvers = require('./resolvers')

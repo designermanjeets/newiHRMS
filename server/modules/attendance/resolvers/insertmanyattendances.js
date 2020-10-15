@@ -19,11 +19,11 @@ const insertManyAttendances = (_, { input },{me,secret}) => new Promise(async (r
             { punchOut: attend.punchOut }
           ]
         }).then(att => {
-
           if(!att.length) {
             User.find({ emmpid: attend.user_ID })
               .then((user) => {
                 if (!user.length) {
+                  console.log('return no user')
                   reject( new Error('No User found for given attendance!'))
                 } else {
                   Attendance.create({ ...attend }).then((newAttend, error) => {
@@ -58,20 +58,22 @@ const insertManyAttendances = (_, { input },{me,secret}) => new Promise(async (r
                       });
 
                     } else {
-                      return reject('Attendance Creation Failed! Try Again!')
+                      return reject(new Error('Attendance Creation Failed! Try Again!'))
                     }
                   })
                   resolve(user)
                 }
                 resolve(user)
+              }, error => {
+                return reject(new Error('No User found for given attendance!'))
               })
           } else {
-            reject('Attendance already exist for the same Date!')
+            return reject(new Error('Attendance already exist for the Date! ' + att[0].date))
           }
         });
       }
       catch (error) {
-        reject(error)
+        return reject(error)
       }
     });
   }

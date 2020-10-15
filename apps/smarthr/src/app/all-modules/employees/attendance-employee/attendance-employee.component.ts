@@ -216,7 +216,7 @@ export class AttendanceEmployeeComponent implements OnInit {
         console.log(val.data);
         if (val.data) {
           this.toastr.success('Data Saved', 'Success', { timeOut: 3000 });
-          // this.getUsers();
+          window.location.reload();
         }
       }, error => {
         this.toastr.error(error, 'Error', { timeOut: 5000 });

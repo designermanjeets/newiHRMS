@@ -234,21 +234,85 @@
                   </ng-template>
                 </ngx-datatable-column>
 
-<!--                <ngx-datatable-column name="Actions" sortable="false" prop="_id">-->
-<!--                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>-->
-<!--                    <button class="btn btn-default" data-toggle="modal"-->
-<!--                            data-target="#edit_department" (click)="edit(row._id)">-->
-<!--                      <i class="fa fa-pencil-square" aria-hidden="true"></i>-->
-<!--                    </button>-->
-<!--                    <button class="btn btn-default" data-toggle="modal"-->
-<!--                            data-target="#delete_department" (click)="tempId = row._id">-->
-<!--                      <i class="fa fa-trash" aria-hidden="true"></i>-->
-<!--                    </button>-->
-<!--                  </ng-template>-->
-<!--                </ngx-datatable-column>-->
+                <ngx-datatable-column name="Actions" sortable="false" prop="_id">
+                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                    <button type="button" class="btn btn-sm btn btn-primary" (click)="reqCorrection(row)">Request Correction</button>
+                  </ng-template>
+                </ngx-datatable-column>
               </ngx-datatable>
             </div>
         </div>
     </div>
 </div>
 <!-- /Page Content -->
+
+
+<!-- Edit Attendance Modal -->
+<div id="edit_attendance" class="modal custom-modal fade" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Edit Attendance</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" *ngIf="isEditModel">
+        <form [formGroup]="editForm" (ngSubmit)="editAttendance(editForm)" novalidate>
+          <input id="_id" type="hidden" formControlName="_id">
+
+          <div class="form-group"
+               [class.has-error]="
+                editForm.controls['date'].invalid &&
+                editForm.controls['date'].touched"
+               [class.has-success]="editForm.controls['date'].valid"
+          >
+            <label for="date">Date<span class="text-danger">*</span></label>
+            <input id="date" class="form-control" formControlName="date" disabled readonly>
+          </div>
+
+          <div class="form-group pos-rel"
+               [class.has-error]="
+                editForm.controls['punchIn'].invalid &&
+                editForm.controls['punchIn'].touched"
+               [class.has-success]="editForm.controls['punchIn'].valid"
+          >
+            <label for="punchIn">Punch In <span class="text-danger">*</span></label>
+
+            <ngx-timepicker-field
+                id="punchIn"
+                [controlOnly]="true"
+                formControlName="punchIn"
+            ></ngx-timepicker-field>
+
+            <span class="help-block" *ngIf="editForm.controls['punchIn'].errors && editForm.controls['punchIn'].touched">
+                Punch In time is invalid
+            </span>
+          </div>
+          <div class="form-group pos-rel"
+               [class.has-error]="
+                editForm.controls['punchOut'].invalid &&
+                editForm.controls['punchOut'].touched"
+               [class.has-success]="editForm.controls['punchOut'].valid"
+          >
+            <label for="punchOut">Punch Out <span class="text-danger">*</span></label>
+
+            <ngx-timepicker-field
+                id="punchOut"
+                [controlOnly]="true"
+                formControlName="punchOut"
+            ></ngx-timepicker-field>
+            <span class="help-block" *ngIf="editForm.controls['punchOut'].errors && editForm.controls['punchOut'].touched">
+                Punch out time is invalid
+            </span>
+          </div>
+
+          <div class="m-t-20 text-center">
+            <button class="btn btn-primary" type="submit" [disabled]="editForm.invalid">Raise Request</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /Edit Attendance Modal -->

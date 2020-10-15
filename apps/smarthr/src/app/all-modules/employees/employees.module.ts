@@ -29,6 +29,7 @@ import { NgxMaskModule, IConfig } from 'ngx-mask';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 
@@ -51,6 +52,10 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
     MatFormFieldModule,
     MatInputModule,
     NgxMaskModule.forRoot(),
+    MatDatepickerModule,
+    NgxMaterialTimepickerModule
+  ],
+  providers: [
   ]
 })
 export class EmployeesModule { }

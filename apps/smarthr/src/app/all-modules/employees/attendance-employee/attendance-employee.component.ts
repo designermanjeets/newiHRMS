@@ -12,6 +12,8 @@ import { ColumnMode, SelectionType } from '@swimlane/ngx-datatable';
 import { UploadOutput, UploadInput, UploadFile, UploaderOptions } from 'ngx-uploader';
 import * as moment from 'moment';
 import * as _ from 'lodash';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+declare const $: any;
 
 @Component({
   selector: 'app-attendance-employee',
@@ -24,6 +26,10 @@ export class AttendanceEmployeeComponent implements OnInit {
   rows: [] = [];
   srch: [] = [];
   allAttendances: [] = [];
+
+  editForm: FormGroup;
+  isEditModel = false;
+  editTemp: any;
 
   selected = [];
   columns: any[] = [];
@@ -46,6 +52,7 @@ export class AttendanceEmployeeComponent implements OnInit {
     private cdRef: ChangeDetectorRef,
     private toastr: ToastrService,
     private apollo: Apollo,
+    private fb: FormBuilder,
     private createAttendanceGQL: CreateAttendanceGQL,
     private updateAttendanceGQL: UpdateAttendanceGQL,
     private deleteAttendanceGQL: DeleteAttendanceGQL,
@@ -58,7 +65,25 @@ export class AttendanceEmployeeComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.initForm();
     this.loadAttendances();
+
+
+    $('#edit_attendance').on('hide.bs.modal', () => {
+      console.log(this.editTemp);
+      this.editTemp = null;
+      this.editForm.reset();
+    });
+
+  }
+
+  initForm() {
+    this.editForm = this.fb.group({
+      _id: [''],
+      date: ['', Validators.required],
+      punchIn: ['', Validators.required],
+      punchOut: ['', Validators.required],
+    });
   }
 
   loadAttendances() {
@@ -99,7 +124,7 @@ export class AttendanceEmployeeComponent implements OnInit {
       }, error => this.toastr.error(error, 'Error'));
    }
 
-   getDurationOutputHours(durationArray) {
+  getDurationOutputHours(durationArray) {
        return _.forEach(durationArray, dur => {
          const duration = moment.duration(moment(dur.punchOut).diff(moment(dur.punchIn)));
          dur['duration'] =  duration.asHours();
@@ -112,6 +137,24 @@ export class AttendanceEmployeeComponent implements OnInit {
     const hours = duration.asHours();
 
     return hours;
+  }
+
+
+
+  editAttendance(form) {
+
+  }
+
+  reqCorrection(row) {
+    this.isEditModel = true;
+    this.editTemp = JSON.parse(JSON.stringify(row));
+    this.editTemp.date = moment(this.editTemp.punchIn).format('MM-DD-YYYY');
+    this.editTemp.punchIn = moment(this.editTemp.punchIn).format('hh:mm A');
+    this.editTemp.punchOut = moment(this.editTemp.punchOut).format('hh:mm A');
+    $("#edit_attendance").modal('show');
+    $('#edit_attendance').on('shown.bs.modal', () => {
+      this.editForm.patchValue(this.editTemp);
+    });
   }
 
 

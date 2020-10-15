@@ -88,6 +88,7 @@
     "ngx-bootstrap": "^5.2.0",
     "ngx-filepond": "^5.0.1",
     "ngx-mask": "^10.0.4",
+    "ngx-material-timepicker": "^5.5.3",
     "ngx-perfect-scrollbar": "^8.0.0",
     "ngx-toastr": "^11.3.0",
     "ngx-uploader": "^10.0.0",

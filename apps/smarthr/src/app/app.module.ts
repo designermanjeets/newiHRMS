@@ -37,6 +37,7 @@ import { ErrorInterceptor } from './_helpers/error.interceptor';
         timeOut: 10000,
         positionClass: 'toast-top-full-width',
         preventDuplicates: true,
+        maxOpened: 1
       }
     ),
     GraphQLModule,

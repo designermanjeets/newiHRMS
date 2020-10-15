@@ -7,9 +7,15 @@ import { ApolloLink } from 'apollo-link';
 import { setContext } from 'apollo-link-context';
 import { createUploadLink } from 'apollo-upload-client';
 import { AppsServiceService } from './all-modules/apps/apps-service.service';
+import { AuthenticationService } from './login/login.service';
+import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 const uri = 'http://localhost:5000/graphql'; // <-- add the URL of the GraphQL server here
 const uploadLink = createUploadLink({ uri });
+
+let toaster;
+let router;
 
 const link = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors) {
@@ -19,6 +25,8 @@ const link = onError(({ graphQLErrors, networkError }) => {
       console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`);
       if (message.includes('JWT_EXPIRED')) {
         sessionStorage.setItem('sessionExpire', `${message}`);
+        toaster.error(message, 'Error');
+        setTimeout( _ => router.navigate(['/login']), 2000);
       }
     });
   }
@@ -62,4 +70,11 @@ export function createApollo(httpLink: HttpLink) {
   ],
 })
 export class GraphQLModule {
+  constructor(
+    public routr: Router,
+    public toastr: ToastrService
+  ) {
+    toaster = this.toastr;
+    router = this.routr;
+  }
 }

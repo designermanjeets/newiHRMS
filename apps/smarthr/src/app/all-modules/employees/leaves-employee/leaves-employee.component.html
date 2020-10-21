@@ -104,12 +104,12 @@
 
                 <ngx-datatable-column name="Actions" sortable="false" prop="_id">
                   <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
-                    <div class="overlay" *ngIf="row.status !== 'pending'"></div>
-                    <button class="btn btn-default" data-toggle="modal"
+                    <div class="overlay" *ngIf="row.status === 'rejected' || row.status === 'approved'"></div>
+                    <button *ngIf="(row.status !== 'rejected' && row.status !== 'approved')" class="btn btn-default" data-toggle="modal"
                             data-target="#edit_leave" (click)="edit(row._id)">
                       <i class="fa fa-pencil-square" aria-hidden="true"></i>
                     </button>
-                    <button class="btn btn-default" data-toggle="modal"
+                    <button *ngIf="(row.status !== 'rejected' && row.status !== 'approved')" class="btn btn-default" data-toggle="modal"
                             data-target="#delete_approve" (click)="tempId = row">
                       <i class="fa fa-trash" aria-hidden="true"></i>
                     </button>

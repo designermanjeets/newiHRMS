@@ -1,5 +1,6 @@
 const Shift = require('../../../models/shift');
 const Audit = require('../../../models/Audit');
+const User = require('../../../models/user');
 
 const deleteShift = (_, { id, modified }, {me,secret}) => new Promise(async (resolve, reject) => {
   try {
@@ -12,6 +13,16 @@ const deleteShift = (_, { id, modified }, {me,secret}) => new Promise(async (res
 
       await Shift.findByIdAndDelete(id)
         .then((result) => {
+
+          User.find(
+            { shift : { "$elemMatch" : { _id :result._id} } },
+          ).then( res => {
+            res.forEach(usr => {
+              const sftInd = usr.shift.findIndex(syft => syft._id.toHexString() === result._id.toHexString());
+              usr.shift.splice(sftInd, 1);
+              usr.save();
+            })
+          })
 
           const modifiedObj = {
             shift_ID: shft._id,

@@ -22,7 +22,7 @@ const signup = (_, {
      department_ID,
      designation,
      designation_ID,
-     shift_ID,
+     shift,
      permissions,
      created_by,
      created_at
@@ -45,7 +45,7 @@ const signup = (_, {
         department,
         department_ID,
         designation_ID,
-        shift_ID,
+        shift,
         permissions,
         created_at
       }
@@ -74,20 +74,21 @@ const signup = (_, {
             }).then(_ => {
 
               // Shift Assign
-              Shift.findById({_id: shift_ID}).then(async val => {
-                const found = (result.shift.filter(val => val._id.toHexString() === shift_ID))[0];
-
-                if(found) return false;
-
-                if(!found) {
-                  if (!result.shift && !result.shift.length) {
-                    result.shift = [];
-                  }
-                  result.shift.push(val);
-                  await result.save();
-                  resolve(result);
-                }
-              }).then( _ => {
+              Shift.find().then(async val => {
+                // const found = (result.shift.filter(val => val._id.toHexString() === shift_ID))[0];
+                //
+                // if(found) return false;
+                //
+                // if(!found) {
+                //   if (!result.shift && !result.shift.length) {
+                //     result.shift = [];
+                //   }
+                //   result.shift.push(val);
+                //   await result.save();
+                //   resolve(result);
+                // }
+              })
+              .then( _ => {
 
                 // Audit Update
                 const modifiedObj = {

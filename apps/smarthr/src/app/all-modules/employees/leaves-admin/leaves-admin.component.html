@@ -197,14 +197,14 @@
                 <ngx-datatable-column name="Actions" sortable="false" prop="_id" width="200">
                   <ng-template let-row="row" let-value="value" ngx-datatable-cell-template let-rowIndex="rowIndex">
                     <div class="overlay"
-                         *ngIf="(row.status === 'rejected' || row.status === 'approved') || !isAdmin"
+                         *ngIf="(row.status === 'rejected' || row.status === 'approved')"
                     ></div>
 <!--                    <button *ngIf="(row.status !== 'authorized' && row.status !== 'declined')" class="btn btn-block btn-primary btn-sm btn-rounded" (click)="authLeave(row)">Authorize</button>-->
                     <button *ngIf="(row.status !== 'rejected' && row.status !== 'approved')"  class="btn btn-default" data-toggle="modal"
                             data-target="#edit_leave" (click)="edit(row._id)">
                       <i class="fa fa-pencil-square" aria-hidden="true"></i>
                     </button>
-                    <button *ngIf="(row.status !== 'rejected' && row.status !== 'approved')"  class="btn btn-default" data-toggle="modal"
+                    <button [ngClass]="{'pos-rel': isAdmin}" *ngIf="(row.status !== 'rejected' && row.status !== 'approved') || isAdmin"  class="btn btn-default" data-toggle="modal"
                             data-target="#delete_approve" (click)="tempId = row">
                       <i class="fa fa-trash" aria-hidden="true"></i>
                     </button>

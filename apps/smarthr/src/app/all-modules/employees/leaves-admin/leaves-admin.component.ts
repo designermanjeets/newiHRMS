@@ -371,7 +371,7 @@ export class LeavesAdminComponent implements OnInit, OnDestroy {
   // Delete leaves Modal Api Call
 
   deleteleave() {
-    if (this.tempId.status === 'pending') {
+    if (this.tempId.status === 'pending' || this.isAdmin) {
     this.deleteLeaveGQL
       .mutate({
         id: this.tempId._id,

@@ -483,16 +483,16 @@
                   </div>
                   <div class="col-sm-4">
                     <div class="form-group"
-                         [class.has-error]="
-                    editForm.controls['emmpid'].invalid &&
-                    editForm.controls['emmpid'].touched"
-                         [class.has-success]="editForm.controls['emmpid'].valid"
+                       [class.has-error]="
+                        editForm.controls['emmpid'].invalid &&
+                        editForm.controls['emmpid'].touched"
+                       [class.has-success]="editForm.controls['emmpid'].valid"
                     >
                       <label class="control-label">Employee ID <span class="text-danger m-l-5">*</span></label>
                       <input type="text" class="form-control" formControlName="emmpid" required>
                       <span class="help-block" *ngIf="editForm.controls['emmpid'].errors && editForm.controls['emmpid'].touched">
-                    Employee ID is invalid
-                </span>
+                          Employee ID is invalid
+                      </span>
                     </div>
                   </div>
                   <div class="col-sm-4">
@@ -580,6 +580,25 @@
                       </span>
                     </div>
                   </div>
+
+                  <div class="col-sm-4">
+                    <div class="form-group"
+                         [class.has-error]="
+                          editForm.controls['shift_ID'].invalid &&
+                          editForm.controls['shift_ID'].touched"
+                         [class.has-success]="editForm.controls['shift_ID'].valid"
+                    >
+                      <label for="shift_ID1" class="control-label">Shift<span class="text-danger m-l-5">*</span></label>
+                      <select id="shift_ID1" class="select form-control" formControlName="shift_ID" required>
+                        <option value="">--Select--</option>
+                        <option *ngFor="let opt of allShifts" [value]="opt._id">{{opt.shiftname}}</option>
+                      </select>
+                      <span class="help-block" *ngIf="editForm.controls['shift_ID'].errors && editForm.controls['shift_ID'].touched">
+                        Shift is invalid
+                      </span>
+                    </div>
+                  </div>
+
                   <div class="col-sm-4">
                     <div class="form-group" [class.has-error]="editForm.controls['mobile'].invalid && editForm.controls['mobile'].touched" [class.has-success]="editForm.controls['mobile'].valid">
                       <label class="control-label">Mobile</label>

@@ -14,7 +14,7 @@ import {
   CreateUserGQL,
   DeleteUserGQL,
   EmpdetailGQLService,
-  EmployeeGQLService, GET_COMPANIES_QUERY, GET_ROLES_QUERY,
+  EmployeeGQLService, GET_COMPANIES_QUERY, GET_ROLES_QUERY, GET_SHIFTS_QUERY,
   GET_USERS_QUERY,
   ImportUsersGQL
 } from '../employee-gql.service';
@@ -62,6 +62,7 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
   designations: any;
   allDesignations: any;
   allRoles: any;
+  allShifts: any;
   isModal: boolean;
   actionParams: any;
 
@@ -107,6 +108,7 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
     this.getCompanies();
     this.getDepartments();
     this.getRoles();
+    this.getShifts();
 
     // for floating label
 
@@ -134,6 +136,7 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
       role: ['', Validators.required],
       department: ['', Validators.required],
       designation: ['', Validators.required],
+      shift_ID: ['', Validators.required],
       mobile: ['']
     }, { validator: this.checkPasswords });
 
@@ -151,6 +154,9 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
     const data = f.value;
     const dprt = this.setGetDesignationsService.getDepartment(f.value.department);
     const desig = this.setGetDesignationsService.getDesignations(f.value.designation);
+    const shift = this.setGetDesignationsService.getShift(f.value.shift_ID);
+    console.log(shift);
+
     this.createUserGQL
       .mutate({
         firstname: data.firstname,
@@ -168,13 +174,15 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
           designation: desig.designation
         },
         designation_ID: desig._id,
+        shift_ID: shift._id,
         mobile: data.mobile,
-        modified : []
+        created_by: JSON.parse(sessionStorage.getItem('user')).username,
+        created_at: Date.now()
       })
       .subscribe( (val: any) => {
         if (val.data.signup.username) {
           $('#add_employee').modal('hide');
-          this.toastr.success('Employeee added sucessfully...!', 'Success');
+          this.toastr.success('Employee added successfully...!', 'Success');
           this.getUsers();
         }
       }, error => this.toastr.error(error, 'Error'));
@@ -183,25 +191,31 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
   updateSubmit(f) {
     const dprt = this.setGetDesignationsService.getDepartment(f.value.department);
     const desig = this.setGetDesignationsService.getDesignations(f.value.designation);
+    const shift = this.setGetDesignationsService.getShift(f.value.shift_ID);
+    console.log(shift);
+    console.log(f.getRawValue());
+    const fvalue = f.getRawValue(); // To Get Disabled Values
+
     this.empdetailGQLService
       .mutate({
-        id: f.value._id,
-        username: f.value.username,
-        email: f.value.email,
-        password: f.value.password,
-        role: f.value.role,
+        id: fvalue._id,
+        username: fvalue.username,
+        email: fvalue.email,
+        password: fvalue.password,
+        role: fvalue.role,
         department: dprt.department,
         department_ID: dprt._id,
         designation: {
           designation: desig.designation
         },
         designation_ID: desig._id,
-        emmpid: f.value.emmpid,
-        corporateid: f.value.corporateid,
-        firstname: f.value.firstname,
-        lastname: f.value.lastname,
-        joiningdate: f.value.joiningdate,
-        mobile: f.value.mobile,
+        emmpid: fvalue.emmpid,
+        corporateid: fvalue.corporateid,
+        firstname: fvalue.firstname,
+        lastname: fvalue.lastname,
+        joiningdate: fvalue.joiningdate,
+        shift_ID: fvalue.shift_ID,
+        mobile: fvalue.mobile,
         modified: {
           modified_by: JSON.parse(sessionStorage.getItem('user')).username,
           modified_at: Date.now()
@@ -210,7 +224,7 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
       .subscribe( (val: any) => {
         if (val.data.updateUser) {
           $('#edit_employee').modal('hide');
-          this.toastr.success('Employeee Updated sucessfully...!', 'Success');
+          this.toastr.success('Employee Updated successfully...!', 'Success');
           this.getUsers();
           this.cdref.detectChanges();
 
@@ -288,7 +302,6 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
     }, error => this.toastr.error(error, 'Error'));
   }
 
-
   getRoles() {
     this.apollo.watchQuery({
       query: GET_ROLES_QUERY,
@@ -300,6 +313,23 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
     }).valueChanges.subscribe((response: any) => {
       if (response.data) {
         this.allRoles = response.data.getRoles;
+        this.cdref.detectChanges();
+      }
+    }, error => this.toastr.error(error, 'Error'));
+  }
+
+  getShifts() {
+    this.apollo.watchQuery({
+      query: GET_SHIFTS_QUERY,
+      variables: {
+        pagination: {
+          limit: 100
+        }
+      },
+    }).valueChanges.subscribe((response: any) => {
+      if (response.data) {
+        this.allShifts = response.data.getShifts;
+        this.setGetDesignationsService.setShifts(this.allShifts);
         this.cdref.detectChanges();
       }
     }, error => this.toastr.error(error, 'Error'));

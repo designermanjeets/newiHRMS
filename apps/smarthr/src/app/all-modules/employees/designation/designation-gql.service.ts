@@ -122,6 +122,7 @@ export class SetGetDesignationsService {
 
   designations: any;
   departments: any;
+  shifts: any;
 
   constructor() { }
 
@@ -142,12 +143,26 @@ export class SetGetDesignationsService {
     this.departments = data;
   }
 
-  getDepartment(id) { // Same function but can be extented in future
+  getDepartment(id) { // Same function but can be extended in future
     if (!this.departments) {
       return false;
     } else {
       return this.departments.find(
         (h: any) => h._id === id);
+    }
+  }
+
+
+
+  setShifts(data) {
+    this.shifts = data;
+  }
+
+  getShift(id) { // Same function but can be extended in future
+    if (!this.shifts) {
+      return false;
+    } else {
+      return this.shifts.find( (h: any) => h._id === id);
     }
   }
 

@@ -2,6 +2,7 @@ const User = require('../../../models/user');
 const Audit = require('../../../models/Audit');
 const Designation = require('../../../models/designation');
 const Role = require('../../../models/role');
+const Shift = require('../../../models/shift');
 const bcrypt = require('bcrypt')
 const paramHandler = require('../../../utils/paramhandler');
 
@@ -21,6 +22,7 @@ const updateUser = (_, {
   department_ID,
   designation,
   designation_ID,
+  shift_ID,
   permissions,
   modified
 },{me,secret}) => new Promise(async (resolve, reject) => {
@@ -39,6 +41,7 @@ const updateUser = (_, {
       joiningdate,
       department,
       department_ID,
+      shift_ID,
       permissions
     }
 
@@ -69,52 +72,81 @@ const updateUser = (_, {
         param.password = await bcrypt.hash(password, 10)
       }
     }
-    await User.findByIdAndUpdate(
+    User.findByIdAndUpdate(
       {_id: id},
       { $set: {...param }, $push: { 'modified': modified  }  }, { new: true })
       .then((result) => {
-        resolve(result)
+
         if(result) {
-          Designation.findById({_id: designation_ID}).then( val =>{
+
+          // Designation Update
+          Designation.findById({_id: designation_ID}).then(async val => {
             result.designation = {}; // Because only one Designation
             result.designation = val;
-            result.save();
+            await result.save();
             resolve(result);
-          });
-          // Role Update
-          Role.findById({_id: role}).then( val =>{
-            let alldata = new User(result);
-            result.Role = {};
-            alldata.Role = val;
-            alldata.save();
-            resolve(result);
+
+          }).then(_ => {
+
+            // Role Update
+            Role.findById({_id: role}).then(async val => {
+              if(val) {
+                result.Role = {};
+                result.Role = val;
+                await result.save();
+                resolve(result);
+              }
+
+            }).then(_ => {
+
+              // Shift Update
+              Shift.findById({_id: shift_ID}).then(async val => {
+                const found = (result.shift.filter(val => val._id.toHexString() === shift_ID))[0];
+
+                if(found) return false;
+
+                if(!found) {
+                  if (!result.shift && !result.shift.length) {
+                    result.shift = [];
+                  }
+                  result.shift.push(val);
+                  await result.save();
+                  resolve(result);
+                }
+              }).then( _ => {
+
+                if(result && Object.keys(changeFields).length !== 0) {
+                  // Audit Below
+                  const modifiedObj = {
+                    user_ID: getuser._id,
+                    modified_by: modified[0].modified_by,
+                    modified_at: modified[0].modified_at,
+                    action: 'Changed',
+                    changedObj: changeFields,
+                    oldUserData: getuser
+                  }
+
+                  Audit.find({}).then(val => {
+                    if(val.length) {
+                      Audit.findOneAndUpdate(
+                        { },
+                        { $push: { userAudit: modifiedObj  }  }, { new: true })
+                        .then();
+                    } else {
+                      Audit.create({ userAudit: modifiedObj  })
+                        .then();
+                    }
+                    resolve(result);
+                  });
+                }
+
+              });
+
+            });
           });
         }
-        if(result && Object.keys(changeFields).length !== 0) {
-          // Audit Below
-          const modifiedObj = {
-            user_ID: getuser._id,
-            modified_by: modified[0].modified_by,
-            modified_at: modified[0].modified_at,
-            action: 'Changed',
-            changedObj: changeFields,
-            oldUserData: getuser
-          }
-          Audit.find({}).then(val =>{
-            if(val.length) {
-              Audit.findOneAndUpdate(
-                { },
-                { $push: { userAudit: modifiedObj  }  }, { new: true })
-                .then();
-            } else {
-              Audit.create({ userAudit: modifiedObj  })
-                .then();
-            }
-            resolve(result);
-          });
-        } else {
-          resolve(result);
-        }
+      }, error => {
+        reject(error)
       })
   } catch(error){
     reject(error);

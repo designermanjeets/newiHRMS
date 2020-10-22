@@ -79,6 +79,17 @@ const attendanceSchema = mongoose.Schema({
   modified : [subSchema],
 }, { strict: false});
 
+const shiftSchema = mongoose.Schema({
+  id: String,
+  shiftname: String,
+  shiftimeFrom: String,
+  shiftimeTo: String,
+  maxshifts: Number,
+  created_at: Date,
+  created_by: String,
+  modified : [subSchema],
+}, { strict: false});
+
 const roleSchema = new Schema({
   id: String,
   role_name: String,
@@ -163,6 +174,8 @@ const userSchema = new Schema({
   modified : [subSchema],
   Role: roleSchema,
   attendance: [attendanceSchema],
+  shift_ID: String,
+  shift: [shiftSchema],
 }, { collection:'User' });
 
 

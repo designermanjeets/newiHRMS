@@ -31,6 +31,8 @@ const typeDefs = gql`
       department_ID: String,
       designation: designationInputs,
       designation_ID: String,
+      shift_ID: String,
+      shift: [ShiftInput],
       created_by: String,
       created_at: ISODate
       Role: RoleInput
@@ -56,6 +58,8 @@ const typeDefs = gql`
       department_ID: String,
       designation: designationInputs,
       designation_ID: String,
+      shift_ID: String,
+      shift: [ShiftInput],
       modified: [modifiedInputs]
       Role: RoleInput
       ): User
@@ -102,6 +106,8 @@ const typeDefs = gql`
     modified: [modifiedTypes],
     Role: Role
     leaveApplied: [LeaveApplied]
+    shift_ID: String
+    shift: [Shift]
   }
 
   type ChangePasswordUser{
@@ -138,6 +144,8 @@ const typeDefs = gql`
     created_at: ISODate,
     created_by: String
     Role: RoleInput
+    shift_ID: String
+    shift: [ShiftInput]
   }
 
   input modifiedInputs {

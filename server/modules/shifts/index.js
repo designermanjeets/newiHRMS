@@ -32,7 +32,7 @@ const typeDefs = gql`
     deleteShift( id: ID!, shiftname: String, modified: [modifiedInputs] ): Shift,
   }
 
-  type Shift{
+  type Shift {
     _id: ID,
     shiftname: String!,
     shiftimeFrom: String,

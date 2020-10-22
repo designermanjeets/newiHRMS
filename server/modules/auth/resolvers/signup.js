@@ -2,6 +2,7 @@ const User = require('../../../models/user')
 const Audit = require('../../../models/Audit');
 const Role = require('../../../models/role');
 const Designation = require('../../../models/designation');
+const Shift = require('../../../models/shift');
 const bcrypt = require('bcrypt')
 const jsonwebtoken = require('jsonwebtoken')
 const SALT_ROUNDS = 12
@@ -21,6 +22,7 @@ const signup = (_, {
      department_ID,
      designation,
      designation_ID,
+     shift_ID,
      permissions,
      created_by,
      created_at
@@ -43,46 +45,71 @@ const signup = (_, {
         department,
         department_ID,
         designation_ID,
+        shift_ID,
         permissions,
         created_at
       }
     ).then(result => {
       createToken({ id: result.id,role:result.role,username:result.username, emmpid},secret,'1d')
-        .then(tokn =>{
+        .then(tokn => {
 
-          Designation.findById({_id: designation_ID}).then( val =>{
+          // Designation Assign
+          Designation.findById({_id: designation_ID}).then(async val => {
             result.designation = {}; // Because only one Designation
             result.designation = val;
-            result.save();
+            await result.save();
             resolve(result);
-          });
 
-          // Role Update
-          Role.findById({_id: role}).then( val =>{
-            let alldata = new User(result);
-            result.Role = {};
-            alldata.Role = val;
-            alldata.save();
-            resolve(result);
-          });
+          }).then(_ => {
 
-          const modifiedObj = {
-            newuser_ID: result._id,
-            action: 'User Created!',
-            created_by: created_by,
-            created_at: created_at,
-            createdUser: result
-          }
-          Audit.find({}).then(val =>{
-            if(val.length) {
-              Audit.findOneAndUpdate(
-                { },
-                { $push: { userAudit: modifiedObj  }  }, { new: true })
-                .then();
-            } else {
-              Audit.create({ userAudit: modifiedObj  })
-                .then();
-            }
+            // Role Assign
+            Role.findById({_id: role}).then(async val => {
+              if(val) {
+                result.Role = {};
+                result.Role = val;
+                await result.save();
+                resolve(result);
+              }
+
+            }).then(_ => {
+
+              // Shift Assign
+              Shift.findById({_id: shift_ID}).then(async val => {
+                const found = (result.shift.filter(val => val._id.toHexString() === shift_ID))[0];
+
+                if(found) return false;
+
+                if(!found) {
+                  if (!result.shift && !result.shift.length) {
+                    result.shift = [];
+                  }
+                  result.shift.push(val);
+                  await result.save();
+                  resolve(result);
+                }
+              }).then( _ => {
+
+                // Audit Update
+                const modifiedObj = {
+                  newuser_ID: result._id,
+                  action: 'User Created!',
+                  created_by: created_by,
+                  created_at: created_at,
+                  createdUser: result
+                }
+
+                Audit.find({}).then(val => {
+                  if(val.length) {
+                    Audit.findOneAndUpdate(
+                      { },
+                      { $push: { userAudit: modifiedObj  }  }, { new: true }).then();
+                  } else {
+                    Audit.create({ userAudit: modifiedObj  }).then();
+                  }
+                });
+
+              });
+            });
           });
 
           resolve(result);

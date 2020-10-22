@@ -22,7 +22,7 @@ const updateUser = (_, {
   department_ID,
   designation,
   designation_ID,
-  shift_ID,
+  shift,
   permissions,
   modified
 },{me,secret}) => new Promise(async (resolve, reject) => {
@@ -41,8 +41,8 @@ const updateUser = (_, {
       joiningdate,
       department,
       department_ID,
-      shift_ID,
-      permissions
+      permissions,
+      shift
     }
 
     let changeFields = {};
@@ -99,48 +99,54 @@ const updateUser = (_, {
 
             }).then(_ => {
 
-              // Shift Update
-              Shift.findById({_id: shift_ID}).then(async val => {
-                const found = (result.shift.filter(val => val._id.toHexString() === shift_ID))[0];
+              // Shift Update || Multiple
+              // result.shift = []; // Because we're getting all in once
+              // shift.forEach( (shft, i) => {
+              //
+              //   // Shift.findById({_id: shft._id}).then(async val => {
+              //   //   const found = (result.shift.filter(val => val._id.toHexString() === shft))[0];
+              //   //
+              //   //   if(found) return false;
+              //   //
+              //   //   if(!found) {
+              //   //     if (!result.shift && !result.shift.length) {
+              //   //       result.shift = [];
+              //   //     }
+              //   //     result.shift.push(val);
+              //   //     await setTimeout(_ => {
+              //   //       result.save();
+              //   //       resolve(result);
+              //   //     }, i)
+              //   //   }
+              //   // }).then( _ => {
+              //   //   // Something
+              //   // });
+              // })
 
-                if(found) return false;
+              if(result && Object.keys(changeFields).length !== 0) {
+                // Audit Below
+                const modifiedObj = {
+                  user_ID: getuser._id,
+                  modified_by: modified[0].modified_by,
+                  modified_at: modified[0].modified_at,
+                  action: 'Changed',
+                  changedObj: changeFields,
+                  oldUserData: getuser
+                }
 
-                if(!found) {
-                  if (!result.shift && !result.shift.length) {
-                    result.shift = [];
+                Audit.find({}).then(val => {
+                  if(val.length) {
+                    Audit.findOneAndUpdate(
+                      { },
+                      { $push: { userAudit: modifiedObj  }  }, { new: true })
+                      .then();
+                  } else {
+                    Audit.create({ userAudit: modifiedObj  })
+                      .then();
                   }
-                  result.shift.push(val);
-                  await result.save();
                   resolve(result);
-                }
-              }).then( _ => {
-
-                if(result && Object.keys(changeFields).length !== 0) {
-                  // Audit Below
-                  const modifiedObj = {
-                    user_ID: getuser._id,
-                    modified_by: modified[0].modified_by,
-                    modified_at: modified[0].modified_at,
-                    action: 'Changed',
-                    changedObj: changeFields,
-                    oldUserData: getuser
-                  }
-
-                  Audit.find({}).then(val => {
-                    if(val.length) {
-                      Audit.findOneAndUpdate(
-                        { },
-                        { $push: { userAudit: modifiedObj  }  }, { new: true })
-                        .then();
-                    } else {
-                      Audit.create({ userAudit: modifiedObj  })
-                        .then();
-                    }
-                    resolve(result);
-                  });
-                }
-
-              });
+                });
+              }
 
             });
           });

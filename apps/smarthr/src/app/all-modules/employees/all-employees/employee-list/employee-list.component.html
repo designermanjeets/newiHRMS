@@ -300,6 +300,26 @@
                       </span>
                     </div>
                   </div>
+
+                  <div class="col-sm-4">
+                    <div class="form-group"
+                         [class.has-error]="
+                          editForm.controls['shift'].invalid &&
+                          editForm.controls['shift'].touched"
+                         [class.has-success]="editForm.controls['shift'].valid"
+                    >
+                      <label for="shift" class="control-label">Shift<span class="text-danger m-l-5">*</span></label>
+                      <mat-form-field id="shift" appearance="fill">
+                        <mat-select formControlName="shift" multiple  [compareWith]="compareFn" (selectionChange)="shiftChange($event)" >
+                          <mat-option *ngFor="let opt of allShifts" [value]="opt">{{opt.shiftname}}</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                      <span class="help-block" *ngIf="editForm.controls['shift'].errors && editForm.controls['shift'].touched">
+                        Shift is invalid
+                      </span>
+                    </div>
+                  </div>
+
                   <div class="col-sm-4">
                     <div class="form-group" [class.has-error]="editForm.controls['mobile'].invalid && editForm.controls['mobile'].touched" [class.has-success]="editForm.controls['mobile'].valid">
                       <label class="control-label">Mobile</label>
@@ -584,16 +604,17 @@
                   <div class="col-sm-4">
                     <div class="form-group"
                          [class.has-error]="
-                          editForm.controls['shift_ID'].invalid &&
-                          editForm.controls['shift_ID'].touched"
-                         [class.has-success]="editForm.controls['shift_ID'].valid"
+                          editForm.controls['shift'].invalid &&
+                          editForm.controls['shift'].touched"
+                         [class.has-success]="editForm.controls['shift'].valid"
                     >
-                      <label for="shift_ID1" class="control-label">Shift<span class="text-danger m-l-5">*</span></label>
-                      <select id="shift_ID1" class="select form-control" formControlName="shift_ID" required>
-                        <option value="">--Select--</option>
-                        <option *ngFor="let opt of allShifts" [value]="opt._id">{{opt.shiftname}}</option>
-                      </select>
-                      <span class="help-block" *ngIf="editForm.controls['shift_ID'].errors && editForm.controls['shift_ID'].touched">
+                      <label for="shift1" class="control-label">Shift<span class="text-danger m-l-5">*</span></label>
+                      <mat-form-field id="shift1" appearance="fill">
+                        <mat-select formControlName="shift" multiple  [compareWith]="compareFn" (selectionChange)="shiftChange($event)" >
+                          <mat-option *ngFor="let opt of allShifts" [value]="opt">{{opt.shiftname}}</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                      <span class="help-block" *ngIf="editForm.controls['shift'].errors && editForm.controls['shift'].touched">
                         Shift is invalid
                       </span>
                     </div>

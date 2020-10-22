@@ -45,7 +45,13 @@ export const GET_USERS_QUERY = gql`
         joiningdate,
         department,
         department_ID,
-        shift_ID,
+        shift {
+          _id
+          shiftname
+          shiftimeFrom
+          shiftimeTo
+          maxshifts
+        },
         designation {
           _id
           designation
@@ -145,7 +151,14 @@ export class GET_USER_QUERY extends Query<Response> {
         joiningdate,
         department,
         department_ID,
-        shift_ID,
+        shift
+        {
+          _id
+          shiftname
+          shiftimeFrom
+          shiftimeTo
+          maxshifts
+        },
         designation {
           _id
           designation
@@ -239,7 +252,7 @@ export class EmpdetailGQLService extends Mutation {
       $department_ID: String
       $designation: designationInputs
       $designation_ID: String
-      $shift_ID: String
+      $shift: [ShiftInput]
       $modified: [modifiedInputs]
     ) {
     updateUser(
@@ -258,7 +271,7 @@ export class EmpdetailGQLService extends Mutation {
         department_ID: $department_ID
         designation: $designation
         designation_ID: $designation_ID
-        shift_ID: $shift_ID
+        shift: $shift
         modified: $modified
     ) {
         username,
@@ -272,7 +285,13 @@ export class EmpdetailGQLService extends Mutation {
         joiningdate,
         department,
         department_ID,
-        shift_ID,
+        shift {
+          _id
+          shiftname
+          shiftimeFrom
+          shiftimeTo
+          maxshifts
+        },
         designation {
           _id
           designation
@@ -362,7 +381,7 @@ export class CreateUserGQL extends Mutation {
       $department_ID: String
       $designation: designationInputs,
       $designation_ID: String,
-      $shift_ID: String,
+      $shift: [ShiftInput]
       $mobile: String,
       $created_by: String,
       $created_at: ISODate
@@ -381,7 +400,7 @@ export class CreateUserGQL extends Mutation {
         department_ID: $department_ID
         designation: $designation
         designation_ID: $designation_ID
-        shift_ID: $shift_ID
+        shift: $shift
         mobile: $mobile,
         created_by: $created_by,
         created_at: $created_at
@@ -401,7 +420,13 @@ export class CreateUserGQL extends Mutation {
           designation
         },
         designation_ID,
-        shift_ID,
+        shift {
+          _id
+          shiftname
+          shiftimeFrom
+          shiftimeTo
+          maxshifts
+        },
         mobile,
         Role {
           _id

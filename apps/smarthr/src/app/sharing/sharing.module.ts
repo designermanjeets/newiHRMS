@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CustomDatePipe } from '../../assets/pipes/custom-date.pipe';
+import { MatSelectModule } from '@angular/material/select';
 
 
 
@@ -8,9 +9,11 @@ import { CustomDatePipe } from '../../assets/pipes/custom-date.pipe';
   declarations: [CustomDatePipe],
   exports: [
     CustomDatePipe,
+    MatSelectModule
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    MatSelectModule
   ]
 })
 export class SharingModule { }

@@ -136,7 +136,7 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
       role: ['', Validators.required],
       department: ['', Validators.required],
       designation: ['', Validators.required],
-      shift_ID: ['', Validators.required],
+      shift: [ null, Validators.required],
       mobile: ['']
     }, { validator: this.checkPasswords });
 
@@ -151,11 +151,11 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
   }
 
   createSubmit(f) {
-    const data = f.value;
+    const data = f.getRawValue(); // To Get Disabled Values
     const dprt = this.setGetDesignationsService.getDepartment(f.value.department);
     const desig = this.setGetDesignationsService.getDesignations(f.value.designation);
-    const shift = this.setGetDesignationsService.getShift(f.value.shift_ID);
-    console.log(shift);
+
+    const shiftObj =  _.forEach(data.shift, (d) => delete d['__typename']);
 
     this.createUserGQL
       .mutate({
@@ -174,7 +174,7 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
           designation: desig.designation
         },
         designation_ID: desig._id,
-        shift_ID: shift._id,
+        shift: shiftObj,
         mobile: data.mobile,
         created_by: JSON.parse(sessionStorage.getItem('user')).username,
         created_at: Date.now()
@@ -191,10 +191,10 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
   updateSubmit(f) {
     const dprt = this.setGetDesignationsService.getDepartment(f.value.department);
     const desig = this.setGetDesignationsService.getDesignations(f.value.designation);
-    const shift = this.setGetDesignationsService.getShift(f.value.shift_ID);
-    console.log(shift);
-    console.log(f.getRawValue());
+
     const fvalue = f.getRawValue(); // To Get Disabled Values
+
+    const shiftObj =  _.forEach(fvalue.shift, (d) => delete d['__typename']);
 
     this.empdetailGQLService
       .mutate({
@@ -214,7 +214,7 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
         firstname: fvalue.firstname,
         lastname: fvalue.lastname,
         joiningdate: fvalue.joiningdate,
-        shift_ID: fvalue.shift_ID,
+        shift: shiftObj,
         mobile: fvalue.mobile,
         modified: {
           modified_by: JSON.parse(sessionStorage.getItem('user')).username,
@@ -342,6 +342,14 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
     this.cdref.detectChanges();
   }
 
+  shiftChange($event) {
+    // console.log($event);
+  }
+
+  compareFn(c1: any, c2: any): boolean {
+    return c1 && c2 ? c1._id === c2._id : c1 === c2;
+  }
+
   add() {
     $('#add_employee').modal('show');
     this.editForm.reset();
@@ -373,6 +381,12 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
     this.onDepartChange({value: value.department_ID});
     if (value.designation) {
       this.editForm.get('designation').patchValue(value.designation._id);
+    }
+    if (value.shift && value.shift.length) {
+      let arrSel = [];
+      _.forEach(value.shift, v => arrSel.push(v));
+      console.log(arrSel);
+      this.editForm.get('shift').patchValue(arrSel);
     }
   }
 

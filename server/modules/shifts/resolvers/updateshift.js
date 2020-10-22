@@ -1,4 +1,5 @@
 const Shift = require('../../../models/shift');
+const User = require('../../../models/user');
 const Audit = require('../../../models/Audit');
 
 const updateShift = (_, {
@@ -52,9 +53,24 @@ const updateShift = (_, {
 
 const updateresr = function(result, changeFields, modified, shft) {
 
+  User.find(
+    { shift : { "$elemMatch" : { _id :result._id} } },
+  ).then( res => {
+    res.forEach(usr => {
+      usr.shift.forEach(syft => {
+        if(syft._id.toHexString() === result._id.toHexString()) {
+          syft.shiftname = result.shiftname;
+          syft.shiftimeFrom = result.shiftimeFrom;
+          syft.shiftimeTo = result.shiftimeTo;
+          syft.maxshifts = result.maxshifts;
+          usr.save()
+        }
+      })
+    })
+  })
+
   if(result && Object.keys(changeFields).length !== 0) {
 
-    console.log(modified);
     const modifiedObj = {
       shift_ID: shft._id,
       modified_by: modified[0].modified_by,

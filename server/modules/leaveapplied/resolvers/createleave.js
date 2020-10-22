@@ -90,10 +90,10 @@ const createLeave = (_, {
           Audit.findOneAndUpdate(
             { },
             { $push: { leaveAppliedAudit: modified  }  }, { new: true })
-            .then(res=> resolve(res));
+            .then();
         } else {
-          Audit.create({ leaveAppliedAudit: modified }, { new: true })
-            .then(res=> resolve(res));
+          Audit.create({ leaveAppliedAudit: modified })
+            .then();
         }
       });
 

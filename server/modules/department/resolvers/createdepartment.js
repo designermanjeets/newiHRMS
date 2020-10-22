@@ -15,7 +15,7 @@ const createDepartment = (_, {
       created_at,
       created_by
     })
-    const nmodified = {
+    const modifiedObj = {
       newDepart_ID: newDepartment._id,
       action: 'Department Created',
       created_by: created_by,
@@ -26,15 +26,11 @@ const createDepartment = (_, {
       if(val.length) {
         Audit.findOneAndUpdate(
           { },
-          { $push: { departAudit: nmodified  }  }, { new: true })
-          .then((result) => {
-            resolve(result);
-          });
+          { $push: { departAudit: modifiedObj  }  }, { new: true })
+          .then();
       } else {
-        Audit.create({ departAudit: nmodified  })
-          .then((result) => {
-            resolve(result);
-          });
+        Audit.create({ departAudit: modifiedObj  })
+          .then();
       }
       resolve(result);
     });

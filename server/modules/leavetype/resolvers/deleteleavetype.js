@@ -11,26 +11,22 @@ const deleteLeaveType = (_, { id, modified },{me,secret}) => new Promise(async (
 
           // Update Designation Assigned Leave Types
 
-          const nmodified = {
+          const modifiedObj = {
             leave_ID: ltype._id,
             modified_by: modified[0].modified_by,
             modified_at: modified[0].modified_at,
             action: 'Leave Type Deleted!',
-            deletedLeave: ltype
+            deletedLeaveType: ltype
           }
           Audit.find({}).then(val =>{
             if(val.length) {
               Audit.findOneAndUpdate(
                 { },
-                { $push: { leaveTypeAudit: nmodified  }  }, { new: true })
-                .then((result) => {
-                  resolve(result);
-                });
+                { $push: { leaveTypeAudit: modifiedObj  }  }, { new: true })
+                .then();
             } else {
-              Audit.create({ leaveTypeAudit: nmodified  })
-                .then((result) => {
-                  resolve(result);
-                });
+              Audit.create({ leaveTypeAudit: modifiedObj  })
+                .then();
             }
           });
           resolve(result);

@@ -44,7 +44,7 @@ const createRole = (_, {
           { $push: { roleAudit: modifiedObj  }  }, { new: true })
           .then();
       } else {
-        Audit.create({ roleAudit: modifiedObj }, { new: true }).then();
+        Audit.create({ roleAudit: modifiedObj }).then();
       }
       resolve(newRole);
     });

@@ -22,7 +22,7 @@ const deleteRole = (_, { id, modified }, {me,secret}) => new Promise(async (reso
                 { $push: { roleAudit: modifiedObj  }  }, { new: true })
                 .then((res) => resolve(res));
             } else {
-              Audit.create({ roleAudit: modifiedObj  }, { new: true })
+              Audit.create({ roleAudit: modifiedObj  })
                 .then((res) => resolve(res));
             }
           });

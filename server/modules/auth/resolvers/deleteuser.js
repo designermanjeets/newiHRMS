@@ -8,7 +8,7 @@ const deleteUser = (_, { email, modified },{me,secret}) => new Promise(async (re
     if (!user) reject( new Error('User not found!!'))
     if(user && user !== 'superadmin') {
       await User.deleteOne({ "email": email }, {new: true})
-      const nmodified = {
+      const modifiedObj = {
         user_ID: user._id,
         modified_by: modified[0].modified_by,
         modified_at: modified[0].modified_at,
@@ -19,15 +19,11 @@ const deleteUser = (_, { email, modified },{me,secret}) => new Promise(async (re
         if(val.length) {
           Audit.findOneAndUpdate(
             { },
-            { $push: { userAudit: nmodified  }  }, { new: true })
-            .then((result) => {
-              resolve(result);
-            });
+            { $push: { userAudit: modifiedObj  }  }, { new: true })
+            .then();
         } else {
-          Audit.create({ userAudit: nmodified  })
-            .then((result) => {
-              resolve(result);
-            });
+          Audit.create({ userAudit: modifiedObj  })
+            .then();
         }
       });
       resolve({User});

@@ -27,26 +27,22 @@ const createLeaveType = (_, {
       remainingleaves
     })
 
-    const nmodified = {
-      newDepart_ID: newLeaveType._id,
+    const modifiedObj = {
+      newLeaveType_ID: newLeaveType._id,
       action: 'Leave Type Created',
       created_by: created_by,
       created_at: created_at,
-      createdDepartment: newLeaveType
+      createdLeaveType: newLeaveType
     }
-    Audit.find({}).then(val =>{
+    Audit.find({}).then(val => {
       if(val.length) {
         Audit.findOneAndUpdate(
           { },
-          { $push: { leaveTypeAudit: nmodified  }  }, { new: true })
-          .then((result) => {
-            resolve(result);
-          });
+          { $push: { leaveTypeAudit: modifiedObj  }  }, { new: true })
+          .then();
       } else {
-        Audit.create({ leaveTypeAudit: nmodified  })
-          .then((result) => {
-            resolve(result);
-          });
+        Audit.create({ leaveTypeAudit: modifiedObj  })
+          .then();
       }
       resolve(result);
     });

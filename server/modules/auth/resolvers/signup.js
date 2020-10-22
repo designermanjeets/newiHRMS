@@ -66,7 +66,7 @@ const signup = (_, {
             resolve(result);
           });
 
-          const nmodified = {
+          const modifiedObj = {
             newuser_ID: result._id,
             action: 'User Created!',
             created_by: created_by,
@@ -77,15 +77,11 @@ const signup = (_, {
             if(val.length) {
               Audit.findOneAndUpdate(
                 { },
-                { $push: { userAudit: nmodified  }  }, { new: true })
-                .then((result) => {
-                  resolve(result);
-                });
+                { $push: { userAudit: modifiedObj  }  }, { new: true })
+                .then();
             } else {
-              Audit.create({ userAudit: nmodified  })
-                .then((result) => {
-                  resolve(result);
-                });
+              Audit.create({ userAudit: modifiedObj  })
+                .then();
             }
           });
 

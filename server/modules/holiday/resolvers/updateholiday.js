@@ -48,13 +48,9 @@ const updateHoliday = (_, {
               if(val.length) {
                 Audit.findOneAndUpdate(
                   { },
-                  { $push: { holidayAudit: nmodified  }  }, { new: true }).then(
-                  res => resolve(res)
-                );
+                  { $push: { holidayAudit: nmodified  }  }, { new: true }).then();
               } else {
-                Audit.create({ holidayAudit: nmodified  }, { new: true }).then(
-                  res => resolve(res)
-                );
+                Audit.create({ holidayAudit: nmodified  }).then();
               }
               resolve(result);
             });

@@ -51,9 +51,9 @@ const createOrUpdateSysparameters = (_, {
         Audit.findOneAndUpdate(
           {},
           { $push: { sysParaAudit: modifiedObj } }, { new: true })
-          .then((res) => resolve(res));
+          .then();
       } else {
-        Audit.create({ sysParaAudit: modifiedObj }, { new: true }).then((res) => resolve(res));
+        Audit.create({ sysParaAudit: modifiedObj }).then();
       }
     });
     resolve(result);

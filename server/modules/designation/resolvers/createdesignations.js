@@ -50,14 +50,10 @@ const createDesignation = (_, {
         Audit.findOneAndUpdate(
           { },
           { $push: { desigAudit: nmodified  }  }, { new: true })
-          .then((result) => {
-            resolve(result);
-          });
+          .then();
       } else {
         Audit.create({ desigAudit: nmodified  })
-          .then((result) => {
-            resolve(result);
-          });
+          .then();
       }
       resolve(newDesignation);
     });

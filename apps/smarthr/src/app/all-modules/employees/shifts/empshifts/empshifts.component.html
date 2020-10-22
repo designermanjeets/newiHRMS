@@ -1,0 +1,283 @@
+<!-- Page Content -->
+<div class="content container-fluid">
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="row align-items-center">
+      <div class="col">
+        <h3 class="page-title">Manage Shifts</h3>
+        <ul class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
+          <li class="breadcrumb-item active">Shifts</li>
+        </ul>
+      </div>
+      <div class="col-auto float-right ml-auto">
+        <a  class="btn add-btn" data-toggle="modal" data-target="#add_Shift" (click)="addModel()"><i
+          class="fa fa-plus"></i> Add Shift</a>
+      </div>
+    </div>
+  </div>
+  <!-- /Page Header -->
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="table-responsive">
+        <ngx-datatable
+          class="bootstrap"
+          [rows]="rows"
+          [columnMode]="ColumnMode.force"
+          [columns]="columns"
+          [headerHeight]="50"
+          [footerHeight]="50"
+          rowHeight="auto"
+          [limit]="10"
+        >
+          <ngx-datatable-column name="#" prop="#" [width]="50">
+            <ng-template let-row="row" let-rowIndex="rowIndex" let-value="value" ngx-datatable-cell-template>
+              {{rowIndex + 1}}
+            </ng-template>
+          </ngx-datatable-column>
+
+          <ngx-datatable-column name="Shift" prop="shiftname">
+            <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+              {{value}}
+            </ng-template>
+          </ngx-datatable-column>
+
+          <ngx-datatable-column name="Shift Time">
+            <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+              {{row.shiftimeFrom}} - {{row.shiftimeTo}}
+            </ng-template>
+          </ngx-datatable-column>
+
+          <ngx-datatable-column name="Max Shift Allowed" prop="maxshifts">
+            <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+              {{value}}
+            </ng-template>
+          </ngx-datatable-column>
+
+          <ngx-datatable-column name="Actions" sortable="false" prop="_id">
+            <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+              <button class="btn btn-default" data-toggle="modal"
+                      data-target="#edit_Shift" (click)="edit(row)">
+                <i class="fa fa-pencil-square" aria-hidden="true"></i>
+              </button>
+              <button class="btn btn-default" data-toggle="modal"
+                      data-target="#delete_Shift" (click)="tempShift = row">
+                <i class="fa fa-trash" aria-hidden="true"></i>
+              </button>
+            </ng-template>
+          </ngx-datatable-column>
+        </ngx-datatable>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /Page Content -->
+
+<!-- Add Shift Modal -->
+<div id="add_Shift" class="modal custom-modal fade" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Add Shift</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" *ngIf="isAddModel">
+        <form [formGroup]="editForm" (ngSubmit)="addShift(editForm)" novalidate>
+          <input id="_id" type="hidden" formControlName="_id">
+
+          <div class="form-group"
+               [class.has-error]="
+                editForm.controls['shiftname'].invalid &&
+                editForm.controls['shiftname'].touched"
+               [class.has-success]="editForm.controls['shiftname'].valid"
+          >
+            <label for="shiftname">Shift Name <span class="text-danger">*</span></label>
+            <input id="shiftname" class="form-control" formControlName="shiftname">
+            <span class="help-block" *ngIf="editForm.controls['shiftname'].errors && editForm.controls['shiftname'].touched">
+                  Shift Name is invalid
+            </span>
+          </div>
+
+          <div class="row">
+            <div class="col-6">
+              <div class="form-group"
+                   [class.has-error]="
+                    editForm.controls['shiftimeFrom'].invalid &&
+                    editForm.controls['shiftimeFrom'].touched"
+                   [class.has-success]="editForm.controls['shiftimeFrom'].valid"
+                >
+                  <label for="shiftimeFrom">From <span class="text-danger">*</span></label>
+                  <ngx-timepicker-field
+                    id="shiftimeFrom"
+                    [controlOnly]="true"
+                    formControlName="shiftimeFrom"
+                  ></ngx-timepicker-field>
+                  <span class="help-block" *ngIf="editForm.controls['shiftimeFrom'].errors && editForm.controls['shiftimeFrom'].touched">
+                        Shift Time From is invalid
+                  </span>
+                </div>
+              </div>
+            <div class="col-6">
+              <div class="form-group"
+                 [class.has-error]="
+                  editForm.controls['shiftimeTo'].invalid &&
+                  editForm.controls['shiftimeTo'].touched"
+                 [class.has-success]="editForm.controls['shiftimeTo'].valid"
+              >
+                <label for="shiftimeTo">To <span class="text-danger">*</span></label>
+                <ngx-timepicker-field
+                  id="shiftimeTo"
+                  [controlOnly]="true"
+                  formControlName="shiftimeTo"
+                ></ngx-timepicker-field>
+                <span class="help-block" *ngIf="editForm.controls['shiftimeTo'].errors && editForm.controls['shiftimeTo'].touched">
+                      Shift Time To is invalid
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group"
+               [class.has-error]="
+                editForm.controls['maxshifts'].invalid &&
+                editForm.controls['maxshifts'].touched"
+               [class.has-success]="editForm.controls['maxshifts'].valid"
+          >
+            <label for="maxshifts">Max Shifts <span class="text-danger">*</span></label>
+            <input id="maxshifts" class="form-control" formControlName="maxshifts" type="number" min="0" max="99">
+            <span class="help-block" *ngIf="editForm.controls['maxshifts'].errors && editForm.controls['maxshifts'].touched">
+                  Shift Max is invalid
+            </span>
+          </div>
+
+          <div class="m-t-20 text-center">
+            <button class="btn btn-primary" type="submit" [disabled]="editForm.invalid">Save Shift</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /Add Shift Modal -->
+
+<!-- Edit Shift Modal -->
+<div id="edit_Shift" class="modal custom-modal fade" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Edit Shift</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" *ngIf="isEditModel">
+        <form [formGroup]="editForm" (ngSubmit)="editShift(editForm)" novalidate>
+          <input id="_id" type="hidden" formControlName="_id">
+
+          <div class="form-group"
+               [class.has-error]="
+                editForm.controls['shiftname'].invalid &&
+                editForm.controls['shiftname'].touched"
+               [class.has-success]="editForm.controls['shiftname'].valid"
+          >
+            <label for="shiftname1">Shift Name <span class="text-danger">*</span></label>
+            <input id="shiftname1" class="form-control" formControlName="shiftname">
+            <span class="help-block" *ngIf="editForm.controls['shiftname'].errors && editForm.controls['shiftname'].touched">
+                  Shift Name is invalid
+            </span>
+          </div>
+
+
+
+          <div class="row">
+            <div class="col-6">
+              <div class="form-group"
+                   [class.has-error]="
+                    editForm.controls['shiftimeFrom'].invalid &&
+                    editForm.controls['shiftimeFrom'].touched"
+                   [class.has-success]="editForm.controls['shiftimeFrom'].valid"
+              >
+                <label for="shiftimeFrom">From <span class="text-danger">*</span></label>
+                <ngx-timepicker-field
+                  id="shiftimeFrom"
+                  [controlOnly]="true"
+                  formControlName="shiftimeFrom"
+                ></ngx-timepicker-field>
+                <span class="help-block" *ngIf="editForm.controls['shiftimeFrom'].errors && editForm.controls['shiftimeFrom'].touched">
+                        Shift Time From is invalid
+                  </span>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group"
+                   [class.has-error]="
+                  editForm.controls['shiftimeTo'].invalid &&
+                  editForm.controls['shiftimeTo'].touched"
+                   [class.has-success]="editForm.controls['shiftimeTo'].valid"
+              >
+                <label for="shiftimeTo1">To <span class="text-danger">*</span></label>
+                <ngx-timepicker-field
+                  id="shiftimeTo1"
+                  [controlOnly]="true"
+                  formControlName="shiftimeTo"
+                ></ngx-timepicker-field>
+                <span class="help-block" *ngIf="editForm.controls['shiftimeTo'].errors && editForm.controls['shiftimeTo'].touched">
+                      Shift Time To is invalid
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group"
+               [class.has-error]="
+                editForm.controls['maxshifts'].invalid &&
+                editForm.controls['maxshifts'].touched"
+               [class.has-success]="editForm.controls['maxshifts'].valid"
+          >
+            <label for="maxshifts1">Max Shifts <span class="text-danger">*</span></label>
+            <input id="maxshifts1" class="form-control" formControlName="maxshifts" type="number" min="0" max="99">
+            <span class="help-block" *ngIf="editForm.controls['maxshifts'].errors && editForm.controls['maxshifts'].touched">
+                  Shift Max is invalid
+            </span>
+          </div>
+
+          <div class="m-t-20 text-center">
+            <button class="btn btn-primary" type="submit" [disabled]="editForm.invalid">Save Shift</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /Edit Shift Modal -->
+
+<!-- Delete Shift Modal -->
+<div class="modal custom-modal fade" id="delete_Shift" role="dialog">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="form-header">
+          <h3>Delete Shift</h3>
+          <p>Are you sure want to delete?</p>
+        </div>
+        <div class="modal-btn delete-action">
+          <div class="row">
+            <div class="col-6">
+              <a  class="btn btn-primary continue-btn"
+                  (click)="deleteShift()">Delete</a>
+            </div>
+            <div class="col-6">
+              <a  data-dismiss="modal"
+                  class="btn btn-primary cancel-btn">Cancel</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /Delete Shift Modal -->

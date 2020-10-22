@@ -10,6 +10,7 @@ const leaveapplied = require('./leaveapplied')
 const roles = require('./roles')
 const parameters = require('./sysparameters')
 const attendances = require('./attendance')
+const shifts = require('./shifts')
 
 module.exports = makeExecutableSchemaFromModules({
   modules: [
@@ -22,6 +23,7 @@ module.exports = makeExecutableSchemaFromModules({
     leaveapplied,
     roles,
     parameters,
-    attendances
+    attendances,
+    shifts
   ]
 })

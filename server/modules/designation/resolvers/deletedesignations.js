@@ -28,14 +28,10 @@ const deleteDesignation = (_, { id, modified },{me,secret}) => new Promise(async
               Audit.findOneAndUpdate(
                 { },
                 { $push: { desigAudit: nmodified  }  }, { new: true })
-                .then((result) => {
-                  resolve(result);
-                });
+                .then();
             } else {
               Audit.create({ desigAudit: nmodified  })
-                .then((result) => {
-                  resolve(result);
-                });
+                .then();
             }
           });
           resolve(result);

@@ -68,7 +68,7 @@ const updateLeaveType = (_, {
                   { },
                   { $push: { leaveTypeAudit: modifiedObj  }  }, { new: true }).then();
               } else {
-                Audit.create({ leaveTypeAudit: modifiedObj  }, { new: true }).then();
+                Audit.create({ leaveTypeAudit: modifiedObj  }).then();
               }
               resolve(result);
             });

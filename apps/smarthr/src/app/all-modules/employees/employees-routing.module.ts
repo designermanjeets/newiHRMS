@@ -16,6 +16,7 @@ import { TimesheetComponent } from './timesheet/timesheet.component';
 import { OvertimeComponent } from './overtime/overtime.component';
 import { Role } from '../../_helpers/_models/user';
 import { AuthGuard } from '../../_helpers/auth.guard';
+import { EmpshiftsComponent } from './shifts/empshifts/empshifts.component';
 
 const routes: Routes = [
   {
@@ -87,6 +88,10 @@ const routes: Routes = [
       {
         path: 'overtime',
         component: OvertimeComponent
+      },
+      {
+        path: 'empshifts',
+        component: EmpshiftsComponent
       },
 
     ]

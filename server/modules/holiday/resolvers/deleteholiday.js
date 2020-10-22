@@ -20,10 +20,10 @@ const deleteHoliday = (_, { id, modified },{me,secret}) => new Promise(async (re
               Audit.findOneAndUpdate(
                 { },
                 { $push: { holidayAudit: nmodified  }  }, { new: true })
-                .then((res) => resolve(res));
+                .then();
             } else {
-              Audit.create({ leaveAudit: nmodified  }, { new: true })
-                .then((res) => resolve(res));
+              Audit.create({ leaveAudit: nmodified  })
+                .then();
             }
           });
           resolve(result);

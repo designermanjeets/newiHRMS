@@ -79,7 +79,7 @@ const updateresr = function(result, changeFields, modified, rol) {
           { $push: { roleAudit: modifiedObj  }  }, { new: true })
           .then();
       } else {
-        Audit.create({ roleAudit: modifiedObj  }, { new: true })
+        Audit.create({ roleAudit: modifiedObj  })
           .then();
       }
     });

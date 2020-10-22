@@ -92,7 +92,7 @@ const updateUser = (_, {
         }
         if(result && Object.keys(changeFields).length !== 0) {
           // Audit Below
-          const nmodified = {
+          const modifiedObj = {
             user_ID: getuser._id,
             modified_by: modified[0].modified_by,
             modified_at: modified[0].modified_at,
@@ -104,15 +104,11 @@ const updateUser = (_, {
             if(val.length) {
               Audit.findOneAndUpdate(
                 { },
-                { $push: { userAudit: nmodified  }  }, { new: true })
-                .then((result) => {
-                  resolve(result);
-                });
+                { $push: { userAudit: modifiedObj  }  }, { new: true })
+                .then();
             } else {
-              Audit.create({ userAudit: nmodified  })
-                .then((result) => {
-                  resolve(result);
-                });
+              Audit.create({ userAudit: modifiedObj  })
+                .then();
             }
             resolve(result);
           });

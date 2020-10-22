@@ -19,7 +19,7 @@ const deleteDepartment = (_, { id, modified },{me,secret}) => new Promise(async 
             {"department_ID": id},
             { $unset: { department: null, department_ID: null, designation: null}  }, { new: true }).then();
 
-          const nmodified = {
+          const modifiedObj = {
             depart_ID: ltype._id,
             modified_by: modified[0].modified_by,
             modified_at: modified[0].modified_at,
@@ -30,15 +30,11 @@ const deleteDepartment = (_, { id, modified },{me,secret}) => new Promise(async 
             if(val.length) {
               Audit.findOneAndUpdate(
                 { },
-                { $push: { departAudit: nmodified  }  }, { new: true })
-                .then((result) => {
-                  resolve(result);
-                });
+                { $push: { departAudit: modifiedObj  }  }, { new: true })
+                .then();
             } else {
-              Audit.create({ departAudit: nmodified  })
-                .then((result) => {
-                  resolve(result);
-                });
+              Audit.create({ departAudit: modifiedObj  })
+                .then();
             }
           });
           resolve(result);

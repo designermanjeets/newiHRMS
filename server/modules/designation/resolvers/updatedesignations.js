@@ -50,7 +50,7 @@ const updateDesignation = (_, {
             .then();
 
           if(result && Object.keys(changeFields).length !== 0) {
-            const nmodified = {
+            const modifiedObj = {
               design_ID: dtype._id,
               modified_by: modified[0].modified_by,
               modified_at: modified[0].modified_at,
@@ -62,15 +62,11 @@ const updateDesignation = (_, {
               if(val.length) {
                 Audit.findOneAndUpdate(
                   { },
-                  { $push: { desigAudit: nmodified  }  }, { new: true })
-                  .then((result) => {
-                    resolve(result);
-                  });
+                  { $push: { desigAudit: modifiedObj  }  }, { new: true })
+                  .then();
               } else {
-                Audit.create({ desigAudit: nmodified  })
-                  .then((result) => {
-                    resolve(result);
-                  });
+                Audit.create({ desigAudit: modifiedObj  })
+                  .then();
               }
               resolve(result);
             });

@@ -59,10 +59,10 @@ const deleteLeave = (_, {
           Audit.findOneAndUpdate(
             { },
             { $push: { leaveAppliedAudit: modifiedObj  }  }, { new: true })
-            .then(res=> resolve(res));
+            .then();
         } else {
-          Audit.create({ leaveAppliedAudit: modifiedObj }, { new: true })
-            .then(res=> resolve(res));
+          Audit.create({ leaveAppliedAudit: modifiedObj })
+            .then();
         }
       });
     }

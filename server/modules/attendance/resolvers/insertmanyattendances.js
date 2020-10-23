@@ -26,8 +26,16 @@ const insertManyAttendances = (_, { input },{me,secret}) => new Promise(async (r
                   console.log('return no user')
                   reject( new Error('No User found for given attendance!'))
                 } else {
-                  Attendance.create({ ...attend }).then((newAttend, error) => {
+                  Attendance.create({
+                    ...attend,
+                    user_ID: user[0]._id,
+                    username: user[0].username,
+                    user_email: user[0].email,
+                    firstname: user[0].firstname,
+                    lastname: user[0].lastname
+                  }).then((newAttend, error) => {
                     if(newAttend) {
+
                       if (!user[0].attendance) {
                         user[0]['attendance'] = [];
                         user[0].attendance.push(newAttend);

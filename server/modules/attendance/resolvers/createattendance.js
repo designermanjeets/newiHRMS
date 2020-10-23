@@ -34,6 +34,12 @@ const createAttendance = (_, {
       .then((user) => {
         if(!user) { reject (new Error('No User Found!')) }
         else {
+
+          newAttend.username = user.username;
+          newAttend.firstname = user.firstname;
+          newAttend.lastname = user.lastname;
+          newAttend.save();
+
           if (!user.attendance) {
             user['attendance'] = [];
             user.attendance.push(newAttend);

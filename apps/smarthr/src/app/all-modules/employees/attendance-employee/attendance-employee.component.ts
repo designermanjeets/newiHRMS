@@ -127,7 +127,7 @@ export class AttendanceEmployeeComponent implements OnInit {
   getDurationOutputHours(durationArray) {
        return _.forEach(durationArray, dur => {
          const duration = moment.duration(moment(dur.punchOut).diff(moment(dur.punchIn)));
-         dur['duration'] =  duration.asHours();
+         dur.duration =  duration.asHours();
        });
    }
 
@@ -242,8 +242,8 @@ export class AttendanceEmployeeComponent implements OnInit {
       console.log('Success');
 
       _.forEach(rowData, r => {
-        r['created_by'] = JSON.parse(sessionStorage.getItem('user')).userid;
-        r['created_at'] = Date.now();
+        r.created_by = JSON.parse(sessionStorage.getItem('user')).userid;
+        r.created_at = Date.now();
       });
 
       this.insertManyUsers(rowData);
@@ -263,9 +263,7 @@ export class AttendanceEmployeeComponent implements OnInit {
         }
       }, error => {
         this.toastr.error(error, 'Error', { timeOut: 5000 });
-        setTimeout(_ => {
-          // this.getUsers();
-        }, 100);
+        setTimeout(__ => this.loadAttendances(), 1000);
       });
   }
 

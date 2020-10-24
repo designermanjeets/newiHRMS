@@ -20,8 +20,8 @@ declare const $: any;
 })
 export class AttendanceAdminComponent implements OnInit {
 
-  rows: [] = [];
-  srch: [] = [];
+  rows: any[] = [];
+  srch: any[] = [];
   allAttendances: [] = [];
   userAttArray: [] = [];
 
@@ -98,6 +98,7 @@ export class AttendanceAdminComponent implements OnInit {
         moment(this.currDate).startOf('month').add(i, 'days').format('DD');
     });
 
+    // @ts-ignore
     days.forEach((value, i) => days[i] = { index: i }); // Null Handling
 
     const allusers = [];

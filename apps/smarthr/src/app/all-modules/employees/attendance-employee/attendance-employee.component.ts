@@ -151,7 +151,7 @@ export class AttendanceEmployeeComponent implements OnInit {
     this.editTemp.date = moment(this.editTemp.punchIn).format('MM-DD-YYYY');
     this.editTemp.punchIn = moment(this.editTemp.punchIn).format('hh:mm A');
     this.editTemp.punchOut = moment(this.editTemp.punchOut).format('hh:mm A');
-    $("#edit_attendance").modal('show');
+    $('#edit_attendance').modal('show');
     $('#edit_attendance').on('shown.bs.modal', () => {
       this.editForm.patchValue(this.editTemp);
     });

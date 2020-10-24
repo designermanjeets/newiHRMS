@@ -94,7 +94,7 @@
             <div class="table-responsive">
 
               <ngx-datatable
-                class="bootstrap"
+                class="bootstrap text-left"
                 [rows]="rows"
                 [columnMode]="ColumnMode.force"
                 [columns]="columns"
@@ -103,11 +103,26 @@
                 rowHeight="auto"
                 [limit]="10"
               >
+
                 <ngx-datatable-column name="Employee" prop="#" [width]="10">
                   <ng-template let-row="row" let-rowIndex="rowIndex" let-value="value" ngx-datatable-cell-template>
-                    {{value}}
+                    <a class="avatar avatar-xs"><img alt="" src="assets/img/profiles/avatar-09.jpg"></a>
+                    {{row[0]?.username | json}} - {{row.lastname}}
                   </ng-template>
                 </ngx-datatable-column>
+
+                <ngx-datatable-column name="1" prop="1">
+                  <ng-template let-row="row" let-rowIndex="rowIndex" let-column="column" let-value="value" ngx-datatable-cell-template>
+<!--                    <span> {{row.usrattendance[0].index | json}} - {{column.prop}} </span>-->
+                  </ng-template>
+                </ngx-datatable-column>
+
+                <ngx-datatable-column name="2" prop="2">
+                  <ng-template let-row="row" let-rowIndex="rowIndex" let-column="column" let-value="value" ngx-datatable-cell-template>
+<!--                    <span> {{row.usrattendance[0].index | json}} - {{column.prop}} </span>-->
+                  </ng-template>
+                </ngx-datatable-column>
+
               </ngx-datatable>
 
 

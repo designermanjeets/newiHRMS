@@ -23,6 +23,7 @@ export class AttendanceAdminComponent implements OnInit {
   rows: [] = [];
   srch: [] = [];
   allAttendances: [] = [];
+  userAttArray: [] = [];
 
   selected = [];
   columns: any[] = [];
@@ -67,28 +68,68 @@ export class AttendanceAdminComponent implements OnInit {
       .pipe(map ((value: any) => value.data.getAttendances))
       .subscribe((response: any) => {
         if (response) {
-          console.log(response);
-          this.rows = [];
-          this.allAttendances = response;
-          this.rows = response;
-          this.srch = [...this.rows];
 
-          console.log(this.getCurrMonth(this.currDate));
-          this.thisMonthSheet = _.filter(this.allAttendances, val => moment(val.date).isSame(moment(this.currDate), 'month'));
-          console.log(this.thisMonthSheet);
+          this.userAttArray = this.getAttendPerUser(response);
+
+          const datatableArr = this.getCurrMonth(this.userAttArray);
+
+          this.srch = [];
+          this.srch = datatableArr;
+          this.rows = [...this.srch];
 
           this.cdRef.detectChanges();
         }
       }, error => this.toastr.error(error, 'Error'));
   }
 
-  getCurrMonth(currDate) {
-    return Array.from({
-        length: moment(currDate).daysInMonth()
+  getAttendPerUser(arr) {
+    return _.chain(arr)
+      .groupBy('user_ID')
+      .map((usrattendance) => ({ usrattendance }))
+      .value();
+  }
+
+  getCurrMonth(userAttArray) {
+
+    const days = Array.from({
+        length: moment(this.currDate).daysInMonth()
       },
       (x, i) => {
-        moment().startOf('month').add(i, 'days').format('DD');
+        moment(this.currDate).startOf('month').add(i, 'days').format('DD');
+    });
+
+    days.forEach((value, i) => days[i] = { index: i }); // Null Handling
+
+    const allusers = [];
+    let curruser = [];
+    _.each(userAttArray, att => {
+      _.each(att, (attusr) => {
+        curruser = _.clone(days);
+        _.each(curruser, crr => { // Kinda Reset
+          crr.firstname = attusr[0].username;
+          crr.lastname = attusr[0].lastname;
+          crr.user_ID = attusr[0].user_ID;
+          crr.user_email = attusr[0].user_email;
+          crr.punchIn = null;
+          crr.punchOut = null;
+          crr.date = null;
+          crr.__typename =  'Attendance';
+          crr._id =  null;
+        });
+
+        _.each(attusr, (attdays) => {
+          attdays.index = moment(attdays.date).format('D');
+          curruser[attdays.index] = attdays;
+        });
+        allusers.push(curruser);
       });
+    });
+
+    console.log(this.userAttArray);
+    console.log(allusers);
+
+    return allusers;
+
   }
 
   // Upload

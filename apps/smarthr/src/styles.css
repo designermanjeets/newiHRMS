@@ -8270,7 +8270,6 @@ ul.comment-list li ul.children {
   color: #fff;
 }
 .ngx-datatable.bootstrap .datatable-body .datatable-body-row .datatable-body-cell {
-  text-align: left;
   vertical-align: top;
   text-align: center;
   /*position: relative;*/
@@ -8313,6 +8312,13 @@ ul.comment-list li ul.children {
   font-size: 18px;
   line-height: 27px;
   padding: 0 3px;
+}
+.ngx-datatable.bootstrap.text-left .datatable-body .datatable-body-row .datatable-body-cell,
+.ngx-datatable.bootstrap.text-left .datatable-header .datatable-header-cell{
+  text-align: left;
+}
+.ngx-datatable.bootstrap.text-left .datatable-body .datatable-body-row .datatable-body-cell {
+  padding-left: 12px;
 }
 .row-danger {
   background-color: rgba(220,53,69, .1) !important;

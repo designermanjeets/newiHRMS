@@ -99,6 +99,7 @@
     "primeicons": "^4.0.0",
     "primeng": "^10.0.0",
     "raphael": "^2.3.0",
+    "read-excel-file": "^4.0.7",
     "rxjs": "^6.5.4",
     "shortid": "^2.2.15",
     "throng": "^5.0.0",

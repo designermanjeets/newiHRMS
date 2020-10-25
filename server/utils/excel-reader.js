@@ -8,6 +8,7 @@ excelReader.readExcel =  function(filePath){
 
   sheet_name_list.forEach(function(y) {
     var worksheet = workbook.Sheets[y];
+    console.log(worksheet);
     var headers = {};
 
     for(z in worksheet) {

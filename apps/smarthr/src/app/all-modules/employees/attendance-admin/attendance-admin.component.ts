@@ -182,13 +182,32 @@ export class AttendanceAdminComponent implements OnInit {
       .subscribe( (val: any) => {
         if (val) {
           console.log(val);
-          this.onImportgetData(val);
+          // this.onImportgetData(val);
+          const allEmpData = this.cleanData(val[0].EmployeesData);
+          console.log(allEmpData);
         }
       }, error => {
         console.log(error);
       });
   }
 
+  cleanData(val) {
+    let perUser = [];
+    let isCombine = false;
+    let count = 0;
+    _.each(val, vl => {
+      // console.log(Object.keys(vl)[0]);
+      if (Object.keys(vl)[0] && Object.keys(vl)[0] === 'Code & Name') {
+        isCombine = true;
+        perUser.push({empAttend: []});
+        count++;
+      }
+      if (isCombine) {
+        perUser[count - 1].empAttend.push(vl);
+      }
+    });
+    return perUser;
+  }
 
   onImportgetData(rowData) {
     console.log(rowData);

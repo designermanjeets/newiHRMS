@@ -152,12 +152,7 @@ export const GET_USER_ATTENDANCES_ADMIN_QUERY = gql`
 export class UploadAttendanceFileADMINGQL extends Mutation {
   document = gql`
    mutation UploadAttendanceMutation($file: Upload!) {
-    uploadAttendanceFile(file: $file) {
-      user_ID
-      date
-      punchIn,
-      punchOut
-      }
+      uploadAttendanceFile(file: $file)
     }
   `;
 }

@@ -45,7 +45,7 @@ const typeDefs = gql`
       modified: [modifiedInputs]
     ): Attendance,
 
-    uploadAttendanceFile(file: Upload!): [Attendance]
+    uploadAttendanceFile(file: Upload!): Void
 
     insertManyAttendances(input: [AttendanceInput]!): UploadAttendancesPayload
 

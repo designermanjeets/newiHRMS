@@ -1146,8 +1146,13 @@ table.dataTable thead > tr > td.sorting {
 	transition: all 0.2s ease-in-out;
 }
 .header .header-left .logo {
-	display: inline-block;
-	line-height: 60px;
+  display: inline-block;
+  line-height: 50px;
+  background: #fff;
+  padding-left: 10px;
+  padding-right: 10px;
+  border-radius: 4px;
+  margin-top: 5px;
 }
 .bar-icon {
     display: inline-block;
@@ -1543,7 +1548,7 @@ table.dataTable thead > tr > td.sorting {
 
 .page-wrapper {
 	left: 0;
-	margin-left: 230px;
+	margin-left: 275px;
 	padding-top: 60px;
 	position: relative;
 	transition: all 0.2s ease-in-out;

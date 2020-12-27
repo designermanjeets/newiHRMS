@@ -163,17 +163,9 @@ export class UploadAttendanceFileADMINGQL extends Mutation {
 export class ImportAttendanceADMINGQL extends Mutation {
   document = gql`
     mutation InsertManyAttendanceMutation(
-      $input: [AttendanceInput]!
+      $input: Void
     ) {
-      insertManyAttendances(input: $input) {
-        attendances {
-          _id,
-          emmpid,
-          date,
-          punchIn,
-          punchOut
-        }
-      }
+      insertManyAttendances(input: $input)
     }
   `;
 }

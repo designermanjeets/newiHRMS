@@ -272,7 +272,7 @@ export class DesignationComponent implements OnInit, OnDestroy {
 
   // Delete timedsheet Modal Api Call
 
-  deleteDesignation(id) {
+  deleteDesignation(id?) {
 
     this.deleteDesignationGQL
       .mutate({

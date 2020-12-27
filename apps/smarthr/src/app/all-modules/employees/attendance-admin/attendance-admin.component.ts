@@ -172,7 +172,6 @@ export class AttendanceAdminComponent implements OnInit {
 
   // Manual Upload In case you need it
   startUpload() {
-    console.log(this.files);
     this.uploadAttendanceFileGQL
       .mutate({
         file: this.files[0].nativeFile
@@ -182,8 +181,8 @@ export class AttendanceAdminComponent implements OnInit {
       .subscribe( (val: any) => {
         if (val) {
           console.log(val);
-          // this.onImportgetData(val);
-          const allEmpData = this.cleanData(val[0].EmployeesData);
+          const allEmpData = this.cleanData(val);
+          this.onImportgetData(allEmpData);
           console.log(allEmpData);
         }
       }, error => {
@@ -192,11 +191,34 @@ export class AttendanceAdminComponent implements OnInit {
   }
 
   cleanData(val) {
-    let perUser = [];
+    console.log(val[1].METADATA);
+
+    let str = val[1].METADATA[2]; // Only Interested in Month Range
+    str = str.split('from').pop().split('To')[0]; // returns Month
+    str = moment(str, 'DD/MM/YYYY');
+    console.log(str);
+
+    const perUser = [];
     let isCombine = false;
     let count = 0;
-    _.each(val, vl => {
+    _.each(val[0].EmployeesData, vl => {
       // console.log(Object.keys(vl)[0]);
+      if (Object.keys(vl)[0] && (Object.keys(vl)[0] === 'IN' || Object.keys(vl)[0] === 'OUT')) {
+
+        for (let item in vl.IN) {
+          if (vl.IN[item]) {
+            vl.IN[item] = vl.IN[item].split('T').pop().split('.')[0];
+            vl.IN[item] = moment(str).add(item, 'days').add(vl.IN[item], 'hours');
+          }
+        }
+        for (let item in vl.OUT) {
+          if (vl.OUT[item]) {
+            vl.OUT[item] = vl.OUT[item].split('T').pop().split('.')[0];
+            vl.OUT[item] = moment(str).add(item, 'days').add(vl.OUT[item], 'hours');
+          }
+        }
+
+      }
       if (Object.keys(vl)[0] && Object.keys(vl)[0] === 'Code & Name') {
         isCombine = true;
         perUser.push({empAttend: []});
@@ -211,37 +233,37 @@ export class AttendanceAdminComponent implements OnInit {
 
   onImportgetData(rowData) {
     console.log(rowData);
-    rowData.forEach((r, i) => {
-      if (r.date instanceof Date && !isNaN(r.date)) {
-        // console.log('valid Date!');
-      } else {
-        // console.log('Invalid!'); // But Convert First
-        r.date = moment(r.date, 'DD MM YYYY');
-      }
-      delete r.__typename;
-    });
+    // rowData.forEach((r, i) => {
+    //   if (r.date instanceof Date && !isNaN(r.date)) {
+    //     // console.log('valid Date!');
+    //   } else {
+    //     // console.log('Invalid!'); // But Convert First
+    //     r.date = moment(r.date, 'DD MM YYYY');
+    //   }
+    //   delete r.__typename;
+    // });
+    //
+    // const uniqArrByUserID = _.difference(rowData, _.uniqBy(rowData, 'user_ID'), 'user_ID');
+    // const uniqArrByDate = _.difference(rowData, _.uniqBy(rowData, 'date'), 'date');
+    //
+    // if (uniqArrByUserID.length) {
+    //   console.log('Duplicate User ID');
+    //   console.log(uniqArrByUserID);
+    // }
+    // if (uniqArrByDate.length) {
+    //   console.log('Entry for the same Date exists already!');
+    //   console.log(uniqArrByDate);
+    // }
+    // if (!uniqArrByUserID.length && !uniqArrByDate.length) {
+    //   console.log('Success');
+    //
+    //   _.forEach(rowData, r => {
+    //     r.created_by = JSON.parse(sessionStorage.getItem('user')).username;
+    //     r.created_at = Date.now();
+    //   });
 
-    const uniqArrByUserID = _.difference(rowData, _.uniqBy(rowData, 'user_ID'), 'user_ID');
-    const uniqArrByDate = _.difference(rowData, _.uniqBy(rowData, 'date'), 'date');
-
-    if (uniqArrByUserID.length) {
-      console.log('Duplicate User ID');
-      console.log(uniqArrByUserID);
-    }
-    if (uniqArrByDate.length) {
-      console.log('Entry for the same Date exists already!');
-      console.log(uniqArrByDate);
-    }
-    if (!uniqArrByUserID.length && !uniqArrByDate.length) {
-      console.log('Success');
-
-      _.forEach(rowData, r => {
-        r.created_by = JSON.parse(sessionStorage.getItem('user')).username;
-        r.created_at = Date.now();
-      });
-
-      this.insertManyUsers(rowData);
-    }
+    this.insertManyUsers(rowData);
+    // }
   }
 
   insertManyUsers(data) {

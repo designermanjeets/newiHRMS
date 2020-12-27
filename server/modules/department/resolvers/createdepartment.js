@@ -32,7 +32,7 @@ const createDepartment = (_, {
         Audit.create({ departAudit: modifiedObj  })
           .then();
       }
-      resolve(result);
+      // resolve(result);
     });
     resolve(newDepartment);
   }

@@ -1299,7 +1299,7 @@ table.dataTable thead > tr > td.sorting {
     position: fixed;
     top: 60px;
     transition: all 0.2s ease-in-out 0s;
-    width: 230px;
+    width: 275px;
     z-index: 1001;
 }
 .sidebar.opened {
@@ -8335,6 +8335,24 @@ ul.comment-list li ul.children {
   padding-top: 0;
 }
 .form-control.mat-form-field-appearance-legacy .mat-form-field-underline {
+  display: none;
+}
+.mat-form-field-type-mat-select.matNativeSelect {
+  display: block;
+}
+.mat-form-field-type-mat-select.matNativeSelect .mat-form-field-infix {
+  padding: 2px 10px 13px 10px;
+}
+.mat-form-field-type-mat-select.matNativeSelect .mat-form-field-flex {
+  padding: 0;
+  border-top: 0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+.mat-form-field-type-mat-select.matNativeSelect .mat-select-arrow-wrapper {
+  transform: translateY(-5%);
+}
+.mat-form-field-type-mat-select.matNativeSelect .mat-form-field-underline {
   display: none;
 }
 .minwidth { min-width: 1350px !important; }

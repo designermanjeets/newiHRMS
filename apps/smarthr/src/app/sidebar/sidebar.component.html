@@ -23,7 +23,7 @@
                                     href="javascript:">Employee Dashboard</a></li>
                         </ul>
                     </li>
-                    <li class="submenu" [ngClass]="{ 'active' : urlComplete.mainUrl === 'apps' }">
+                    <li *ngIf="false" class="submenu" [ngClass]="{ 'active' : urlComplete.mainUrl === 'apps' }">
                         <a href="javascript:" [ngClass]="{ 'subdrop' : urlComplete.mainUrl === 'apps' }">
                             <i class="la la-cube"></i>
                             <span> Apps</span>
@@ -374,10 +374,10 @@
                         <a routerLink="/settings/company-settings" ><i
                                 class="la la-cog"></i> <span>Settings</span></a>
                     </li>
-                    <li class="menu-title">
+                    <li *ngIf="false" class="menu-title">
                         <span>Pages</span>
                     </li>
-                    <li class="submenu" [ngClass]="{ 'active' : urlComplete.mainUrl === 'clients' && urlComplete.subUrl === 'clientsprofile'}">
+                    <li *ngIf="false" class="submenu" [ngClass]="{ 'active' : urlComplete.mainUrl === 'clients' && urlComplete.subUrl === 'clientsprofile'}">
                         <a href="javascript:" [ngClass]="{ 'subdrop' : urlComplete.mainUrl === 'clients' && urlComplete.subUrl === 'clientsprofile'}"><i class="la la-user"></i> <span> Profile </span> <span
                                 class="menu-arrow"></span></a>
                         <ul style="display: none;"
@@ -392,7 +392,7 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="submenu" [ngClass]="{ 'active' : urlComplete.mainUrl === 'login' }">
+                    <li *ngIf="false" class="submenu" [ngClass]="{ 'active' : urlComplete.mainUrl === 'login' }">
                         <a href="javascript:" [ngClass]="{ 'subdrop' : urlComplete.mainUrl === 'login' }"><i class="la la-key"></i> <span> Authentication </span> <span
                                 class="menu-arrow"></span></a>
                         <ul style="display: none;"
@@ -418,7 +418,7 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="submenu" [ngClass]="{ 'active' : urlComplete.mainUrl === 'error' }">
+                    <li *ngIf="false" class="submenu" [ngClass]="{ 'active' : urlComplete.mainUrl === 'error' }">
                         <a href="javascript:" [ngClass]="{ 'subdrop' : urlComplete.mainUrl === 'error' }"><i class="la la-exclamation-triangle"></i> <span> Error Pages </span>
                             <span class="menu-arrow"></span></a>
                         <ul style="display: none;"
@@ -433,7 +433,7 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="submenu" [ngClass]="{ 'active' : urlComplete.mainUrl === 'pages' }">
+                    <li *ngIf="false" class="submenu" [ngClass]="{ 'active' : urlComplete.mainUrl === 'pages' }">
                         <a href="javascript:" [ngClass]="{ 'subdrop' : urlComplete.mainUrl === 'pages' }"><i class="la la-columns"></i> <span> Pages </span> <span
                                 class="menu-arrow"></span></a>
                         <ul style="display: none;"
@@ -459,14 +459,14 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="menu-title">
+                    <li *ngIf="false" class="menu-title">
                         <span>UI Interface</span>
                     </li>
-                    <li [ngClass]="{'active' : urlComplete.subUrl === 'component-main'}">
+                    <li *ngIf="false" [ngClass]="{'active' : urlComplete.subUrl === 'component-main'}">
                         <a routerLink="/components/component-main" ><i
                                 class="la la-puzzle-piece"></i> <span>Components</span></a>
                     </li>
-                    <li class="submenu" [ngClass]="{ 'active' : urlComplete.mainUrl === 'forms' }">
+                    <li *ngIf="false" class="submenu" [ngClass]="{ 'active' : urlComplete.mainUrl === 'forms' }">
                         <a href="javascript:" [ngClass]="{ 'subdrop' : urlComplete.mainUrl === 'forms' }"><i class="la la-object-group"></i> <span> Forms </span> <span
                                 class="menu-arrow"></span></a>
                         <ul style="display: none;"
@@ -498,7 +498,7 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="submenu" [ngClass]="{ 'active' : urlComplete.mainUrl === 'tables' }">
+                    <li *ngIf="false" class="submenu" [ngClass]="{ 'active' : urlComplete.mainUrl === 'tables' }">
                         <a href="javascript:" [ngClass]="{ 'subdrop' : urlComplete.mainUrl === 'tables' }"><i class="la la-table"></i> <span> Tables </span> <span
                                 class="menu-arrow"></span></a>
                         <ul style="display: none;"
@@ -513,17 +513,17 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="menu-title">
+                    <li *ngIf="false" class="menu-title">
                         <span>Extras</span>
                     </li>
-                    <li>
+                    <li *ngIf="false">
                         <a href="javascript:"><i class="la la-file-text"></i> <span>Documentation</span></a>
                     </li>
-                    <li>
+                    <li *ngIf="false">
                         <a href="javascript:"><i class="la la-info"></i> <span>Change Log</span> <span
                                 class="badge badge-primary ml-auto">v3.2</span></a>
                     </li>
-                    <li class="submenu">
+                    <li *ngIf="false" class="submenu">
                         <a href="javascript:"><i class="la la-share-alt"></i> <span>Multi Level</span> <span
                                 class="menu-arrow"></span></a>
                         <ul style="display: none;">

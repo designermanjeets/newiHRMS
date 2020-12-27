@@ -47,7 +47,7 @@ const typeDefs = gql`
 
     uploadAttendanceFile(file: Upload!): Void
 
-    insertManyAttendances(input: [AttendanceInput]!): UploadAttendancesPayload
+    insertManyAttendances(input: Void): Void
 
   }
 

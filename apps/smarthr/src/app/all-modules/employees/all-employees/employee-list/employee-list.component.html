@@ -309,7 +309,7 @@
                          [class.has-success]="editForm.controls['shift'].valid"
                     >
                       <label for="shift" class="control-label">Shift<span class="text-danger m-l-5">*</span></label>
-                      <mat-form-field id="shift" appearance="fill">
+                      <mat-form-field class="matNativeSelect" id="shift" appearance="fill">
                         <mat-select formControlName="shift" multiple  [compareWith]="compareFn" (selectionChange)="shiftChange($event)" >
                           <mat-option *ngFor="let opt of allShifts" [value]="opt">{{opt.shiftname}}</mat-option>
                         </mat-select>
@@ -609,7 +609,7 @@
                          [class.has-success]="editForm.controls['shift'].valid"
                     >
                       <label for="shift1" class="control-label">Shift<span class="text-danger m-l-5">*</span></label>
-                      <mat-form-field id="shift1" appearance="fill">
+                      <mat-form-field class="matNativeSelect" id="shift1" appearance="fill">
                         <mat-select formControlName="shift" multiple  [compareWith]="compareFn" (selectionChange)="shiftChange($event)" >
                           <mat-option *ngFor="let opt of allShifts" [value]="opt">{{opt.shiftname}}</mat-option>
                         </mat-select>

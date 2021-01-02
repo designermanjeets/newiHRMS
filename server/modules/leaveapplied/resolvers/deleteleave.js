@@ -1,72 +1,39 @@
 const User = require('../../../models/user');
 const Audit = require('../../../models/Audit');
+const LeaveApplied = require('../../../models/leaveapplied');
 
 const deleteLeave = (_, {
   id,
   userID,
   modified,
-  status
+  leaveStatus
 },{me,secret}) => new Promise(async (resolve, reject) => {
+
   const user = await User.findOne(
-    { $and: [ {_id: userID }, { 'leaveApplied._id': id} ] },
+    { $and: [ {_id: userID } ] },
   )
   if (!user) reject (new Error('No User Leave Found!'))
   if (user) {
-    if (user.leaveApplied) {
-
-      let remn = 0;
-      let lprms = {};
-
-      user.leaveApplied.forEach((va, index) => {
-        if(va._id.toHexString() === id) {
-          lprms = va;
-
-          if(status !== 'rejected') {
-            remn = va.remainingLeaves + va.numberOfDays;
+    await LeaveApplied.findByIdAndDelete(id)
+      .then((result) => {
+        const modifiedObj = {
+          userID: userID,
+          action: 'Leave Deleted for User',
+          modified_by: modified[0].modified_by,
+          modified_at: modified[0].modified_at,
+          deletedLeave: { id, userID, modified, leaveStatus }
+        }
+        Audit.find({}).then(val => {
+          if(val.length) {
+            Audit.findOneAndUpdate(
+              { },
+              { $push: { leaveAppliedAudit: modifiedObj  }  }, { new: true });
           } else {
-            remn = va.remainingLeaves
+            Audit.create({ leaveAppliedAudit: modifiedObj });
           }
-
-          // Update Designation Remaining Leaves
-          user.designation.leaveType.forEach(va => {
-            if(va.leaveID === lprms.leaveID) {
-              va.remainingLeaves = remn;
-            }
-          });
-
-          // // Loop for All
-          user.leaveApplied.forEach(va => {
-            if(va.leaveID === lprms.leaveID) {
-              va.remainingLeaves = remn;
-            }
-          });
-
-
-          user.leaveApplied.splice(index, 1);
-          user.save();
-        }
+        });
+        resolve(result);
       });
-
-      const modifiedObj = {
-        userID: user._id,
-        action: 'Leave Deleted for User',
-        modified_by: modified[0].modified_by,
-        modified_at: modified[0].modified_at,
-        deletedLeaveForUser: user // Pending
-      }
-      Audit.find({}).then(val => {
-        if(val.length) {
-          Audit.findOneAndUpdate(
-            { },
-            { $push: { leaveAppliedAudit: modifiedObj  }  }, { new: true })
-            .then();
-        } else {
-          Audit.create({ leaveAppliedAudit: modifiedObj })
-            .then();
-        }
-      });
-    }
-    resolve(user);
   }
 });
 

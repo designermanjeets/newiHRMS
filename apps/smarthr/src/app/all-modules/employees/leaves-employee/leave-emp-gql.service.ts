@@ -158,13 +158,13 @@ export class DeleteLeaveGQL extends Mutation {
     mutation deleteLeave(
       $id: ID!,
       $userID: String!
-      $status: String!
+      $leaveStatus: String!
       $modified: [modifiedInputs]
     ) {
       deleteLeave(
         id: $id,
         userID: $userID
-        status: $status
+        leaveStatus: $leaveStatus
         modified: $modified
       ) {
         _id

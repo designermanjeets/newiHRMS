@@ -1,30 +1,30 @@
-const LeaveType = require('../../../models/leavetype');
+const LeaveType = require('../../../models/leaveType');
 const Audit = require('../../../models/Audit');
 
 const createLeaveType = (_, {
-                            leavetype,
-                            leavedays,
-                            carryforward,
-                            carrymax,
+                            leaveType,
+                            leaveDays,
+                            carryForward,
+                            carryMax,
                             status,
                             created_by,
                             created_at,
-                            remainingleaves
+                            remainingLeaves
                           },{me,secret}) => new Promise(async (resolve, reject) => {
-  const leave = await LeaveType.findOne({$or:[ {leavetype} ]})
+  const leave = await LeaveType.findOne({$or:[ {leaveType} ]})
   if (leave) {
     reject('LeaveType already exist');
   } else {
-    remainingleaves = leavedays;
+    remainingLeaves = leaveDays;
     const newLeaveType = await LeaveType.create({
-      leavetype,
-      leavedays,
-      carryforward,
-      carrymax,
+      leaveType,
+      leaveDays,
+      carryForward,
+      carryMax,
       status,
       created_by,
       created_at,
-      remainingleaves
+      remainingLeaves
     })
 
     const modifiedObj = {

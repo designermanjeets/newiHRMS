@@ -9,13 +9,13 @@ const subSchema = mongoose.Schema({
 
 const roleSchema = new Schema({
   id: String,
-  role_name: String,
-  mod_employee: Boolean,
-  mod_holidays: Boolean,
-  mod_leaves: Boolean,
-  mod_events: Boolean,
-  mod_jobs: Boolean,
-  mod_assets: Boolean,
+  role_name: { type: String, required: true },
+  mod_employee: { type: Boolean, default: false },
+  mod_holidays: { type: Boolean, default: false },
+  mod_leaves: { type: Boolean,  efault: false },
+  mod_events: { type: Boolean, default: false },
+  mod_jobs: { type: Boolean, default: false },
+  mod_assets: { type: Boolean, default: false },
   permissions: {
     employees: {
       read: { type: Boolean, default: false },
@@ -68,8 +68,8 @@ const roleSchema = new Schema({
   },
   created_at: Date,
   created_by: String,
-  modified : [subSchema],
+  modified: [subSchema]
 
-}, {collection:'Role'});
+}, { collection: 'Role' });
 
 module.exports = mongoose.model('Role', roleSchema);

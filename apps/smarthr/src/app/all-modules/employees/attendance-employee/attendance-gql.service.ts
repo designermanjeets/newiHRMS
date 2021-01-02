@@ -9,7 +9,7 @@ export class CreateAttendanceGQL extends Mutation {
   document = gql`
     mutation createAttendance(
         $date: ISODate!
-        $user_ID: String!
+        $userID: String!
         $user_email: String!
         $punchIn: String!
         $punchOut: String!
@@ -18,7 +18,7 @@ export class CreateAttendanceGQL extends Mutation {
     ) {
       createAttendance(
         date: $date
-        user_ID: $user_ID,
+        userID: $userID,
         user_email: $user_email
         punchIn: $punchIn
         punchOut: $punchOut
@@ -42,7 +42,7 @@ export class UpdateAttendanceGQL extends Mutation {
     mutation updateAttendance(
         $id: ID!
         $date: ISODate!
-        $user_ID: String!
+        $userID: String!
         $user_email: String!
         $punchIn: String!
         $punchOut: String!
@@ -51,7 +51,7 @@ export class UpdateAttendanceGQL extends Mutation {
       updateAttendance(
         id: $id
         date: $date
-        user_ID: $user_ID,
+        userID: $userID,
         user_email: $user_email
         punchIn: $punchIn
         punchOut: $punchOut
@@ -74,14 +74,14 @@ export class DeleteAttendanceGQL extends Mutation {
     mutation deleteAttendance(
         $id: ID!,
         $date: ISODate!
-        $user_ID: String!
+        $userID: String!
         $user_email: String!
         $modified: [modifiedInputs]
     ) {
       deleteAttendance(
         id:  $id,
         date: $date
-        user_ID: $user_ID
+        userID: $userID
         user_email: $user_email
         modified: $modified
       ) {
@@ -102,7 +102,7 @@ export const GET_ATTENDANCES_QUERY = gql`
         query: $pagination
       ) {
           _id
-          user_ID
+          userID
           punchIn
           punchOut
           date
@@ -118,7 +118,7 @@ export const GET_USER_ATTENDANCES_QUERY = gql`
         query: $pagination
       ) {
           _id
-          user_ID
+          userID
           punchIn
           punchOut
           date
@@ -133,7 +133,7 @@ export class UploadAttendanceFileGQL extends Mutation {
   document = gql`
    mutation UploadAttendanceMutation($file: Upload!) {
     uploadAttendanceFile(file: $file) {
-      user_ID
+      userID
       date
       punchIn,
       punchOut
@@ -153,7 +153,7 @@ export class ImportAttendanceGQL extends Mutation {
       insertManyAttendances(input: $input) {
         attendances {
           _id,
-          emmpid,
+          employeeID,
           date,
           punchIn,
           punchOut

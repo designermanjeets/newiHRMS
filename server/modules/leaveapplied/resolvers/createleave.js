@@ -2,13 +2,13 @@ const User = require('../../../models/user');
 const Audit = require('../../../models/Audit');
 
 const createLeave = (_, {
-  leavetype,
-  leave_ID,
-  user_ID,
+  leaveType,
+  leaveID,
+  userID,
   username,
   email,
-  emmpid,
-  nofdays,
+  employeeID,
+  numberOfDays,
   status,
   approver,
   reason,
@@ -16,16 +16,16 @@ const createLeave = (_, {
   created_by,
   from,
   to,
-  remainingleaves
+  remainingLeaves
 },{me,secret}) => new Promise(async (resolve, reject) => {
   let params = {
-    user_ID,
+    userID,
     username,
     email,
-    emmpid,
-    leavetype,
-    leave_ID,
-    nofdays,
+    employeeID,
+    leaveType,
+    leaveID,
+    numberOfDays,
     status,
     approver,
     reason,
@@ -33,11 +33,11 @@ const createLeave = (_, {
     created_by,
     from,
     to,
-    remainingleaves
+    remainingLeaves
   }
   params.status = 'pending';
 
-  const user = await User.findById({_id: user_ID})
+  const user = await User.findById({_id: userID})
   if (!user) reject (new Error('No User Found!'))
   if (user) {
     if (!user.leaveApplied)
@@ -61,25 +61,25 @@ const createLeave = (_, {
       let remn = 0;
 
       // Below Update User Leaves
-      user.designation.leavetype.forEach(val => {
-        if (val.leave_ID === params.leave_ID) {
-          if (!val.remainingleaves) {
-            val.remainingleaves = val.leavedays - params.nofdays;
+      user.designation.leaveType.forEach(val => {
+        if (val.leaveID === params.leaveID) {
+          if (!val.remainingLeaves) {
+            val.remainingLeaves = val.leaveDays - params.numberOfDays;
           } else {
-            val.remainingleaves = val.remainingleaves - params.nofdays;
+            val.remainingLeaves = val.remainingLeaves - params.numberOfDays;
           }
-          remn = val.remainingleaves;
+          remn = val.remainingLeaves;
         }
 
         user.leaveApplied.forEach(va => {
-          if(va.leave_ID === leave_ID) {
-            va.remainingleaves = remn;
+          if(va.leaveID === leaveID) {
+            va.remainingLeaves = remn;
           }
         });
       });
 
       const modified = {
-        leave_ID: leave_ID,
+        leaveID: leaveID,
         action: 'User Applied Leave',
         created_by: created_by,
         created_at: created_at,

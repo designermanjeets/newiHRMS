@@ -6,7 +6,7 @@ const companySchema = new Schema({
   id: String,
   companyname: String,
   printname: String,
-  corporateid: String,
+  corporateID: String,
   address1: String,
   address2: String,
   countryid: String,

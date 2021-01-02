@@ -40,7 +40,7 @@ export class UpdateCompanyGQL extends Mutation {
       $address1: String
       $address2: String
       $countryid: String
-      $corporateid: String
+      $corporateID: String
       $stateid: String
       $cityid: String
       $zipcode: String
@@ -60,7 +60,7 @@ export class UpdateCompanyGQL extends Mutation {
       address1: $address1
       address2: $address2
       countryid: $countryid
-      corporateid: $corporateid
+      corporateID: $corporateID
       stateid: $stateid
       cityid: $cityid
       zipcode: $zipcode
@@ -79,7 +79,7 @@ export class UpdateCompanyGQL extends Mutation {
         address1
         address2
         countryid
-        corporateid
+        corporateID
         stateid
         cityid
         zipcode
@@ -105,12 +105,12 @@ export class UpdateCompanyGQL extends Mutation {
 export class DeleteCompanyGQL extends Mutation {
   document = gql`
     mutation deleteCompany(
-      $corporateid: String
+      $corporateID: String
     ) {
     deleteCompany(
-      corporateid: $corporateid
+      corporateID: $corporateID
     ) {
-        corporateid
+        corporateID
       }
   }
   `;
@@ -118,16 +118,16 @@ export class DeleteCompanyGQL extends Mutation {
 
 export const GET_COMPANY_QUERY = gql`
    query getCompany(
-      $corporateid: String!
+      $corporateID: String!
     ) {
     getCompany(
-      corporateid: $corporateid
+      corporateID: $corporateID
     ) {
         companyname
         address1
         address2
         countryid
-        corporateid
+        corporateID
         stateid
         cityid
         zipcode
@@ -155,7 +155,7 @@ export const GET_COMPANIES_QUERY = gql`
     getCompanies(
       query: $pagination,
     ) {
-        corporateid
+        corporateID
       }
   }
 `;

@@ -33,7 +33,7 @@ const insertManyAttendances = (_, { input },{me,secret}) => new Promise(async (r
 
                 Attendance.find({
                   $and: [
-                    { user_ID: empID },
+                    { userID: empID },
                     { date: new Date(ObjectIN[key]).getDate() },
                     // { punchIn: attend.punchIn },
                     // { punchOut: attend.punchOut }
@@ -49,7 +49,7 @@ const insertManyAttendances = (_, { input },{me,secret}) => new Promise(async (r
                       date: new Date(ObjectIN[key]).getDate(),
                       punchIn: ObjectIN ? ObjectIN[key] : null,
                       punchOut: ObjectOUT ? ObjectOUT[key] : null,
-                      user_ID: empID,
+                      userID: empID,
                       // username: user[0].username,
                       // user_email: user[0].email,
                       // firstname: user[0].firstname,
@@ -83,14 +83,14 @@ const insertManyAttendances = (_, { input },{me,secret}) => new Promise(async (r
       // try {
       //   Attendance.find({
       //     $and: [
-      //       { user_ID: attend.user_ID },
+      //       { userID: attend.userID },
       //       { date: attend.date },
       //       { punchIn: attend.punchIn },
       //       { punchOut: attend.punchOut }
       //     ]
       //   }).then(att => {
       //     if(!att.length) {
-      //       User.find({ emmpid: attend.user_ID })
+      //       User.find({ employeeID: attend.userID })
       //         .then((user) => {
       //           if (!user.length) {
       //             console.log('return no user')
@@ -98,7 +98,7 @@ const insertManyAttendances = (_, { input },{me,secret}) => new Promise(async (r
       //           } else {
       //             Attendance.create({
       //               ...attend,
-      //               user_ID: user[0]._id,
+      //               userID: user[0]._id,
       //               username: user[0].username,
       //               user_email: user[0].email,
       //               firstname: user[0].firstname,

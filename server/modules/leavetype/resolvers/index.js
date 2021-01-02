@@ -1,7 +1,7 @@
-const getLeaveTypes = require('./leavetypes')
-const createLeaveType = require('./createleavetype')
-const updateLeaveType = require('./updateleavetype')
-const deleteLeaveType = require('./deleteleavetype')
+const getLeaveTypes = require('./leaveTypes')
+const createLeaveType = require('./createleaveType')
+const updateLeaveType = require('./updateleaveType')
+const deleteLeaveType = require('./deleteleaveType')
 
 
 const resolvers = {

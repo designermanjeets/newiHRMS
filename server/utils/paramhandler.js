@@ -1,3 +1,7 @@
+const Designation = require('./../models/designation');
+const Department = require('./../models/department');
+const Role = require('./../models/role');
+
 const paramHandler= (qry)  => {
   let param = {};
   if(qry.argument && qry.query)param= {[qry.argument]: {'$regex':qry.query}}
@@ -10,10 +14,46 @@ const paramHandler= (qry)  => {
       param.meta.updatedAt.$lte=lt.setDate(lt.getDate()+1)
     }
   }
-  if(qry.department_ID) { param.department_ID = qry.department_ID }
-  if(qry.designation_ID) { param.designation_ID = qry.designation_ID }
+  if(qry.departmentID) { param.departmentID = qry.departmentID }
+  if(qry.designationID) { param.designationID = qry.designationID }
   if(qry.id) { param._id = qry.id }
   return param
 };
 
-module.exports = paramHandler;
+findDesignation = function findDesignation(ID, callback){
+  const foundDesignation = Designation.findById(ID, (err, obj) => {
+    if(err){
+      callback(err)
+    } else if (obj){
+      callback(null,obj)
+    } else {
+      callback(reject(new Error('Some strange thing has happened')));
+    }
+  });
+}
+
+findDepartment = function findDepartment(ID, callback){
+  const foundDepartment = Department.findById(ID, (err, obj) => {
+    if(err){
+      callback(err)
+    } else if (obj){
+      callback(null,obj)
+    } else {
+      callback(reject(new Error('Some strange thing has happened')));
+    }
+  });
+}
+
+findRole = function findRole(ID, callback){
+  const foundRole = Role.findById(ID, (err, obj) => {
+    if(err){
+      callback(err)
+    } else if (obj){
+      callback(null,obj)
+    } else {
+      callback(new Error('Some strange thing has happened'));
+    }
+  });
+}
+
+module.exports = { paramHandler, findDesignation, findDepartment, findRole };

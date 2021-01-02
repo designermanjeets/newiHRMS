@@ -89,21 +89,21 @@
               >
                 <ngx-datatable-column name="Username" prop="username"></ngx-datatable-column>
                 <ngx-datatable-column name="Email" prop="email"></ngx-datatable-column>
-                <ngx-datatable-column name="Emp ID" prop="emmpid"></ngx-datatable-column>
+                <ngx-datatable-column name="Emp ID" prop="employeeID"></ngx-datatable-column>
                 <ngx-datatable-column name="First Name" prop="firstname"></ngx-datatable-column>
 <!--                <ngx-datatable-column name="Last Name" prop="lastname"></ngx-datatable-column>-->
-                <ngx-datatable-column name="Joining Date" prop="joiningdate">
+                <ngx-datatable-column name="Joining Date" prop="joiningDate">
                   <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
                     {{value | date}}
                   </ng-template>
                 </ngx-datatable-column>
-                <ngx-datatable-column name="Role" prop="Role.role_name">
+                <ngx-datatable-column name="Role" prop="role">
                   <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
                     <a class="btn btn-block btn-white btn-sm btn-rounded">{{value}}</a>
                   </ng-template>
                 </ngx-datatable-column>
                 <ngx-datatable-column name="Department" prop="department"></ngx-datatable-column>
-                <ngx-datatable-column name="Designation" prop="designation.designation"></ngx-datatable-column>
+                <ngx-datatable-column name="Designation" prop="designation"></ngx-datatable-column>
 
                 <ngx-datatable-column name="Actions" sortable="false" prop="_id">
                   <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
@@ -204,13 +204,13 @@
                   <div class="col-sm-4">
                     <div class="form-group"
                          [class.has-error]="
-                        editForm.controls['emmpid'].invalid &&
-                        editForm.controls['emmpid'].touched"
-                         [class.has-success]="editForm.controls['emmpid'].valid"
+                        editForm.controls['employeeID'].invalid &&
+                        editForm.controls['employeeID'].touched"
+                         [class.has-success]="editForm.controls['employeeID'].valid"
                       >
                       <label class="control-label">Employee ID <span class="text-danger m-l-5">*</span></label>
-                      <input type="text" class="form-control" formControlName="emmpid" required>
-                      <span class="help-block" *ngIf="editForm.controls['emmpid'].errors && editForm.controls['emmpid'].touched">
+                      <input type="text" class="form-control" formControlName="employeeID" required>
+                      <span class="help-block" *ngIf="editForm.controls['employeeID'].errors && editForm.controls['employeeID'].touched">
                     Employee ID is invalid
                 </span>
                     </div>
@@ -218,16 +218,16 @@
                   <div class="col-sm-4">
                     <div class="form-group pos-rel cal-icon"
                          [class.has-error]="
-                        editForm.controls['joiningdate'].invalid &&
-                        editForm.controls['joiningdate'].touched"
-                         [class.has-success]="editForm.controls['joiningdate'].valid"
+                        editForm.controls['joiningDate'].invalid &&
+                        editForm.controls['joiningDate'].touched"
+                         [class.has-success]="editForm.controls['joiningDate'].valid"
                     >
                       <label class="control-label">Joining Date <span class="text-danger m-l-5">*</span></label>
                       <input class="form-control" bsDatepicker type="text"
                              [bsConfig]="{ dateInputFormat: 'DD-MM-YYYY',  returnFocusToInput: true }"
-                             [class.invalid]="editForm.get('joiningdate').invalid && editForm.get('joiningdate').touched"
-                             formControlName="joiningdate" (bsValueChange)="from($event)">
-                      <span class="help-block" *ngIf="editForm.controls['joiningdate'].errors && editForm.controls['joiningdate'].touched">
+                             [class.invalid]="editForm.get('joiningDate').invalid && editForm.get('joiningDate').touched"
+                             formControlName="joiningDate" (bsValueChange)="from($event)">
+                      <span class="help-block" *ngIf="editForm.controls['joiningDate'].errors && editForm.controls['joiningDate'].touched">
                    Joining Date is invalid
                 </span>
                     </div>
@@ -235,16 +235,16 @@
                   <div class="col-sm-4">
                     <div class="form-group"
                          [class.has-error]="
-                        editForm.controls['corporateid'].invalid &&
-                        editForm.controls['corporateid'].touched"
-                         [class.has-success]="editForm.controls['corporateid'].valid"
+                        editForm.controls['corporateID'].invalid &&
+                        editForm.controls['corporateID'].touched"
+                         [class.has-success]="editForm.controls['corporateID'].valid"
                     >
                       <label class="control-label">Company <span class="text-danger">*</span></label>
-                      <select class="select form-control" formControlName="corporateid" required>
+                      <select class="select form-control" formControlName="corporateID" required>
                         <option value="">--Select--</option>
-                        <option *ngFor="let cmp of companies" [value]=cmp.corporateid>{{cmp.corporateid}}</option>
+                        <option *ngFor="let cmp of companies" [value]=cmp.corporateID>{{cmp.corporateID}}</option>
                       </select>
-                      <span class="help-block" *ngIf="editForm.controls['corporateid'].errors && editForm.controls['corporateid'].touched">
+                      <span class="help-block" *ngIf="editForm.controls['corporateID'].errors && editForm.controls['corporateID'].touched">
                    Company is invalid
                 </span>
                     </div>
@@ -252,16 +252,16 @@
                   <div class="col-sm-4">
                     <div class="form-group"
                          [class.has-error]="
-                    editForm.controls['role'].invalid &&
-                    editForm.controls['role'].touched"
-                         [class.has-success]="editForm.controls['role'].valid"
+                    editForm.controls['roleID'].invalid &&
+                    editForm.controls['roleID'].touched"
+                         [class.has-success]="editForm.controls['roleID'].valid"
                     >
                       <label class="control-label">Role<span class="text-danger m-l-5">*</span></label>
-                      <select class="select form-control" formControlName="role" required>
+                      <select class="select form-control" formControlName="roleID" required>
                         <option value="">--Select--</option>
                         <option *ngFor="let opt of allRoles" [value]="opt._id">{{opt.role_name}}</option>
                       </select>
-                      <span class="help-block" *ngIf="editForm.controls['role'].errors && editForm.controls['role'].touched">
+                      <span class="help-block" *ngIf="editForm.controls['roleID'].errors && editForm.controls['roleID'].touched">
                    Role is invalid
                 </span>
                     </div>
@@ -269,16 +269,16 @@
                   <div class="col-sm-4">
                     <div class="form-group"
                          [class.has-error]="
-                        editForm.controls['department'].invalid &&
-                        editForm.controls['department'].touched"
-                         [class.has-success]="editForm.controls['department'].valid"
+                        editForm.controls['departmentID'].invalid &&
+                        editForm.controls['departmentID'].touched"
+                         [class.has-success]="editForm.controls['departmentID'].valid"
                     >
                       <label for="department" class="control-label">Department<span class="text-danger m-l-5">*</span></label>
-                      <select id="department" class="select form-control" formControlName="department" required (change)="onDepartChange(editForm.controls['department'])">
+                      <select id="department" class="select form-control" formControlName="departmentID" required (change)="onDepartChange(editForm.controls['departmentID'])">
                         <option value="">--Select--</option>
                         <option *ngFor="let opt of departments" [value]="opt._id">{{opt.department}}</option>
                       </select>
-                      <span class="help-block" *ngIf="editForm.controls['department'].errors && editForm.controls['department'].touched">
+                      <span class="help-block" *ngIf="editForm.controls['departmentID'].errors && editForm.controls['departmentID'].touched">
                         Department is invalid
                       </span>
                     </div>
@@ -286,16 +286,16 @@
                   <div class="col-sm-4">
                     <div class="form-group"
                          [class.has-error]="
-                          editForm.controls['designation'].invalid &&
-                          editForm.controls['designation'].touched"
-                         [class.has-success]="editForm.controls['designation'].valid"
+                          editForm.controls['designationID'].invalid &&
+                          editForm.controls['designationID'].touched"
+                         [class.has-success]="editForm.controls['designationID'].valid"
                         >
                       <label for="designation" class="control-label">Designation<span class="text-danger m-l-5">*</span></label>
-                      <select id="designation" class="select form-control" formControlName="designation" required>
+                      <select id="designation" class="select form-control" formControlName="designationID" required>
                         <option value="">--Select--</option>
                         <option *ngFor="let opt of designations" [value]="opt._id">{{opt.designation}}</option>
                       </select>
-                      <span class="help-block" *ngIf="editForm.controls['designation'].errors && editForm.controls['designation'].touched">
+                      <span class="help-block" *ngIf="editForm.controls['designationID'].errors && editForm.controls['designationID'].touched">
                         Designation is invalid
                       </span>
                     </div>
@@ -304,17 +304,17 @@
                   <div class="col-sm-4">
                     <div class="form-group"
                          [class.has-error]="
-                          editForm.controls['shift'].invalid &&
-                          editForm.controls['shift'].touched"
-                         [class.has-success]="editForm.controls['shift'].valid"
+                          editForm.controls['shiftIDs'].invalid &&
+                          editForm.controls['shiftIDs'].touched"
+                         [class.has-success]="editForm.controls['shiftIDs'].valid"
                     >
                       <label for="shift" class="control-label">Shift<span class="text-danger m-l-5">*</span></label>
                       <mat-form-field class="matNativeSelect" id="shift" appearance="fill">
-                        <mat-select formControlName="shift" multiple  [compareWith]="compareFn" (selectionChange)="shiftChange($event)" >
-                          <mat-option *ngFor="let opt of allShifts" [value]="opt">{{opt.shiftname}}</mat-option>
+                        <mat-select formControlName="shiftIDs" multiple  [compareWith]="compareFn" (selectionChange)="shiftChange($event)" >
+                          <mat-option *ngFor="let opt of allShifts" [value]="opt_id">{{opt.shiftName}}</mat-option>
                         </mat-select>
                       </mat-form-field>
-                      <span class="help-block" *ngIf="editForm.controls['shift'].errors && editForm.controls['shift'].touched">
+                      <span class="help-block" *ngIf="editForm.controls['shiftIDs'].errors && editForm.controls['shiftIDs'].touched">
                         Shift is invalid
                       </span>
                     </div>
@@ -504,13 +504,13 @@
                   <div class="col-sm-4">
                     <div class="form-group"
                        [class.has-error]="
-                        editForm.controls['emmpid'].invalid &&
-                        editForm.controls['emmpid'].touched"
-                       [class.has-success]="editForm.controls['emmpid'].valid"
+                        editForm.controls['employeeID'].invalid &&
+                        editForm.controls['employeeID'].touched"
+                       [class.has-success]="editForm.controls['employeeID'].valid"
                     >
                       <label class="control-label">Employee ID <span class="text-danger m-l-5">*</span></label>
-                      <input type="text" class="form-control" formControlName="emmpid" required>
-                      <span class="help-block" *ngIf="editForm.controls['emmpid'].errors && editForm.controls['emmpid'].touched">
+                      <input type="text" class="form-control" formControlName="employeeID" required>
+                      <span class="help-block" *ngIf="editForm.controls['employeeID'].errors && editForm.controls['employeeID'].touched">
                           Employee ID is invalid
                       </span>
                     </div>
@@ -518,16 +518,16 @@
                   <div class="col-sm-4">
                     <div class="form-group pos-rel cal-icon"
                          [class.has-error]="
-                    editForm.controls['joiningdate'].invalid &&
-                    editForm.controls['joiningdate'].touched"
-                         [class.has-success]="editForm.controls['joiningdate'].valid"
+                    editForm.controls['joiningDate'].invalid &&
+                    editForm.controls['joiningDate'].touched"
+                         [class.has-success]="editForm.controls['joiningDate'].valid"
                     >
                       <label class="control-label">Joining Date <span class="text-danger m-l-5">*</span></label>
                       <input class="form-control datetimepicker" type="text" bsDatepicker type="text"
                              [bsConfig]="{ dateInputFormat: 'DD-MM-YYYY',  returnFocusToInput: true }"
-                             [class.invalid]="editForm.get('joiningdate').invalid && editForm.get('joiningdate').touched"
-                             formControlName="joiningdate" (bsValueChange)="from($event)">
-                      <span class="help-block" *ngIf="editForm.controls['joiningdate'].errors && editForm.controls['joiningdate'].touched">
+                             [class.invalid]="editForm.get('joiningDate').invalid && editForm.get('joiningDate').touched"
+                             formControlName="joiningDate" (bsValueChange)="from($event)">
+                      <span class="help-block" *ngIf="editForm.controls['joiningDate'].errors && editForm.controls['joiningDate'].touched">
                    Joining Date is invalid
                 </span>
                     </div>
@@ -535,16 +535,16 @@
                   <div class="col-sm-4">
                     <div class="form-group"
                          [class.has-error]="
-                    editForm.controls['corporateid'].invalid &&
-                    editForm.controls['corporateid'].touched"
-                         [class.has-success]="editForm.controls['corporateid'].valid"
+                    editForm.controls['corporateID'].invalid &&
+                    editForm.controls['corporateID'].touched"
+                         [class.has-success]="editForm.controls['corporateID'].valid"
                     >
                       <label class="control-label">Company <span class="text-danger">*</span></label>
-                      <select class="select form-control" formControlName="corporateid" required>
+                      <select class="select form-control" formControlName="corporateID" required>
                         <option value="">--Select--</option>
-                        <option *ngFor="let cmp of companies" [value]=cmp.corporateid>{{cmp.corporateid}}</option>
+                        <option *ngFor="let cmp of companies" [value]=cmp?.corporateID>{{cmp?.corporateID}}</option>
                       </select>
-                      <span class="help-block" *ngIf="editForm.controls['corporateid'].errors && editForm.controls['corporateid'].touched">
+                      <span class="help-block" *ngIf="editForm.controls['corporateID'].errors && editForm.controls['corporateID'].touched">
                    Company is invalid
                 </span>
                     </div>
@@ -552,16 +552,16 @@
                   <div class="col-sm-4">
                     <div class="form-group"
                          [class.has-error]="
-                    editForm.controls['role'].invalid &&
-                    editForm.controls['role'].touched"
-                         [class.has-success]="editForm.controls['role'].valid"
+                    editForm.controls['roleID'].invalid &&
+                    editForm.controls['roleID'].touched"
+                         [class.has-success]="editForm.controls['roleID'].valid"
                     >
                       <label class="control-label">Role<span class="text-danger m-l-5">*</span></label>
-                      <select class="select form-control" formControlName="role" required>
+                      <select class="select form-control" formControlName="roleID" required>
                         <option value="">--Select--</option>
                         <option *ngFor="let opt of allRoles" [value]="opt._id">{{opt.role_name}}</option>
                       </select>
-                      <span class="help-block" *ngIf="editForm.controls['role'].errors && editForm.controls['role'].touched">
+                      <span class="help-block" *ngIf="editForm.controls['roleID'].errors && editForm.controls['roleID'].touched">
                    Role is invalid
                 </span>
                     </div>
@@ -569,16 +569,16 @@
                   <div class="col-sm-4">
                     <div class="form-group"
                          [class.has-error]="
-                        editForm.controls['department'].invalid &&
-                        editForm.controls['department'].touched"
-                         [class.has-success]="editForm.controls['department'].valid"
+                        editForm.controls['departmentID'].invalid &&
+                        editForm.controls['departmentID'].touched"
+                         [class.has-success]="editForm.controls['departmentID'].valid"
                     >
                       <label for="department1" class="control-label">Department<span class="text-danger m-l-5">*</span></label>
-                      <select id="department1" class="select form-control" formControlName="department" required (change)="onDepartChange(editForm.controls['department'])">
+                      <select id="department1" class="select form-control" formControlName="departmentID" required (change)="onDepartChange(editForm.controls['departmentID'])">
                         <option value="">--Select--</option>
                         <option *ngFor="let opt of departments" [value]="opt._id">{{opt.department}}</option>
                       </select>
-                      <span class="help-block" *ngIf="editForm.controls['department'].errors && editForm.controls['department'].touched">
+                      <span class="help-block" *ngIf="editForm.controls['departmentID'].errors && editForm.controls['departmentID'].touched">
                         Department is invalid
                       </span>
                     </div>
@@ -586,16 +586,16 @@
                   <div class="col-sm-4">
                     <div class="form-group"
                          [class.has-error]="
-                          editForm.controls['designation'].invalid &&
-                          editForm.controls['designation'].touched"
-                         [class.has-success]="editForm.controls['designation'].valid"
+                          editForm.controls['designationID'].invalid &&
+                          editForm.controls['designationID'].touched"
+                         [class.has-success]="editForm.controls['designationID'].valid"
                     >
                       <label for="designation1" class="control-label">Designation<span class="text-danger m-l-5">*</span></label>
-                      <select id="designation1" class="select form-control" formControlName="designation" required>
+                      <select id="designation1" class="select form-control" formControlName="designationID" required>
                         <option value="">--Select--</option>
                         <option *ngFor="let opt of designations" [value]="opt._id">{{opt.designation}}</option>
                       </select>
-                      <span class="help-block" *ngIf="editForm.controls['designation'].errors && editForm.controls['designation'].touched">
+                      <span class="help-block" *ngIf="editForm.controls['designationID'].errors && editForm.controls['designationID'].touched">
                         Designation is invalid
                       </span>
                     </div>
@@ -604,17 +604,17 @@
                   <div class="col-sm-4">
                     <div class="form-group"
                          [class.has-error]="
-                          editForm.controls['shift'].invalid &&
-                          editForm.controls['shift'].touched"
-                         [class.has-success]="editForm.controls['shift'].valid"
+                          editForm.controls['shiftIDs'].invalid &&
+                          editForm.controls['shiftIDs'].touched"
+                         [class.has-success]="editForm.controls['shiftIDs'].valid"
                     >
                       <label for="shift1" class="control-label">Shift<span class="text-danger m-l-5">*</span></label>
                       <mat-form-field class="matNativeSelect" id="shift1" appearance="fill">
-                        <mat-select formControlName="shift" multiple  [compareWith]="compareFn" (selectionChange)="shiftChange($event)" >
-                          <mat-option *ngFor="let opt of allShifts" [value]="opt">{{opt.shiftname}}</mat-option>
+                        <mat-select formControlName="shiftIDs" multiple (selectionChange)="shiftChange($event)" >
+                          <mat-option *ngFor="let opt of allShifts" [value]="opt._id">{{opt.shiftName}}</mat-option>
                         </mat-select>
                       </mat-form-field>
-                      <span class="help-block" *ngIf="editForm.controls['shift'].errors && editForm.controls['shift'].touched">
+                      <span class="help-block" *ngIf="editForm.controls['shiftIDs'].errors && editForm.controls['shiftIDs'].touched">
                         Shift is invalid
                       </span>
                     </div>

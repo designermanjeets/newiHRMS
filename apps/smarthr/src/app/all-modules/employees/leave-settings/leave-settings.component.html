@@ -25,7 +25,7 @@
               <div class="card leave-box" id="leave_annual">
                   <div class="card-body">
                       <div class="h3 card-title with-switch">
-                        {{item.leavetype}}
+                        {{item.leaveType}}
                           <div class="onoffswitch readonly">
                               <input type="checkbox" disabled name="onoffswitch" class="onoffswitch-checkbox" id="switch_annual"
                                   [checked]="item.status === 'Active'">
@@ -43,7 +43,7 @@
                                   <div class="input-box">
                                       <div class="form-group">
                                           <label>Days</label>
-                                          <input type="text" class="form-control" [value]="item.leavedays" disabled>
+                                          <input type="text" class="form-control" [value]="item.leaveDays" disabled>
                                       </div>
                                   </div>
                               </div>
@@ -61,13 +61,13 @@
                                       <div class="leave-inline-form">
                                           <div class="form-check form-check-inline">
                                               <input class="form-check-input"
-                                                     [checked]="item?.carryforward === 'No'"  type="radio" name="inlineRadioOptions{{i}}"
+                                                     [checked]="item?.carryForward === 'No'"  type="radio" name="inlineRadioOptions{{i}}"
                                                   id="carry_no{{i}}" value="option{{i}}" disabled>
                                               <label class="form-check-label" for="carry_no{{i}}">No</label>
                                           </div>
                                           <div class="form-check form-check-inline">
                                               <input class="form-check-input"
-                                                     [checked]="item?.carryforward === 'Yes'" type="radio" name="inlineRadioOptions{{i}}"
+                                                     [checked]="item?.carryForward === 'Yes'" type="radio" name="inlineRadioOptions{{i}}"
                                                   id="carry_yes{{i}}" value="option2{{i}}" disabled>
                                               <label class="form-check-label" for="carry_yes{{i}}">Yes</label>
                                           </div>
@@ -75,7 +75,7 @@
                                               <div class="input-group-prepend">
                                                   <span class="input-group-text">Max</span>
                                               </div>
-                                              <input type="text" class="form-control" [value]="item.carrymax || '0'" disabled>
+                                              <input type="text" class="form-control" [value]="item.carryMax || '0'" disabled>
                                           </div>
                                       </div>
                                   </div>

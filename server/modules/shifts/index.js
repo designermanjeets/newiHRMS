@@ -11,33 +11,33 @@ const typeDefs = gql`
   extend type Mutation {
 
     createShift (
-      shiftname: String!,
-      shiftimeFrom: String!,
-      shiftimeTo: String!,
-      maxshifts: Int!,
+      shiftName: String!,
+      shiftTmeFrom: String!,
+      shiftTimeTo: String!,
+      maxShifts: Int!,
       created_by: String,
       created_at: ISODate,
     ): Shift,
 
     updateShift(
       id: ID!,
-      shiftname: String!,
-      shiftimeFrom: String,
-      shiftimeTo: String,
-      maxshifts: Int,
+      shiftName: String!,
+      shiftTmeFrom: String,
+      shiftTimeTo: String,
+      maxShifts: Int,
       permissions: PermissionsInput
       modified: [modifiedInputs]
     ): Shift,
 
-    deleteShift( id: ID!, shiftname: String, modified: [modifiedInputs] ): Shift,
+    deleteShift( id: ID!, shiftName: String, modified: [modifiedInputs] ): Shift,
   }
 
   type Shift {
     _id: ID,
-    shiftname: String!,
-    shiftimeFrom: String,
-    shiftimeTo: String,
-    maxshifts: Int,
+    shiftName: String!,
+    shiftTmeFrom: String,
+    shiftTimeTo: String,
+    maxShifts: Int,
     created_by: String,
     created_at: ISODate,
     modified: [modifiedTypes]
@@ -45,10 +45,10 @@ const typeDefs = gql`
 
   input ShiftInput{
     _id: ID,
-    shiftname: String!,
-    shiftimeFrom: String,
-    shiftimeTo: String,
-    maxshifts: Int,
+    shiftName: String!,
+    shiftTmeFrom: String,
+    shiftTimeTo: String,
+    maxShifts: Int,
     created_by: String,
     created_at: ISODate,
     modified: [modifiedInputs]

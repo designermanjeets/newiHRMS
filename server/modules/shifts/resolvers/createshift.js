@@ -2,25 +2,25 @@ const Shift = require('../../../models/shift');
 const Audit = require('../../../models/Audit');
 
 const createShift = (_, {
-  shiftname,
-  shiftimeFrom,
-  shiftimeTo,
-  maxshifts,
+  shiftName,
+  shiftTmeFrom,
+  shiftTimeTo,
+  maxShifts,
   created_by,
   created_at
 },{me,secret}) => new Promise(async (resolve, reject) => {
 
-  const shft = await Shift.findOne({ "shiftname": shiftname })
+  const shift = await Shift.findOne({ "shiftName": shiftName })
 
-  if (shft) {
+  if (shift) {
     reject('Shift already exist!');
   } else {
 
     const newShift= await Shift.create({
-      shiftname,
-      shiftimeFrom,
-      shiftimeTo,
-      maxshifts,
+      shiftName,
+      shiftTmeFrom,
+      shiftTimeTo,
+      maxShifts,
       created_by,
       created_at
     });

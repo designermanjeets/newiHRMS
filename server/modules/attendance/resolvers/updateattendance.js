@@ -4,7 +4,7 @@ const User = require('../../../models/user');
 
 const updateAttendance = (_, {
   id,
-  user_ID,
+  userID,
   user_email,
   date,
   punchIn,
@@ -13,7 +13,7 @@ const updateAttendance = (_, {
 }, {me,secret}) => new Promise(async (resolve, reject) => {
   try{
     let param ={
-      user_ID,
+      userID,
       user_email,
       date,
       punchIn,
@@ -43,7 +43,7 @@ const updateAttendance = (_, {
           if(result) {
 
             // Update User Attendance
-            User.findById({ _id: user_ID})
+            User.findById({ _id: userID})
               .then((user) => {
                 if(!user) { reject (new Error('No User Found!')) }
                 else {

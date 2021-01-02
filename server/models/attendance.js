@@ -9,7 +9,7 @@ const subSchema = mongoose.Schema({
 
 const attendanceSchema = new Schema({
   id: String,
-  user_ID: String,
+  userID: String,
   user_email: String,
   username: String,
   firstname: String,

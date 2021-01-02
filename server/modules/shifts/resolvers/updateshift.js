@@ -4,19 +4,19 @@ const Audit = require('../../../models/Audit');
 
 const updateShift = (_, {
   id,
-  shiftname,
-  shiftimeFrom,
-  shiftimeTo,
-  maxshifts,
+  shiftName,
+  shiftTmeFrom,
+  shiftTimeTo,
+  maxShifts,
   modified
 }, {me,secret}) => new Promise(async (resolve, reject) => {
   try{
 
     let param = {
-      shiftname,
-      shiftimeFrom,
-      shiftimeTo,
-      maxshifts,
+      shiftName,
+      shiftTmeFrom,
+      shiftTimeTo,
+      maxShifts,
     }
 
     const shft = await Shift.findById(id);
@@ -59,10 +59,10 @@ const updateresr = function(result, changeFields, modified, shft) {
     res.forEach(usr => {
       usr.shift.forEach(syft => {
         if(syft._id.toHexString() === result._id.toHexString()) {
-          syft.shiftname = result.shiftname;
-          syft.shiftimeFrom = result.shiftimeFrom;
-          syft.shiftimeTo = result.shiftimeTo;
-          syft.maxshifts = result.maxshifts;
+          syft.shiftName = result.shiftName;
+          syft.shiftTmeFrom = result.shiftTmeFrom;
+          syft.shiftTimeTo = result.shiftTimeTo;
+          syft.maxShifts = result.maxShifts;
           usr.save()
         }
       })
@@ -72,7 +72,7 @@ const updateresr = function(result, changeFields, modified, shft) {
   if(result && Object.keys(changeFields).length !== 0) {
 
     const modifiedObj = {
-      shift_ID: shft._id,
+      shiftID: shft._id,
       modified_by: modified[0].modified_by,
       modified_at: modified[0].modified_at,
       action: 'Changed',

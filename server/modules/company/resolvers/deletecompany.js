@@ -1,12 +1,12 @@
 const Company = require('../../../models/company');
 
-const deleteCompany = (_, { corporateid },{me,secret}) => new Promise(async (resolve, reject) => {
+const deleteCompany = (_, { corporateID },{me,secret}) => new Promise(async (resolve, reject) => {
   try{
-    let param = { corporateid }
-    const comp = await Company.findOne({ "corporateid": corporateid });
+    let param = { corporateID }
+    const comp = await Company.findOne({ "corporateID": corporateID });
     if (!comp) throw new Error('Company not found!!')
     if(comp) {
-      await Company.deleteOne({ "corporateid": corporateid }, {new: true})
+      await Company.deleteOne({ "corporateID": corporateID }, {new: true})
         .then((result) => {
           resolve(result);
         })

@@ -1,25 +1,25 @@
-const LeaveType = require('../../../models/leavetype');
+const LeaveType = require('../../../models/leaveType');
 const Designation = require('../../../models/designation');
 const Audit = require('../../../models/Audit');
 
 const updateLeaveType = (_, {
                             id,
-                            leavetype,
-                            leavedays,
-                            carryforward,
-                            carrymax,
+                            leaveType,
+                            leaveDays,
+                            carryForward,
+                            carryMax,
                             status,
                             modified,
-                            remainingleaves
+                            remainingLeaves
                           },{me,secret}) => new Promise(async (resolve, reject) => {
   try{
     let param ={
-      leavetype,
-      leavedays,
-      carryforward,
-      carrymax,
+      leaveType,
+      leaveDays,
+      carryForward,
+      carryMax,
       status,
-      remainingleaves
+      remainingLeaves
     }
     const ltype = await LeaveType.findById(id);
     let changeFields = {};
@@ -39,11 +39,11 @@ const updateLeaveType = (_, {
             Designation.find({}, function(err, des) {
               if (!err) {
                 des.forEach(d => {
-                  if(d.leavetype && d.leavetype.length) {
-                    d.leavetype.forEach(upt => {
-                      if(upt.leave_ID === id) {
-                        upt.leavetype = result.leavetype;
-                        upt.leavedays = result.leavedays;
+                  if(d.leaveType && d.leaveType.length) {
+                    d.leaveType.forEach(upt => {
+                      if(upt.leaveID === id) {
+                        upt.leaveType = result.leaveType;
+                        upt.leaveDays = result.leaveDays;
                         d.save();
                       }
                     });
@@ -55,7 +55,7 @@ const updateLeaveType = (_, {
             });
 
             const modifiedObj = {
-              leave_ID: ltype._id,
+              leaveID: ltype._id,
               modified_by: modified[0].modified_by,
               modified_at: modified[0].modified_at,
               action: 'Changed',

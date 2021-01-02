@@ -9,25 +9,19 @@ export class CreateDesignationGQL extends Mutation {
   document = gql`
     mutation createDesignation(
       $designation: String!
-      $department: String
-      $department_ID: String
+      $departmentID: String
       $created_at: ISODate
-      $leavetype: [leaveTypesInputs]
+      $leaveType: [String]
     ) {
       createDesignation(
         designation: $designation
-        department: $department
-        department_ID: $department_ID
+        departmentID: $departmentID
         created_at: $created_at
-        leavetype: $leavetype
+        leaveType: $leaveType
       ) {
         designation
-        department,
-        department_ID
-        leavetype {
-          leavetype
-          leavedays
-        }
+        departmentID
+        leaveType
       }
     }
   `;
@@ -42,30 +36,22 @@ export class UpdateDesignationGQL extends Mutation {
       $id: ID!,
       $designation: String!
       $department: String
-      $department_ID: String
+      $departmentID: String
       $modified: [modifiedInputs],
-      $leavetype: [leaveTypesInputs]
+      $leaveType: [String]
     ) {
       updateDesignation(
         id: $id,
         designation: $designation
         department: $department
-        department_ID: $department_ID
+        departmentID: $departmentID
         modified: $modified,
-        leavetype: $leavetype
+        leaveType: $leaveType
       ) {
         designation
         department
-        department_ID
-        leavetype {
-          leavetype
-          leavedays
-          leave_ID
-          carryforward
-          carrymax
-          remainingleaves
-          status
-        }
+        departmentID
+        leaveType
       }
     }
   `;
@@ -100,17 +86,9 @@ export const GET_DESIGNATIONS_QUERY = gql`
       ) {
         _id
         designation
-        department,
-        department_ID,
-        leavetype {
-          leavetype,
-          leave_ID,
-          leavedays
-          carryforward
-          carrymax
-          remainingleaves
-          status
-        }
+        department
+        departmentID,
+        leaveType
       }
     }
 `;

@@ -4,7 +4,7 @@ const User = require('../../../models/user');
 
 const deleteAttendance = (_, {
   id,
-  user_ID,
+  userID,
   user_email,
   date,
   modified
@@ -21,7 +21,7 @@ const deleteAttendance = (_, {
         .then((result) => {
 
           // Update User Attendance
-          User.findById({ _id: user_ID})
+          User.findById({ _id: userID})
             .then((user) => {
               if(!user) { reject (new Error('No User Found!')) }
               else {

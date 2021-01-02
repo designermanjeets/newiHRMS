@@ -10,7 +10,7 @@ export class UploadFileGQL extends Mutation {
    mutation UploadMutation($file: Upload!) {
     uploadFile(file: $file) {
       username
-      emmpid
+      employeeID
       email
       }
     }

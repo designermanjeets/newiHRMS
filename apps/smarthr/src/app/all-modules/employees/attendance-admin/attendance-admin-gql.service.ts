@@ -9,7 +9,7 @@ export class CreateAttendanceAdminGQL extends Mutation {
   document = gql`
     mutation createAttendance(
         $date: ISODate!
-        $user_ID: String!
+        $userID: String!
         $user_email: String!
         $username: String
         $firstname: String
@@ -21,7 +21,7 @@ export class CreateAttendanceAdminGQL extends Mutation {
     ) {
       createAttendance(
         date: $date
-        user_ID: $user_ID,
+        userID: $userID,
         user_email: $user_email
         username: $username
         firstname: $firstname
@@ -48,7 +48,7 @@ export class UpdateAttendanceAdminGQL extends Mutation {
     mutation updateAttendance(
         $id: ID!
         $date: ISODate!
-        $user_ID: String!
+        $userID: String!
         $user_email: String!
         $username: String
         $firstname: String
@@ -60,7 +60,7 @@ export class UpdateAttendanceAdminGQL extends Mutation {
       updateAttendance(
         id: $id
         date: $date
-        user_ID: $user_ID,
+        userID: $userID,
         user_email: $user_email
         username: $username
         firstname: $firstname
@@ -86,14 +86,14 @@ export class DeleteAttendanceAdminGQL extends Mutation {
     mutation deleteAttendance(
         $id: ID!,
         $date: ISODate!
-        $user_ID: String!
+        $userID: String!
         $user_email: String!
         $modified: [modifiedInputs]
     ) {
       deleteAttendance(
         id:  $id,
         date: $date
-        user_ID: $user_ID
+        userID: $userID
         user_email: $user_email
         modified: $modified
       ) {
@@ -114,7 +114,7 @@ export const GET_ATTENDANCES_ADMIN_QUERY = gql`
         query: $pagination
       ) {
           _id
-          user_ID
+          userID
           user_email
           username
           firstname
@@ -134,7 +134,7 @@ export const GET_USER_ATTENDANCES_ADMIN_QUERY = gql`
         query: $pagination
       ) {
           _id
-          user_ID
+          userID
           user_email
           username
           firstname

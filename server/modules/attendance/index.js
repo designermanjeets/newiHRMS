@@ -12,7 +12,7 @@ const typeDefs = gql`
   extend type Mutation {
 
     createAttendance (
-      user_ID: String!,
+      userID: String!,
       user_email: String!,
       username: String,
       firstname: String,
@@ -26,7 +26,7 @@ const typeDefs = gql`
 
     updateAttendance (
       id: ID!,
-      user_ID: String!,
+      userID: String!,
       user_email: String!,
       username: String,
       firstname: String,
@@ -39,7 +39,7 @@ const typeDefs = gql`
 
     deleteAttendance(
       id: ID!,
-      user_ID: String!,
+      userID: String!,
       user_email: String!,
       date: ISODate!,
       modified: [modifiedInputs]
@@ -53,9 +53,9 @@ const typeDefs = gql`
 
   type Attendance {
     _id: ID,
-    user_ID: String!,
+    userID: String!,
     user_email: String!,
-    emmpid: String,
+    employeeID: String,
     username: String,
     firstname: String,
     lastname: String,
@@ -70,7 +70,7 @@ const typeDefs = gql`
 
   input AttendanceInput {
     _id: ID,
-    user_ID: String!,
+    userID: String!,
     user_email: String,
     username: String,
     firstname: String,

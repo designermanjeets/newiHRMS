@@ -9,10 +9,10 @@ const subSchema = mongoose.Schema({
 
 const shiftSchema = new Schema({
   id: String,
-  shiftname: String,
-  shiftimeFrom: String,
-  shiftimeTo: String,
-  maxshifts: Number,
+  shiftName: String,
+  shiftTmeFrom: String,
+  shiftTimeTo: String,
+  maxShifts: Number,
   created_at: Date,
   created_by: String,
   modified : [subSchema],

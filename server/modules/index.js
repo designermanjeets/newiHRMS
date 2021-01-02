@@ -3,7 +3,7 @@ const { makeExecutableSchemaFromModules } = require('../utils/modules')
 const auth = require('./auth')
 const company = require('./company')
 const holiday = require('./holiday')
-const leavetype = require('./leavetype')
+const leaveType = require('./leaveType')
 const designation = require('./designation')
 const department = require('./department')
 const leaveapplied = require('./leaveapplied')
@@ -17,7 +17,7 @@ module.exports = makeExecutableSchemaFromModules({
     auth,
     company,
     holiday,
-    leavetype,
+    leaveType,
     designation,
     department,
     leaveapplied,

@@ -12,6 +12,7 @@ import {
   SetGetDesignationsService,
   UpdateDesignationGQL
 } from './designation-gql.service';
+
 declare const $: any;
 import * as _ from 'lodash';
 import { GET_DEPARTMENTS_QUERY } from '../departments/department-gql.service';
@@ -58,7 +59,8 @@ export class DesignationComponent implements OnInit, OnDestroy {
     private setGetDesignationsService: SetGetDesignationsService,
     private fb: FormBuilder,
     private cdRef: ChangeDetectorRef
-  ) {}
+  ) {
+  }
 
   ngOnInit() {
     this.LoadDesignation();
@@ -68,34 +70,33 @@ export class DesignationComponent implements OnInit, OnDestroy {
     this.editForm = this.fb.group({
       _id: [''],
       designation: ['', Validators.required],
-      department: ['', Validators.required],
-      leavetype: this.fb.array([]) ,
+      departmentID: ['', Validators.required],
+      leaveType: this.fb.array([])
     });
   }
 
 
-  leavetype(): FormArray {
-    return this.editForm && this.editForm.get('leavetype') as FormArray;
+  leaveType(): FormArray {
+    return this.editForm && this.editForm.get('leaveType') as FormArray;
   }
 
   newLeavetypes(val): FormGroup {
     return this.editForm && this.fb.group({
-      leavetype: val.leavetype,
-      leave_ID: val._id,
-      leavedays: val.leavedays,
-      leavechecked: val.leavechecked
+      leaveID: val._id,
+      checked: val.checked,
+      leaveType: val.leaveType,
     });
   }
 
   addLeavetypes(val) {
     if (this.editForm) {
-      this.leavetype().push(this.newLeavetypes(val));
+      this.leaveType().push(this.newLeavetypes(val));
     }
   }
 
   removeLeavetypes(i: number) {
     if (this.editForm) {
-      this.leavetype().removeAt(i);
+      this.leaveType().removeAt(i);
     }
   }
 
@@ -106,11 +107,11 @@ export class DesignationComponent implements OnInit, OnDestroy {
         pagination: {
           limit: 100
         }
-      },
+      }
     }).valueChanges.subscribe((response: any) => {
       if (response.data.getLeaveTypes) {
         this.allLeaveTypes = response.data.getLeaveTypes;
-        _.forEach(this.allLeaveTypes, val => delete val['leavechecked']); // Cache Issue
+        _.forEach(this.allLeaveTypes, val => delete val['checked']); // Cache Issue
         _.forEach(this.allLeaveTypes, val => this.addLeavetypes(val));
       }
       this.cdRef.detectChanges();
@@ -126,7 +127,7 @@ export class DesignationComponent implements OnInit, OnDestroy {
         pagination: {
           limit: 100
         }
-      },
+      }
     }).valueChanges.subscribe((response: any) => {
       if (response.data) {
         this.rows = [];
@@ -148,24 +149,25 @@ export class DesignationComponent implements OnInit, OnDestroy {
   addDesignation(f) {
 
     const newFormObj = JSON.parse(JSON.stringify(f.value));
-    newFormObj.leavetype = _.filter(newFormObj.leavetype, {leavechecked: true});
-    newFormObj.leavetype = _.forEach(newFormObj.leavetype, (d) => {
-      delete d.leavechecked;
+    newFormObj.leaveType = _.filter(newFormObj.leaveType, { checked: true });
+    newFormObj.leaveType = _.forEach(newFormObj.leaveType, (d) => {
+      delete d.checked;
     });
 
-    const dprt = this.setGetDesignationsService.getDepartment(f.value.department);
+    const mapped = _.map(newFormObj.leaveType, _.partialRight(_.pick, ['leaveID']));
+    const lTypes = []; _.each(mapped, val =>  lTypes.push(val.leaveID));
+
     this.createDesignationGQL
       .mutate({
         designation: f.value.designation,
-        department: dprt.department,
-        department_ID: dprt._id,
+        departmentID: f.value.departmentID,
         created_at: Date.now(),
-        leavetype: newFormObj.leavetype
+        leaveType: lTypes
       })
-      .subscribe( (val: any) => {
+      .subscribe((val: any) => {
         if (val.data) {
           $('#add_designation').modal('hide');
-          this.toastr.success('Desigantion added sucessfully...!', 'Success');
+          this.toastr.success('Designation added successfully...!', 'Success');
           this.LoadDesignation();
         }
       }, error => this.toastr.error(error, 'Error'));
@@ -174,28 +176,30 @@ export class DesignationComponent implements OnInit, OnDestroy {
   editDesignation(f) {
 
     const newFormObj = JSON.parse(JSON.stringify(f.value));
-    newFormObj.leavetype = _.filter(newFormObj.leavetype, {leavechecked: true});
-    newFormObj.leavetype = _.forEach(newFormObj.leavetype, (d) => {
-      delete d.leavechecked;
+
+    newFormObj.leaveType = _.filter(newFormObj.leaveType, { checked: true });
+    newFormObj.leaveType = _.forEach(newFormObj.leaveType, (d) => {
+      delete d.checked;
     });
 
-    const dprt = this.setGetDesignationsService.getDepartment(f.value.department);
+    const mapped = _.map(newFormObj.leaveType, _.partialRight(_.pick, ['leaveID']));
+    const lTypes = []; _.each(mapped, val =>  lTypes.push(val.leaveID));
+
     this.updateDesignationGQL
       .mutate({
         id: f.value._id,
         designation: newFormObj.designation,
-        department: dprt.department,
-        department_ID: dprt._id,
+        departmentID: f.value.departmentID,
         modified: {
           modified_at: Date.now(),
           modified_by: JSON.parse(sessionStorage.getItem('user')).username
         },
-        leavetype: newFormObj.leavetype
+        leaveType: lTypes
       })
-      .subscribe( (val: any) => {
+      .subscribe((val: any) => {
         if (val.data) {
           $('#edit_designation').modal('hide');
-          this.toastr.success('Department Updated sucessfully...!', 'Success');
+          this.toastr.success('Department Updated successfully...!', 'Success');
           this.LoadDesignation();
         }
       }, error => this.toastr.error(error, 'Error'));
@@ -208,7 +212,7 @@ export class DesignationComponent implements OnInit, OnDestroy {
         pagination: {
           limit: 100
         }
-      },
+      }
     }).valueChanges.subscribe((response: any) => {
       if (response.data) {
         this.departments = response.data.getDepartments;
@@ -229,7 +233,7 @@ export class DesignationComponent implements OnInit, OnDestroy {
   edit(value) {
 
     let toSetValues: any = [];
-    const frmArray = this.editForm.get('leavetype') as FormArray;
+    const frmArray = this.editForm.get('leaveType') as FormArray;
     frmArray.clear();
 
     this.isEditModel = true;
@@ -242,32 +246,42 @@ export class DesignationComponent implements OnInit, OnDestroy {
     });
 
     toSetValues = this.lstDesignation[index];
-    _.forEach(toSetValues.leavetype, val => val['leavechecked'] = true);
-    this.getCheckedLeaves(toSetValues);
+    const leaveTypeArr = []; _.each(toSetValues.leaveType, val => leaveTypeArr.push({leaveID: val}));
+    _.forEach(this.allLeaveTypes, (d) => delete d.checked);
+
+    _.forEach(this.allLeaveTypes, alll => {
+      _.each(leaveTypeArr, ltarr => {
+        if (alll._id === ltarr.leaveID) {
+          alll['checked'] = true;
+        }
+      });
+    });
+
+    _.forEach(this.allLeaveTypes, val => this.addLeavetypes(val)); // Generate All Checkboxes
+
 
     this.editForm.patchValue({
-      department: toSetValues.department_ID,
+      departmentID: toSetValues.departmentID,
       designation: toSetValues.designation,
       _id: toSetValues._id
     });
-    this.editForm.get('department').patchValue(toSetValues.department_ID);
   }
 
   getCheckedLeaves(toSetValues) {
-      console.log(toSetValues.leavetype);
-      console.log(this.allLeaveTypes);
-      const allls = JSON.parse(JSON.stringify(this.allLeaveTypes));
-      _.forEach(toSetValues.leavetype, up => {
-        _.forEach(allls, val => {
-          if (up.leavechecked) {
-            if (val._id === up.leave_ID) {
-              val['leavechecked'] = true;
-            }
+    console.log(toSetValues.leaveType);
+    console.log(this.allLeaveTypes);
+    const allls = JSON.parse(JSON.stringify(this.allLeaveTypes));
+    _.forEach(toSetValues.leaveType, up => {
+      _.forEach(allls, val => {
+        if (up.leavechecked) {
+          if (val._id === up.leaveID) {
+            val['leavechecked'] = true;
           }
-        });
+        }
       });
+    });
 
-      _.forEach(allls, val => this.addLeavetypes(val));
+    _.forEach(this.allLeaveTypes, val => this.addLeavetypes(val));
   }
 
   // Delete timedsheet Modal Api Call
@@ -282,7 +296,7 @@ export class DesignationComponent implements OnInit, OnDestroy {
           modified_at: Date.now()
         }
       })
-      .subscribe( (val: any) => {
+      .subscribe((val: any) => {
         if (val.data) {
           $('#delete_designation').modal('hide');
           this.toastr.success('Designation deleted sucessfully..!', 'Success');

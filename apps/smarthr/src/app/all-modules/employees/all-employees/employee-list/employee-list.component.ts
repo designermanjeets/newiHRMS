@@ -13,7 +13,7 @@ import { DatePipe } from '@angular/common';
 import {
   CreateUserGQL,
   DeleteUserGQL,
-  EmpdetailGQLService,
+  EmpUpdateGQLService,
   EmployeeGQLService, GET_COMPANIES_QUERY, GET_ROLES_QUERY, GET_SHIFTS_QUERY,
   GET_USERS_QUERY,
   ImportUsersGQL
@@ -71,10 +71,10 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
   columns: any[] = [
     { prop: 'username', name: 'Username' },
     { prop: 'email', name: 'Email' },
-    { prop: 'emmpid', name: 'Emp ID' },
+    { prop: 'employeeID', name: 'Emp ID' },
     { prop: 'firstname', name: 'First Name' },
     { prop: 'lastname', name: 'Last Name' },
-    { prop: 'joiningdate', name: 'Joining Date' },
+    { prop: 'joiningDate', name: 'Joining Date' },
     { prop: 'role', name: 'Role' },
     { prop: 'department', name: 'Department' },
     { prop: 'designation.designation', name: 'Designation' }
@@ -93,7 +93,7 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
     private deleteUserGQL: DeleteUserGQL,
     private activeRoute: ActivatedRoute,
     private importUsersGQL: ImportUsersGQL,
-    private empdetailGQLService: EmpdetailGQLService,
+    private empUpdateGQLService: EmpUpdateGQLService,
     private setGetDesignationsService: SetGetDesignationsService,
     private uploadFileGQL: UploadFileGQL
   ) {
@@ -130,13 +130,13 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
       email: ['', Validators.required],
       password: ['', Validators.required],
       password2: ['', Validators.required],
-      emmpid: ['', Validators.required],
-      joiningdate: ['', Validators.required],
-      corporateid: ['', Validators.required],
-      role: ['', Validators.required],
-      department: ['', Validators.required],
-      designation: ['', Validators.required],
-      shift: [ null, Validators.required],
+      employeeID: ['', Validators.required],
+      joiningDate: ['', Validators.required],
+      corporateID: ['', Validators.required],
+      roleID: ['', Validators.required],
+      departmentID: ['', Validators.required],
+      designationID: ['', Validators.required],
+      shiftIDs: [ null, Validators.required],
       mobile: ['']
     }, { validator: this.checkPasswords });
 
@@ -152,11 +152,6 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
 
   createSubmit(f) {
     const data = f.getRawValue(); // To Get Disabled Values
-    const dprt = this.setGetDesignationsService.getDepartment(f.value.department);
-    const desig = this.setGetDesignationsService.getDesignations(f.value.designation);
-
-    const shiftObj =  _.forEach(data.shift, (d) => delete d['__typename']);
-
     this.createUserGQL
       .mutate({
         firstname: data.firstname,
@@ -164,17 +159,13 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
         username: data.username,
         email: data.email,
         password: data.password,
-        role: data.role,
-        emmpid: data.emmpid,
-        corporateid: data.corporateid,
-        joiningdate: data.joiningdate,
-        department: dprt.department,
-        department_ID: dprt._id,
-        designation: {
-          designation: desig.designation
-        },
-        designation_ID: desig._id,
-        shift: shiftObj,
+        roleID: data.roleID,
+        employeeID: data.employeeID,
+        corporateID: data.corporateID,
+        joiningDate: data.joiningDate,
+        departmentID: data.departmentID,
+        designationID: data.designationID,
+        shiftIDs: data.shiftIDs,
         mobile: data.mobile,
         created_by: JSON.parse(sessionStorage.getItem('user')).username,
         created_at: Date.now()
@@ -189,32 +180,22 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
   }
 
   updateSubmit(f) {
-    const dprt = this.setGetDesignationsService.getDepartment(f.value.department);
-    const desig = this.setGetDesignationsService.getDesignations(f.value.designation);
-
     const fvalue = f.getRawValue(); // To Get Disabled Values
-
-    const shiftObj =  _.forEach(fvalue.shift, (d) => delete d['__typename']);
-
-    this.empdetailGQLService
+    this.empUpdateGQLService
       .mutate({
         id: fvalue._id,
         username: fvalue.username,
         email: fvalue.email,
         password: fvalue.password,
-        role: fvalue.role,
-        department: dprt.department,
-        department_ID: dprt._id,
-        designation: {
-          designation: desig.designation
-        },
-        designation_ID: desig._id,
-        emmpid: fvalue.emmpid,
-        corporateid: fvalue.corporateid,
+        roleID: fvalue.roleID,
+        departmentID: fvalue.departmentID,
+        designationID: fvalue.designationID,
+        employeeID: fvalue.employeeID,
+        corporateID: fvalue.corporateID,
         firstname: fvalue.firstname,
         lastname: fvalue.lastname,
-        joiningdate: fvalue.joiningdate,
-        shift: shiftObj,
+        joiningDate: fvalue.joiningDate,
+        shiftIDs: fvalue.shiftIDs,
         mobile: fvalue.mobile,
         modified: {
           modified_by: JSON.parse(sessionStorage.getItem('user')).username,
@@ -296,7 +277,7 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
       if (response.data) {
         this.allDesignations = response.data.getDesignations;
         this.setGetDesignationsService.setDesignations(this.allDesignations);
-        this.editForm.get('designation').disable(); // Will enable on Department basis/selection
+        this.editForm.get('designationID').disable(); // Will enable on Department basis/selection
         this.cdref.detectChanges();
       }
     }, error => this.toastr.error(error, 'Error'));
@@ -336,9 +317,8 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
   }
 
   onDepartChange(event) {
-    this.designations = _.filter(this.allDesignations, person => person.department_ID === event.value);
-    console.log(this.designations);
-    this.editForm.get('designation').enable();
+    this.designations = _.filter(this.allDesignations, person => person.departmentID === event.value);
+    this.editForm.get('designationID').enable();
     this.cdref.detectChanges();
   }
 
@@ -353,7 +333,7 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
   add() {
     $('#add_employee').modal('show');
     this.editForm.reset();
-    this.editForm.get('designation').disable();
+    this.editForm.get('designationID').disable();
 
   }
 
@@ -375,18 +355,13 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
     const toSetValues = this.lstEmployee[index];
 
     this.editForm.patchValue(value);
-    this.editForm.get('emmpid').disable();
+    this.editForm.get('employeeID').disable();
     this.editForm.get('password2').patchValue(value.password);
-    this.editForm.get('department').patchValue(value.department_ID);
-    this.onDepartChange({value: value.department_ID});
-    if (value.designation) {
-      this.editForm.get('designation').patchValue(value.designation._id);
-    }
+    this.onDepartChange({value: value.departmentID});
     if (value.shift && value.shift.length) {
       let arrSel = [];
       _.forEach(value.shift, v => arrSel.push(v));
-      console.log(arrSel);
-      this.editForm.get('shift').patchValue(arrSel);
+      this.editForm.get('shiftIDs').patchValue(arrSel);
     }
   }
 
@@ -416,17 +391,17 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
   onImportgetData(rowData) {
     console.log(rowData);
     rowData.forEach((r, i) => {
-      if (r.joiningdate instanceof Date && !isNaN(r.joiningdate)) {
+      if (r.joiningDate instanceof Date && !isNaN(r.joiningDate)) {
         // console.log('valid Date!');
       } else {
         // console.log('Invalid!'); // But Convert First
-        r.joiningdate = moment(r.joiningdate, 'DD MM YYYY');
+        r.joiningDate = moment(r.joiningDate, 'DD MM YYYY');
       }
       delete r.__typename;
     });
 
     const uniqArrByEmail = _.difference(rowData, _.uniqBy(rowData, 'email'), 'email');
-    const uniqArrByEmmp = _.difference(rowData, _.uniqBy(rowData, 'emmpid'), 'emmpid');
+    const uniqArrByEmmp = _.difference(rowData, _.uniqBy(rowData, 'employeeID'), 'employeeID');
     const uniqArrByUsrn = _.difference(rowData, _.uniqBy(rowData, 'username'), 'username');
 
     if (uniqArrByEmail.length) {
@@ -468,7 +443,7 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
   searchId(val) {
     this.rows = this.srch.filter(d => {
       val = val.toString().toLowerCase().trim();
-      return d.emmpid && d.emmpid.toLowerCase().indexOf(val) !== -1 || !val;
+      return d.employeeID && d.employeeID.toLowerCase().indexOf(val) !== -1 || !val;
     });
   }
 

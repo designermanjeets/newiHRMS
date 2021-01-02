@@ -11,13 +11,13 @@ const typeDefs = gql`
   extend type Mutation {
 
     createLeave (
-      user_ID: String,
+      userID: String,
       username: String,
       email: String,
-      emmpid: String,
-      leavetype: String,
-      leave_ID: String,
-      nofdays: Int,
+      employeeID: String,
+      leaveType: String,
+      leaveID: String,
+      numberOfDays: Int,
       status: String,
       reason: String,
       created_at: ISODate,
@@ -25,25 +25,25 @@ const typeDefs = gql`
       from: ISODate,
       to: ISODate,
       approvers: [approversInput],
-      remainingleaves: Int
+      remainingLeaves: Int
     ): LeaveApplied,
 
     updateLeave(
       id: ID!
-      user_ID: String!
+      userID: String!
       username: String
       email: String
-      emmpid: String
-      leavetype: String
-      leave_ID: String
-      nofdays: Int
+      employeeID: String
+      leaveType: String
+      leaveID: String
+      numberOfDays: Int
       status: String
       reason: String
       created_at: ISODate
       created_by:String
       from: ISODate
       to: ISODate
-      remainingleaves: Int
+      remainingLeaves: Int
       approvers: [approversInput]
       approvedBy: approvedByInput
       rejectedBy: rejectedByInput
@@ -54,10 +54,10 @@ const typeDefs = gql`
 
     approveorejectLeave(
       id: ID!
-      user_ID: String!
-      leavetype: String
-      leave_ID: String
-      nofdays: Int
+      userID: String!
+      leaveType: String
+      leaveID: String
+      numberOfDays: Int
       status: String
       approvers: [approversInput]
       approvedBy: approvedByInput
@@ -67,25 +67,25 @@ const typeDefs = gql`
       modified: [modifiedInputs]
     ): LeaveApplied
 
-    deleteLeave( id: ID!, status: String!, user_ID: String!, modified: [modifiedInputs] ): LeaveApplied
+    deleteLeave( id: ID!, status: String!, userID: String!, modified: [modifiedInputs] ): LeaveApplied
   }
 
   type LeaveApplied{
     _id: ID
-    user_ID: String
+    userID: String
     username: String
     email: String
-    emmpid: String
-    leavetype: String
-    leave_ID: String
-    nofdays: Int
+    employeeID: String
+    leaveType: String
+    leaveID: String
+    numberOfDays: Int
     status: String
     reason: String
     created_at: ISODate
     created_by:String
     from: ISODate
     to: ISODate
-    remainingleaves: Int
+    remainingLeaves: Int
     approvers: [approversType]
     approvedBy: approvedByType
     rejectedBy: rejectedByType

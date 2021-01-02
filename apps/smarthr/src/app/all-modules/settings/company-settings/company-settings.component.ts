@@ -40,7 +40,7 @@ export class CompanySettingsComponent implements OnInit {
     this.companyForm = this.fb.group({
       companyname: ['', Validators.required],
       printname: [''],
-      corporateid: ['', Validators.required],
+      corporateID: ['', Validators.required],
       address1: [''],
       address2: [''],
       countryid: ['', Validators.required],
@@ -75,7 +75,7 @@ export class CompanySettingsComponent implements OnInit {
       email: JSON.parse(sessionStorage.getItem('user')).email
     }).valueChanges.subscribe((response: any) => {
       if (response.data.user) {
-        this.getCompany(response.data.user.corporateid);
+        this.getCompany(response.data.user.corporateID);
       }
     }, error => this.toastr.error(error, 'Error'));
   }
@@ -89,7 +89,7 @@ export class CompanySettingsComponent implements OnInit {
         address1: form.address1,
         address2: form.address2,
         countryid: form.countryid,
-        corporateid: form.corporateid,
+        corporateID: form.corporateID,
         stateid: form.stateid,
         cityid: form.cityid,
         zipcode: form.zipcode,
@@ -107,7 +107,7 @@ export class CompanySettingsComponent implements OnInit {
       .subscribe( val => {
         if (val.data) {
           this.uptCompany = true;
-          this.getCompany(this.companyForm.value.corporateid);
+          this.getCompany(this.companyForm.value.corporateID);
           this.toastr.success('Company Updated sucessfully..!', 'Success');
         }
       }, error =>
@@ -117,11 +117,11 @@ export class CompanySettingsComponent implements OnInit {
   }
 
 
-  getCompany(corporateid) {
+  getCompany(corporateID) {
     this.apollo.watchQuery({
       query: GET_COMPANY_QUERY,
       variables: {
-        corporateid: corporateid
+        corporateID: corporateID
       },
     }).valueChanges.subscribe((response: any) => {
       if (response) {

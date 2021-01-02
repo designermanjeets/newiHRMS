@@ -1,5 +1,8 @@
 const User = require('../../../models/user');
-const paramHandler = require('../../../utils/paramhandler');
+const Department = require('../../../models/department');
+const Designation = require('../../../models/designation');
+const { paramHandler, findDesignation, findDepartment, findRole } = require('../../../utils/paramhandler');
+const msEach = require('async-each');
 
 
 const user = async (_, args, { me })  => new Promise(async (resolve, reject) => {
@@ -13,11 +16,37 @@ const user = async (_, args, { me })  => new Promise(async (resolve, reject) => 
 
 const users = async (_, args, { me })  => new Promise(async (resolve, reject) => {
   const param = paramHandler(args.query);
-  User.find(param,(err, result) => {
-    if(result) {
-      const filteredAry = result.filter(e => e.username !== 'superadmin')
+  User.find(param, async(err, user) => {
+    if(user) {
+
+      const filteredAry = user.filter(e => e.username !== 'superadmin')
+
       if (err || !filteredAry.length) reject(new Error('No User Found!'));
-      else resolve(filteredAry);
+
+      else {
+
+        const newFilteredArr = [];
+
+        msEach(filteredAry,function (item, callback, error) {
+          if (error) console.error(error);
+          findDesignation(item.designationID, (err, designationObj) => {
+            if(err) console.log(err);
+            item = { designation: designationObj.designation, ...item._doc };
+            findDepartment(designationObj.departmentID, (err, departmentObj) => {
+              if(err) console.log(err);
+              item = { department: departmentObj.department, departmentID: departmentObj._id,  ...item };
+              findRole(item.roleID, (err, roleObj) => {
+                if(err) console.log(err);
+                item = { role: roleObj.role_name, ...item };
+                newFilteredArr.push(item);
+                callback();
+              });
+            });
+          });
+        }, function(err, done) {
+          resolve(newFilteredArr)
+        });
+      }
     } else {
       reject(new Error('No User Found!'));
     }

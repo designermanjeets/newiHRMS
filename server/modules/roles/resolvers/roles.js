@@ -1,5 +1,5 @@
 const Role = require('../../../models/role');
-const paramHandler = require('../../../utils/paramhandler');
+const { paramHandler } = require('../../../utils/paramhandler');
 
 const getRoles = async (_, args, { me })  => new Promise(async (resolve, reject) => {
   const param = paramHandler(args.query)

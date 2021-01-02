@@ -3,10 +3,10 @@ const Audit = require('../../../models/Audit');
 
 const approveorejectLeave = (_, {
   id,
-  user_ID,
-  leavetype,
-  leave_ID,
-  nofdays,
+  userID,
+  leaveType,
+  leaveID,
+  numberOfDays,
   status,
   approvers,
   approvedBy,
@@ -16,10 +16,10 @@ const approveorejectLeave = (_, {
   modified
 },{me,secret}) => new Promise(async (resolve, reject) => {
   let params = {
-    user_ID,
-    leavetype,
-    leave_ID,
-    nofdays,
+    userID,
+    leaveType,
+    leaveID,
+    numberOfDays,
     status,
     approvers,
     approvedBy,
@@ -29,7 +29,7 @@ const approveorejectLeave = (_, {
     modified
   }
   const user = await User.findOne(
-    { $and: [ {_id: user_ID }, { 'leaveApplied._id': id} ] },
+    { $and: [ {_id: userID }, { 'leaveApplied._id': id} ] },
   )
   if (!user) reject (new Error('No User Leave Found!'))
   if (user) {
@@ -60,21 +60,21 @@ const approveorejectLeave = (_, {
             va.rejectedBy.rejectedByID =  params.rejectedBy.rejectedByID
             va.rejectedBy.rejectedByUserName =  params.rejectedBy.rejectedByUserName
 
-            va.remainingleaves = va.remainingleaves + params.nofdays; // Increase because Rejected
-            remn = va.remainingleaves;
+            va.remainingLeaves = va.remainingLeaves + params.numberOfDays; // Increase because Rejected
+            remn = va.remainingLeaves;
             va.status =  params.status
 
             // Update Designation Remaining Leaves
-            user.designation.leavetype.forEach(va => {
-              if(va.leave_ID === params.leave_ID) {
-                va.remainingleaves = remn;
+            user.designation.leaveType.forEach(va => {
+              if(va.leaveID === params.leaveID) {
+                va.remainingLeaves = remn;
               }
             });
 
             // Loop for All
             user.leaveApplied.forEach(va => {
-              if(va.leave_ID === params.leave_ID) {
-                va.remainingleaves = remn;
+              if(va.leaveID === params.leaveID) {
+                va.remainingLeaves = remn;
               }
             });
 
@@ -86,21 +86,21 @@ const approveorejectLeave = (_, {
             va.declinedBy.declinedByID =  params.declinedBy.declinedByID
             va.declinedBy.declinedByUserName =  params.declinedBy.declinedByUserName
 
-            va.remainingleaves = va.remainingleaves + params.nofdays; // Increase because Rejected
-            remn = va.remainingleaves;
+            va.remainingLeaves = va.remainingLeaves + params.numberOfDays; // Increase because Rejected
+            remn = va.remainingLeaves;
             va.status =  params.status
 
             // Update Designation Remaining Leaves
-            user.designation.leavetype.forEach(va => {
-              if(va.leave_ID === params.leave_ID) {
-                va.remainingleaves = remn;
+            user.designation.leaveType.forEach(va => {
+              if(va.leaveID === params.leaveID) {
+                va.remainingLeaves = remn;
               }
             });
 
             // Loop for All
             user.leaveApplied.forEach(va => {
-              if(va.leave_ID === params.leave_ID) {
-                va.remainingleaves = remn;
+              if(va.leaveID === params.leaveID) {
+                va.remainingLeaves = remn;
               }
             });
 
@@ -111,7 +111,7 @@ const approveorejectLeave = (_, {
       });
 
       const modifiedObj = {
-        leave_ID: id,
+        leaveID: id,
         action: 'User Applied Leave Updated - ' + status + '',
         modified_by: modified[0].modified_by,
         modified_at: modified[0].modified_at,

@@ -11,8 +11,8 @@ const insertManyUsers = (_, { input },{me,secret}) => new Promise(async (resolve
 
   input.forEach((u) => {
     if(u.username !== 'superadmin') {
-      const username = u.username; const emmpid = u.emmpid;
-      User.findOne({$or:[ {username}, {emmpid} ]}).then(function(data){
+      const username = u.username; const employeeID = u.employeeID;
+      User.findOne({$or:[ {username}, {employeeID} ]}).then(function(data){
         if (!data) {
           ++count;
           const pwd = u.password || '11';
@@ -23,7 +23,7 @@ const insertManyUsers = (_, { input },{me,secret}) => new Promise(async (resolve
               if(input.length === count) {
                 resolve({users});
               }
-              // createToken({ id: newUser.id,role:newUser.role,username:newUser.username, emmpid},secret,'1')
+              // createToken({ id: newUser.id,role:newUser.role,username:newUser.username, employeeID},secret,'1')
             })
           }, onrejected => {
             reject(new Error('Password generation failed!'));
@@ -40,8 +40,8 @@ const insertManyUsers = (_, { input },{me,secret}) => new Promise(async (resolve
 })
 
 const createToken= async (user, secret, expiresIn) => {
-  const { id, email, username, role, emmpid } = user;
-  return await jsonwebtoken.sign({ id, email, username, role, emmpid }, secret, {
+  const { id, email, username, role, employeeID } = user;
+  return await jsonwebtoken.sign({ id, email, username, role, employeeID }, secret, {
     expiresIn,
   });
 };

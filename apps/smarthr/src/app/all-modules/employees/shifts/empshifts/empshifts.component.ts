@@ -60,10 +60,10 @@ export class EmpshiftsComponent implements OnInit, OnDestroy {
   initForm() {
     this.editForm = this.fb.group({
       _id: [''],
-      shiftname: ['', Validators.required],
-      shiftimeFrom: ['', Validators.required],
-      shiftimeTo: ['', Validators.required],
-      maxshifts: ['', Validators.required],
+      shiftName: ['', Validators.required],
+      shiftTmeFrom: ['', Validators.required],
+      shiftTimeTo: ['', Validators.required],
+      maxShifts: ['', Validators.required],
     });
   }
 
@@ -94,10 +94,10 @@ export class EmpshiftsComponent implements OnInit, OnDestroy {
   addShift(f) {
     this.createShiftGQL
       .mutate({
-        shiftname: f.value.shiftname,
-        shiftimeFrom: f.value.shiftimeFrom,
-        shiftimeTo: f.value.shiftimeTo,
-        maxshifts: f.value.maxshifts,
+        shiftName: f.value.shiftName,
+        shiftTmeFrom: f.value.shiftTmeFrom,
+        shiftTimeTo: f.value.shiftTimeTo,
+        maxShifts: f.value.maxShifts,
         created_at: Date.now(),
         created_by: JSON.parse(sessionStorage.getItem('user')).userid
       })
@@ -115,10 +115,10 @@ export class EmpshiftsComponent implements OnInit, OnDestroy {
     this.updateShiftGQL
       .mutate({
         id: f.value._id,
-        shiftname: f.value.shiftname,
-        shiftimeFrom: f.value.shiftimeFrom,
-        shiftimeTo: f.value.shiftimeTo,
-        maxshifts: f.value.maxshifts,
+        shiftName: f.value.shiftName,
+        shiftTmeFrom: f.value.shiftTmeFrom,
+        shiftTimeTo: f.value.shiftTimeTo,
+        maxShifts: f.value.maxShifts,
         modified: {
           modified_at: Date.now(),
           modified_by: JSON.parse(sessionStorage.getItem('user')).username
@@ -161,7 +161,7 @@ export class EmpshiftsComponent implements OnInit, OnDestroy {
     this.deleteShiftGQL
       .mutate({
         id: this.tempShift._id,
-        shiftname: this.tempShift.shiftname,
+        shiftName: this.tempShift.shiftName,
         modified: {
           modified_by: JSON.parse(sessionStorage.getItem('user')).username,
           modified_at: Date.now()

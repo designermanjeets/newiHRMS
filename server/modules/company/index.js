@@ -4,7 +4,7 @@ const { gql } = require('apollo-server-express')
 const typeDefs = gql`
   extend type Query {
 
-    getCompany(corporateid: String!): Company
+    getCompany(corporateID: String!): Company
     getCompanies(query: Pagination!): [Company]
 
   }
@@ -14,7 +14,7 @@ const typeDefs = gql`
       createCompany (
         companyname: String,
         printname: String,
-        corporateid: String,
+        corporateID: String,
         address1: String,
         address2: String,
         countryid: String,
@@ -44,7 +44,7 @@ const typeDefs = gql`
       updateCompany(
         companyname: String,
         printname: String,
-        corporateid: String,
+        corporateID: String,
         address1: String,
         address2: String,
         countryid: String,
@@ -69,14 +69,14 @@ const typeDefs = gql`
         alias: String
       ): Company
 
-      deleteCompany( corporateid: String ): Company
+      deleteCompany( corporateID: String ): Company
   }
 
   type Company {
     _id: ID!,
     companyname: String,
     printname: String,
-    corporateid: String,
+    corporateID: String,
     address1: String,
     address2: String,
     countryid: String,

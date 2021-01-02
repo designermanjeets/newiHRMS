@@ -1,63 +1,64 @@
 const Designation = require('../../../models/designation');
 const Audit = require('../../../models/Audit');
-const LeaveType = require('../../../models/leavetype');
+const LeaveType = require('../../../models/leaveType');
 
 const createDesignation = (_, {
   designation,
-  department,
-  department_ID,
+  departmentID,
   created_at,
   created_by,
-  leavetype
+  leaveType
 },{me,secret}) => new Promise(async (resolve, reject) => {
   const desig = await Designation.findOne({$or:[ {designation} ]})
-  console.log(department_ID)
+  console.log(departmentID)
   if (desig) {
     reject('Designation already exist');
   } else {
-    const newDesignation = await Designation.create({
+    Designation.create({
       designation,
-      department,
-      department_ID,
+      departmentID,
       created_at,
       created_by,
-      leavetype
-    }).then(val => {
-      LeaveType.findById({_id: leavetype[0].leave_ID}).then( v => {
-        if(v) {
-          val.leavetype.forEach(lv => {
-            if (lv.leave_ID ===v._id.toHexString()) {
-              lv.carrymax = v.carrymax
-              lv.carryforward = v.carryforward
-              lv.remainingleaves = v.remainingleaves
-              val.save();
-            }
-          })
-          resolve(newDesignation);
-        }
-      });
-    })
+      leaveType
+    }).then(designation => {
+      // leaveType && leaveType[0] && LeaveType.findById({_id: leaveType[0].leaveID}).then( v => {
+      //   if(v) {
+      //     val.leaveType.forEach(lv => {
+      //       if (lv.leaveID ===v._id.toHexString()) {
+      //         lv.carryMax = v.carryMax
+      //         lv.carryForward = v.carryForward
+      //         lv.remainingLeaves = v.remainingLeaves
+      //         val.save();
+      //       }
+      //     })
+      //     resolve(newDesignation);
+      //   }
+      // });
 
-    const nmodified = {
-      newDesig_ID: newDesignation._id,
-      action: 'Designation Created',
-      created_by: created_by,
-      created_at: created_at,
-      createdDesignation: newDesignation
-    }
-    Audit.find({}).then(val =>{
-      if(val.length) {
-        Audit.findOneAndUpdate(
-          { },
-          { $push: { desigAudit: nmodified  }  }, { new: true })
-          .then();
-      } else {
-        Audit.create({ desigAudit: nmodified  })
-          .then();
+      if(designation) {
+
+        const modifiedObj = {
+          newDesignation_ID: designation._id,
+          action: 'Designation Created',
+          created_by: created_by,
+          created_at: created_at,
+          createdDesignation: designation
+        }
+
+        Audit.find({}).then(val => {
+          if(val.length) {
+            Audit.findOneAndUpdate(
+              { },
+              { $push: { designationAudit: modifiedObj  }  }, { new: true })
+              .then();
+          } else {
+            Audit.create({ designationAudit: modifiedObj  })
+              .then();
+          }
+        });
       }
-      resolve(newDesignation);
-    });
-    resolve(newDesignation);
+      resolve(designation);
+    })
   }
 });
 

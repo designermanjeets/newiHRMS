@@ -16,7 +16,7 @@ export class EmployeeGQLService {
       return false;
     } else {
       return this.users.find(
-        (user: any) => user.emmpid === id);
+        (user: any) => user.employeeID === id);
     }
 
   }
@@ -33,97 +33,23 @@ export const GET_USERS_QUERY = gql`
     users(
       query: $pagination,
     ) {
+        _id
         username,
         email,
         firstname,
         lastname,
-        role,
-        emmpid,
-        corporateid,
+        roleID,
+        employeeID,
+        corporateID,
         mobile,
         password,
-        joiningdate,
-        department,
-        department_ID,
-        shift {
-          _id
-          shiftname
-          shiftimeFrom
-          shiftimeTo
-          maxshifts
-        },
-        designation {
-          _id
-          designation
-          leavetype {
-            leavetype
-            leave_ID
-            leavedays
-            carryforward
-            carrymax
-          }
-        },
-        _id,
-        Role {
-          _id
-          role_name
-          mod_employee
-          mod_holidays
-          mod_leaves
-          mod_events
-          mod_jobs
-          mod_assets
-          permissions {
-            employees {
-              read
-              write
-              create
-              delete
-              import
-              export
-            },
-            holidays {
-              read
-              write
-              create
-              delete
-              import
-              export
-            },
-            leaves {
-              read
-              write
-              create
-              delete
-              import
-              export
-            },
-            events {
-              read
-              write
-              create
-              delete
-              import
-              export
-            },
-            jobs {
-              read
-              write
-              create
-              delete
-              import
-              export
-            },
-            assets {
-              read
-              write
-              create
-              delete
-              import
-              export
-            }
-          }
-        }
+        joiningDate,
+        departmentID,
+        shiftIDs
+        designationID
+        department
+        designation
+        role
       }
   }
  `;
@@ -144,86 +70,17 @@ export class GET_USER_QUERY extends Query<Response> {
         email,
         firstname,
         lastname,
-        role,
-        emmpid,
-        corporateid,
+        roleID,
+        employeeID,
+        corporateID,
         mobile,
-        joiningdate,
-        department,
-        department_ID,
-        shift
-        {
-          _id
-          shiftname
-          shiftimeFrom
-          shiftimeTo
-          maxshifts
-        },
-        designation {
-          _id
-          designation
-        },
+        joiningDate,
+        departmentID,
+        shiftIDs
+        designationID
+        department
+        designation
         _id,
-        Role {
-          _id
-          role_name
-          mod_employee
-          mod_holidays
-          mod_leaves
-          mod_events
-          mod_jobs
-          mod_assets
-          permissions {
-            employees {
-              read
-              write
-              create
-              delete
-              import
-              export
-            },
-            holidays {
-              read
-              write
-              create
-              delete
-              import
-              export
-            },
-            leaves {
-              read
-              write
-              create
-              delete
-              import
-              export
-            },
-            events {
-              read
-              write
-              create
-              delete
-              import
-              export
-            },
-            jobs {
-              read
-              write
-              create
-              delete
-              import
-              export
-            },
-            assets {
-              read
-              write
-              create
-              delete
-              import
-              export
-            }
-          }
-        }
       }
   }
  `;
@@ -233,7 +90,7 @@ export class GET_USER_QUERY extends Query<Response> {
 @Injectable({
   providedIn: 'root'
 })
-export class EmpdetailGQLService extends Mutation {
+export class EmpUpdateGQLService extends Mutation {
 
   document = gql`
     mutation EmpUpdateMutation(
@@ -243,16 +100,14 @@ export class EmpdetailGQLService extends Mutation {
       $password: String
       $firstname: String
       $lastname: String
-      $role:String
-      $corporateid: String
-      $emmpid: String
+      $roleID:String
+      $corporateID: String
+      $employeeID: String!
       $mobile: String
-      $joiningdate: ISODate
-      $department: String
-      $department_ID: String
-      $designation: designationInputs
-      $designation_ID: String
-      $shift: [ShiftInput]
+      $joiningDate: ISODate
+      $departmentID: String
+      $designationID: String
+      $shiftIDs: [String]
       $modified: [modifiedInputs]
     ) {
     updateUser(
@@ -262,101 +117,28 @@ export class EmpdetailGQLService extends Mutation {
         password: $password,
         firstname: $firstname,
         lastname: $lastname,
-        role: $role,
-        corporateid: $corporateid,
-        emmpid: $emmpid,
+        roleID: $roleID,
+        corporateID: $corporateID,
+        employeeID: $employeeID,
         mobile: $mobile,
-        joiningdate: $joiningdate,
-        department: $department
-        department_ID: $department_ID
-        designation: $designation
-        designation_ID: $designation_ID
-        shift: $shift
+        joiningDate: $joiningDate,
+        departmentID: $departmentID
+        designationID: $designationID
+        shiftIDs: $shiftIDs
         modified: $modified
     ) {
         username,
         email,
-        role,
+        roleID,
         firstname,
         lastname,
-        corporateid,
-        emmpid,
+        corporateID,
+        employeeID,
         mobile,
-        joiningdate,
-        department,
-        department_ID,
-        shift {
-          _id
-          shiftname
-          shiftimeFrom
-          shiftimeTo
-          maxshifts
-        },
-        designation {
-          _id
-          designation
-        },
-        designation_ID,
-        Role {
-          _id
-          role_name
-          mod_employee
-          mod_holidays
-          mod_leaves
-          mod_events
-          mod_jobs
-          mod_assets
-          permissions {
-            employees {
-              read
-              write
-              create
-              delete
-              import
-              export
-            },
-            holidays {
-              read
-              write
-              create
-              delete
-              import
-              export
-            },
-            leaves {
-              read
-              write
-              create
-              delete
-              import
-              export
-            },
-            events {
-              read
-              write
-              create
-              delete
-              import
-              export
-            },
-            jobs {
-              read
-              write
-              create
-              delete
-              import
-              export
-            },
-            assets {
-              read
-              write
-              create
-              delete
-              import
-              export
-            }
-          }
-        }
+        joiningDate,
+        departmentID,
+        shiftIDs,
+        designationID,
       }
   }
   `;
@@ -371,123 +153,48 @@ export class CreateUserGQL extends Mutation {
       $username: String!
       $email: String!
       $password: String!
-      $role: String
+      $roleID: String!
       $firstname: String
       $lastname: String
-      $emmpid: String!
-      $corporateid: String!
-      $joiningdate: ISODate
-      $department: String
-      $department_ID: String
-      $designation: designationInputs,
-      $designation_ID: String,
-      $shift: [ShiftInput]
+      $employeeID: String!
+      $corporateID: String!
+      $joiningDate: ISODate!
+      $departmentID: String
+      $designationID: String,
+      $shiftIDs: [String]
       $mobile: String,
       $created_by: String,
-      $created_at: ISODate
+      $created_at: ISODate!
     ) {
     signup(
         username: $username,
         email: $email,
         password: $password,
-        role: $role,
+        roleID: $roleID,
         firstname: $firstname
         lastname: $lastname,
-        emmpid: $emmpid,
-        corporateid: $corporateid,
-        joiningdate: $joiningdate,
-        department: $department
-        department_ID: $department_ID
-        designation: $designation
-        designation_ID: $designation_ID
-        shift: $shift
+        employeeID: $employeeID,
+        corporateID: $corporateID,
+        joiningDate: $joiningDate,
+        departmentID: $departmentID
+        designationID: $designationID
+        shiftIDs: $shiftIDs
         mobile: $mobile,
         created_by: $created_by,
         created_at: $created_at
     ) {
         username,
         email,
-        role,
+        roleID,
         firstname,
         lastname,
-        emmpid,
-        corporateid,
-        joiningdate,
-        department,
-        department_ID,
-        designation {
-          _id
-          designation
-        },
-        designation_ID,
-        shift {
-          _id
-          shiftname
-          shiftimeFrom
-          shiftimeTo
-          maxshifts
-        },
+        employeeID,
+        corporateID,
+        joiningDate,
+        departmentID,
+        designationID,
+        shiftIDs
         mobile,
-        Role {
-          _id
-          role_name
-          mod_employee
-          mod_holidays
-          mod_leaves
-          mod_events
-          mod_jobs
-          mod_assets
-          permissions {
-            employees {
-              read
-              write
-              create
-              delete
-              import
-              export
-            },
-            holidays {
-              read
-              write
-              create
-              delete
-              import
-              export
-            },
-            leaves {
-              read
-              write
-              create
-              delete
-              import
-              export
-            },
-            events {
-              read
-              write
-              create
-              delete
-              import
-              export
-            },
-            jobs {
-              read
-              write
-              create
-              delete
-              import
-              export
-            },
-            assets {
-              read
-              write
-              create
-              delete
-              import
-              export
-            }
-          }
-        }
       }
   }
   `;
@@ -536,7 +243,7 @@ export const GET_COMPANIES_QUERY = gql`
     getCompanies(
       query: $pagination,
     ) {
-        corporateid,
+        corporateID,
       }
   }
 `;
@@ -563,10 +270,10 @@ export const GET_SHIFTS_QUERY = gql`
         query: $pagination,
     ) {
         _id
-        shiftname
-        shiftimeFrom
-        shiftimeTo
-        maxshifts
+        shiftName
+        shiftTmeFrom
+        shiftTimeTo
+        maxShifts
       }
   }
 `;

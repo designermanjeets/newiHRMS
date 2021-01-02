@@ -58,6 +58,7 @@
     "apollo-link-error": "^1.1.13",
     "apollo-server-express": "^2.18.1",
     "apollo-upload-client": "^14.1.2",
+    "async-each": "^1.0.3",
     "bcrypt": "^5.0.0",
     "bootstrap": "^4.5.2",
     "calendar-utils": "0.0.59",

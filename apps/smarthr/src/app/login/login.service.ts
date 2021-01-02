@@ -18,8 +18,8 @@ export class RegisterGQL extends Mutation {
       $role: String
       $firstname: String
       $lastname: String
-      $emmpid: String
-      $corporateid: String
+      $employeeID: String
+      $corporateID: String
       $Role: RoleInput
     ) {
     signup(
@@ -29,8 +29,8 @@ export class RegisterGQL extends Mutation {
         role: $role,
         firstname: $firstname
         lastname: $lastname,
-        emmpid: $emmpid,
-        corporateid: $corporateid,
+        employeeID: $employeeID,
+        corporateID: $corporateID,
         Role: $Role,
     ) {
         username,
@@ -39,8 +39,8 @@ export class RegisterGQL extends Mutation {
         role,
         firstname,
         lastname,
-        emmpid,
-        corporateid
+        employeeID,
+        corporateID
       }
   }
   `;
@@ -58,18 +58,19 @@ export class LoginGQL extends Mutation {
         password: $password
       ) {
         user {
-          email
-          emmpid
-          role,
-          username
-          corporateid
           _id
-          Role {
-            role_name
-            _id
-          }
+          email
+          username
+          employeeID
+          corporateID
+          roleID
         },
-        token
+        role {
+          _id
+          role_name
+        },
+        token,
+        tokenExpiration
       }
     }
   `;

@@ -16,7 +16,7 @@ export class DashboardGQLService {
       return false;
     } else {
       return this.users.find(
-        (user: any) => user.emmpid === id);
+        (user: any) => user.employeeID === id);
     }
 
   }
@@ -37,86 +37,17 @@ export const GET_USERS_QUERY = gql`
         email,
         firstname,
         lastname,
-        role,
-        emmpid,
-        corporateid,
+        employeeID,
+        corporateID,
         mobile,
         password,
-        joiningdate,
-        department,
-        department_ID,
-        designation {
-          _id
-          designation
-          leavetype {
-            leavetype
-            leave_ID
-            leavedays
-            carryforward
-            carrymax
-          }
-        },
+        joiningDate,
+        departmentID,
+        designationID
         _id,
-        Role {
-          _id
-          role_name
-          mod_employee
-          mod_holidays
-          mod_leaves
-          mod_events
-          mod_jobs
-          mod_assets
-          permissions {
-            employees {
-              read
-              write
-              create
-              delete
-              import
-              export
-            },
-            holidays {
-              read
-              write
-              create
-              delete
-              import
-              export
-            },
-            leaves {
-              read
-              write
-              create
-              delete
-              import
-              export
-            },
-            events {
-              read
-              write
-              create
-              delete
-              import
-              export
-            },
-            jobs {
-              read
-              write
-              create
-              delete
-              import
-              export
-            },
-            assets {
-              read
-              write
-              create
-              delete
-              import
-              export
-            }
-          }
-        }
+        roleID
+        department
+        designation
       }
   }
  `;
@@ -128,7 +59,7 @@ export const GET_COMPANIES_QUERY = gql`
     getCompanies(
       query: $pagination,
     ) {
-        corporateid,
+        corporateID,
       }
   }
 `;

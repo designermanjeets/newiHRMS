@@ -8,27 +8,27 @@ import gql from 'graphql-tag';
 export class RegisterLeaveTypeGQL extends Mutation {
   document = gql`
     mutation createLeaveType(
-      $leavetype: String!,
-      $leavedays: String!,
-      $carryforward: String,
-      $carrymax: String,
+      $leaveType: String!,
+      $leaveDays: String!,
+      $carryForward: String,
+      $carryMax: String,
       $created_by: String,
       $created_at: ISODate,
       $status: String
     ) {
       createLeaveType(
-        leavetype: $leavetype,
-        leavedays: $leavedays,
-        carryforward: $carryforward,
-        carrymax: $carrymax,
+        leaveType: $leaveType,
+        leaveDays: $leaveDays,
+        carryForward: $carryForward,
+        carryMax: $carryMax,
         created_by: $created_by,
         created_at: $created_at,
         status: $status,
       ) {
-        leavetype
-        leavedays
-        carryforward
-        carrymax
+        leaveType
+        leaveDays
+        carryForward
+        carryMax
         status
       }
     }
@@ -42,27 +42,27 @@ export class UpdateLeaveTypeGQL extends Mutation {
   document = gql`
     mutation updateLeaveType(
       $id: ID!
-      $leavetype: String!,
-      $leavedays: String!,
-      $carryforward: String,
+      $leaveType: String!,
+      $leaveDays: String!,
+      $carryForward: String,
       $status: String,
-      $carrymax: String,
+      $carryMax: String,
       $modified: [modifiedInputs]
     ) {
       updateLeaveType(
         id: $id,
-        leavetype: $leavetype,
-        leavedays: $leavedays,
-        carryforward: $carryforward,
-        carrymax: $carrymax,
+        leaveType: $leaveType,
+        leaveDays: $leaveDays,
+        carryForward: $carryForward,
+        carryMax: $carryMax,
         status: $status,
         modified: $modified
       ) {
         _id
-        leavetype
-        leavedays
-        carryforward
-        carrymax
+        leaveType
+        leaveDays
+        carryForward
+        carryMax
         status
       }
     }
@@ -96,10 +96,10 @@ export const GET_LEAVETYPES_QUERY = gql`
         query: $pagination
       ) {
         _id
-        leavetype
-        leavedays
-        carryforward
-        carrymax
+        leaveType
+        leaveDays
+        carryForward
+        carryMax
         status
       }
     }

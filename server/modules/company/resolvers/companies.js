@@ -1,10 +1,10 @@
 const Company = require('../../../models/company');
-const paramHandler = require('../../../utils/paramhandler');
+const { paramHandler } = require('../../../utils/paramhandler');
 
 
 // Company
 const getCompany = async (_, args, { me })  => new Promise(async (resolve, reject) => {
-  const comp = await Company.findOne({ "corporateid": args.corporateid });
+  const comp = await Company.findOne({ "corporateID": args.corporateID });
   if(comp) {
     return resolve(comp);
   } else {

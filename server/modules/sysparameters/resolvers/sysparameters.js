@@ -1,5 +1,5 @@
 const SystemParameter = require('../../../models/sysparameters');
-const paramHandler = require('../../../utils/paramhandler');
+const { paramHandler } = require('../../../utils/paramhandler');
 
 const getSysparameters = async (_, args, { me })  => new Promise(async (resolve, reject) => {
   const param = paramHandler(args.query)

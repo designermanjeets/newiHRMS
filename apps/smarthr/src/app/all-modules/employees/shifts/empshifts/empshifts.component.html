@@ -38,7 +38,7 @@
             </ng-template>
           </ngx-datatable-column>
 
-          <ngx-datatable-column name="Shift" prop="shiftname">
+          <ngx-datatable-column name="Shift" prop="shiftName">
             <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
               {{value}}
             </ng-template>
@@ -46,11 +46,11 @@
 
           <ngx-datatable-column name="Shift Time">
             <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
-              {{row.shiftimeFrom}} - {{row.shiftimeTo}}
+              {{row.shiftTmeFrom}} - {{row.shiftTimeTo}}
             </ng-template>
           </ngx-datatable-column>
 
-          <ngx-datatable-column name="Max Shift Allowed" prop="maxshifts">
+          <ngx-datatable-column name="Max Shift Allowed" prop="maxShifts">
             <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
               {{value}}
             </ng-template>
@@ -91,13 +91,13 @@
 
           <div class="form-group"
                [class.has-error]="
-                editForm.controls['shiftname'].invalid &&
-                editForm.controls['shiftname'].touched"
-               [class.has-success]="editForm.controls['shiftname'].valid"
+                editForm.controls['shiftName'].invalid &&
+                editForm.controls['shiftName'].touched"
+               [class.has-success]="editForm.controls['shiftName'].valid"
           >
-            <label for="shiftname">Shift Name <span class="text-danger">*</span></label>
-            <input id="shiftname" class="form-control" formControlName="shiftname">
-            <span class="help-block" *ngIf="editForm.controls['shiftname'].errors && editForm.controls['shiftname'].touched">
+            <label for="shiftName">Shift Name <span class="text-danger">*</span></label>
+            <input id="shiftName" class="form-control" formControlName="shiftName">
+            <span class="help-block" *ngIf="editForm.controls['shiftName'].errors && editForm.controls['shiftName'].touched">
                   Shift Name is invalid
             </span>
           </div>
@@ -106,17 +106,17 @@
             <div class="col-6">
               <div class="form-group"
                    [class.has-error]="
-                    editForm.controls['shiftimeFrom'].invalid &&
-                    editForm.controls['shiftimeFrom'].touched"
-                   [class.has-success]="editForm.controls['shiftimeFrom'].valid"
+                    editForm.controls['shiftTmeFrom'].invalid &&
+                    editForm.controls['shiftTmeFrom'].touched"
+                   [class.has-success]="editForm.controls['shiftTmeFrom'].valid"
                 >
-                  <label for="shiftimeFrom">From <span class="text-danger">*</span></label>
+                  <label for="shiftTmeFrom">From <span class="text-danger">*</span></label>
                   <ngx-timepicker-field
-                    id="shiftimeFrom"
+                    id="shiftTmeFrom"
                     [controlOnly]="true"
-                    formControlName="shiftimeFrom"
+                    formControlName="shiftTmeFrom"
                   ></ngx-timepicker-field>
-                  <span class="help-block" *ngIf="editForm.controls['shiftimeFrom'].errors && editForm.controls['shiftimeFrom'].touched">
+                  <span class="help-block" *ngIf="editForm.controls['shiftTmeFrom'].errors && editForm.controls['shiftTmeFrom'].touched">
                         Shift Time From is invalid
                   </span>
                 </div>
@@ -124,17 +124,17 @@
             <div class="col-6">
               <div class="form-group"
                  [class.has-error]="
-                  editForm.controls['shiftimeTo'].invalid &&
-                  editForm.controls['shiftimeTo'].touched"
-                 [class.has-success]="editForm.controls['shiftimeTo'].valid"
+                  editForm.controls['shiftTimeTo'].invalid &&
+                  editForm.controls['shiftTimeTo'].touched"
+                 [class.has-success]="editForm.controls['shiftTimeTo'].valid"
               >
-                <label for="shiftimeTo">To <span class="text-danger">*</span></label>
+                <label for="shiftTimeTo">To <span class="text-danger">*</span></label>
                 <ngx-timepicker-field
-                  id="shiftimeTo"
+                  id="shiftTimeTo"
                   [controlOnly]="true"
-                  formControlName="shiftimeTo"
+                  formControlName="shiftTimeTo"
                 ></ngx-timepicker-field>
-                <span class="help-block" *ngIf="editForm.controls['shiftimeTo'].errors && editForm.controls['shiftimeTo'].touched">
+                <span class="help-block" *ngIf="editForm.controls['shiftTimeTo'].errors && editForm.controls['shiftTimeTo'].touched">
                       Shift Time To is invalid
                 </span>
               </div>
@@ -143,13 +143,13 @@
 
           <div class="form-group"
                [class.has-error]="
-                editForm.controls['maxshifts'].invalid &&
-                editForm.controls['maxshifts'].touched"
-               [class.has-success]="editForm.controls['maxshifts'].valid"
+                editForm.controls['maxShifts'].invalid &&
+                editForm.controls['maxShifts'].touched"
+               [class.has-success]="editForm.controls['maxShifts'].valid"
           >
-            <label for="maxshifts">Max Shifts <span class="text-danger">*</span></label>
-            <input id="maxshifts" class="form-control" formControlName="maxshifts" type="number" min="0" max="99">
-            <span class="help-block" *ngIf="editForm.controls['maxshifts'].errors && editForm.controls['maxshifts'].touched">
+            <label for="maxShifts">Max Shifts <span class="text-danger">*</span></label>
+            <input id="maxShifts" class="form-control" formControlName="maxShifts" type="number" min="0" max="99">
+            <span class="help-block" *ngIf="editForm.controls['maxShifts'].errors && editForm.controls['maxShifts'].touched">
                   Shift Max is invalid
             </span>
           </div>
@@ -180,13 +180,13 @@
 
           <div class="form-group"
                [class.has-error]="
-                editForm.controls['shiftname'].invalid &&
-                editForm.controls['shiftname'].touched"
-               [class.has-success]="editForm.controls['shiftname'].valid"
+                editForm.controls['shiftName'].invalid &&
+                editForm.controls['shiftName'].touched"
+               [class.has-success]="editForm.controls['shiftName'].valid"
           >
-            <label for="shiftname1">Shift Name <span class="text-danger">*</span></label>
-            <input id="shiftname1" class="form-control" formControlName="shiftname">
-            <span class="help-block" *ngIf="editForm.controls['shiftname'].errors && editForm.controls['shiftname'].touched">
+            <label for="shiftName1">Shift Name <span class="text-danger">*</span></label>
+            <input id="shiftName1" class="form-control" formControlName="shiftName">
+            <span class="help-block" *ngIf="editForm.controls['shiftName'].errors && editForm.controls['shiftName'].touched">
                   Shift Name is invalid
             </span>
           </div>
@@ -197,17 +197,17 @@
             <div class="col-6">
               <div class="form-group"
                    [class.has-error]="
-                    editForm.controls['shiftimeFrom'].invalid &&
-                    editForm.controls['shiftimeFrom'].touched"
-                   [class.has-success]="editForm.controls['shiftimeFrom'].valid"
+                    editForm.controls['shiftTmeFrom'].invalid &&
+                    editForm.controls['shiftTmeFrom'].touched"
+                   [class.has-success]="editForm.controls['shiftTmeFrom'].valid"
               >
-                <label for="shiftimeFrom">From <span class="text-danger">*</span></label>
+                <label for="shiftTmeFrom">From <span class="text-danger">*</span></label>
                 <ngx-timepicker-field
-                  id="shiftimeFrom"
+                  id="shiftTmeFrom"
                   [controlOnly]="true"
-                  formControlName="shiftimeFrom"
+                  formControlName="shiftTmeFrom"
                 ></ngx-timepicker-field>
-                <span class="help-block" *ngIf="editForm.controls['shiftimeFrom'].errors && editForm.controls['shiftimeFrom'].touched">
+                <span class="help-block" *ngIf="editForm.controls['shiftTmeFrom'].errors && editForm.controls['shiftTmeFrom'].touched">
                         Shift Time From is invalid
                   </span>
               </div>
@@ -215,17 +215,17 @@
             <div class="col-6">
               <div class="form-group"
                    [class.has-error]="
-                  editForm.controls['shiftimeTo'].invalid &&
-                  editForm.controls['shiftimeTo'].touched"
-                   [class.has-success]="editForm.controls['shiftimeTo'].valid"
+                  editForm.controls['shiftTimeTo'].invalid &&
+                  editForm.controls['shiftTimeTo'].touched"
+                   [class.has-success]="editForm.controls['shiftTimeTo'].valid"
               >
-                <label for="shiftimeTo1">To <span class="text-danger">*</span></label>
+                <label for="shiftTimeTo1">To <span class="text-danger">*</span></label>
                 <ngx-timepicker-field
-                  id="shiftimeTo1"
+                  id="shiftTimeTo1"
                   [controlOnly]="true"
-                  formControlName="shiftimeTo"
+                  formControlName="shiftTimeTo"
                 ></ngx-timepicker-field>
-                <span class="help-block" *ngIf="editForm.controls['shiftimeTo'].errors && editForm.controls['shiftimeTo'].touched">
+                <span class="help-block" *ngIf="editForm.controls['shiftTimeTo'].errors && editForm.controls['shiftTimeTo'].touched">
                       Shift Time To is invalid
                 </span>
               </div>
@@ -234,13 +234,13 @@
 
           <div class="form-group"
                [class.has-error]="
-                editForm.controls['maxshifts'].invalid &&
-                editForm.controls['maxshifts'].touched"
-               [class.has-success]="editForm.controls['maxshifts'].valid"
+                editForm.controls['maxShifts'].invalid &&
+                editForm.controls['maxShifts'].touched"
+               [class.has-success]="editForm.controls['maxShifts'].valid"
           >
-            <label for="maxshifts1">Max Shifts <span class="text-danger">*</span></label>
-            <input id="maxshifts1" class="form-control" formControlName="maxshifts" type="number" min="0" max="99">
-            <span class="help-block" *ngIf="editForm.controls['maxshifts'].errors && editForm.controls['maxshifts'].touched">
+            <label for="maxShifts1">Max Shifts <span class="text-danger">*</span></label>
+            <input id="maxShifts1" class="form-control" formControlName="maxShifts" type="number" min="0" max="99">
+            <span class="help-block" *ngIf="editForm.controls['maxShifts'].errors && editForm.controls['maxShifts'].touched">
                   Shift Max is invalid
             </span>
           </div>

@@ -12,12 +12,12 @@ const deleteDepartment = (_, { id, modified },{me,secret}) => new Promise(async 
         .then((result) => {
 
           Designation.updateMany(
-            {"department_ID": id},
-            { $unset: { department: null, department_ID: null}  }, { new: true }).then();
+            {"departmentID": id},
+            { $unset: { department: null, departmentID: null}  }, { new: true }).then();
 
           User.updateMany(
-            {"department_ID": id},
-            { $unset: { department: null, department_ID: null, designation: null}  }, { new: true }).then();
+            {"departmentID": id},
+            { $unset: { department: null, departmentID: null, designation: null}  }, { new: true }).then();
 
           const modifiedObj = {
             depart_ID: ltype._id,

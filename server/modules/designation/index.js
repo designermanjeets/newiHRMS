@@ -12,20 +12,19 @@ const typeDefs = gql`
 
     createDesignation (
       designation: String!,
-      department: String,
-      department_ID: String,
+      departmentID: String,
       created_at: ISODate,
       created_by: String,
-      leavetype: [leaveTypesInputs]
+      leaveType: [String]
     ): Designation
 
     updateDesignation(
       id: ID!,
       designation: String!,
       department: String,
-      department_ID: String,
+      departmentID: String,
       modified: [modifiedInputs],
-      leavetype: [leaveTypesInputs]
+      leaveType: [String]
     ): Designation
 
     deleteDesignation( id: ID!, modified: [modifiedInputs] ): Designation
@@ -36,11 +35,11 @@ const typeDefs = gql`
     _id: ID,
     designation: String!,
     department: String,
-    department_ID: String,
+    departmentID: String,
     created_at: ISODate,
     created_by: String,
     modified: [modifiedTypes],
-    leavetype: [leavetypes]
+    leaveType: [String]
   }
 
 `

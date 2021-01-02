@@ -3,39 +3,39 @@ const Audit = require('../../../models/Audit');
 
 const updateLeave = (_, {
   id,
-  leavetype,
-  leave_ID,
-  user_ID,
+  leaveType,
+  leaveID,
+  userID,
   username,
   email,
-  emmpid,
-  nofdays,
+  employeeID,
+  numberOfDays,
   status,
   approver,
   reason,
   from,
   to,
-  remainingleaves,
+  remainingLeaves,
   modified
 },{me,secret}) => new Promise(async (resolve, reject) => {
   let params = {
-    user_ID,
+    userID,
     username,
     email,
-    emmpid,
-    leavetype,
-    leave_ID,
-    nofdays,
+    employeeID,
+    leaveType,
+    leaveID,
+    numberOfDays,
     status,
     approver,
     reason,
     from,
     to,
-    remainingleaves,
+    remainingLeaves,
     modified
   }
   const user = await User.findOne(
-      { $and: [ {_id: user_ID }, { 'leaveApplied._id': id} ] },
+      { $and: [ {_id: userID }, { 'leaveApplied._id': id} ] },
     )
 
   if (!user) reject (new Error('No User Leave Found!'))
@@ -64,25 +64,25 @@ const updateLeave = (_, {
             va.from = params.from;
             va.to = params.to;
 
-            if(va.nofdays < params.nofdays) {
-              va.remainingleaves = (va.remainingleaves - (params.nofdays - va.nofdays))
+            if(va.numberOfDays < params.numberOfDays) {
+              va.remainingLeaves = (va.remainingLeaves - (params.numberOfDays - va.numberOfDays))
             } else {
-              va.remainingleaves = (va.remainingleaves + ( va.nofdays - params.nofdays))
+              va.remainingLeaves = (va.remainingLeaves + ( va.numberOfDays - params.numberOfDays))
             }
-            va.nofdays = params.nofdays;
-            remn = va.remainingleaves;
+            va.numberOfDays = params.numberOfDays;
+            remn = va.remainingLeaves;
 
             // Update Designation Remaining Leaves
-            user.designation.leavetype.forEach(va => {
-              if(va.leave_ID === params.leave_ID) {
-                va.remainingleaves = remn;
+            user.designation.leaveType.forEach(va => {
+              if(va.leaveID === params.leaveID) {
+                va.remainingLeaves = remn;
               }
             });
 
             // Loop for All
             user.leaveApplied.forEach(va => {
-              if(va.leave_ID === params.leave_ID) {
-                va.remainingleaves = remn;
+              if(va.leaveID === params.leaveID) {
+                va.remainingLeaves = remn;
               }
             });
 
@@ -98,7 +98,7 @@ const updateLeave = (_, {
 
       let changeFields = {};
       user.leaveApplied.forEach(va => {
-        if(va.leave_ID === params.leave_ID) {
+        if(va.leaveID === params.leaveID) {
           for ( let item in params) {
             if(params[item] && params[item] !== va[item]) {
               changeFields[item] = params[item];
@@ -115,7 +115,7 @@ const updateLeave = (_, {
       });
 
         const modifiedObj = {
-          leave_ID: id,
+          leaveID: id,
           action: 'User Leave Updated',
           modified_by: modified[0].modified_by,
           modified_at: modified[0].modified_at,

@@ -50,19 +50,19 @@ export class LeaveTypeComponent implements OnInit, OnDestroy {
 
     this.uptForm = this.fb.group({
       _id: [''],
-      leavetype: ['', Validators.required],
-      leavedays: ['', Validators.required],
-      carryforward: ['', Validators.required],
-      carrymax: ['0'],
+      leaveType: ['', Validators.required],
+      leaveDays: ['', Validators.required],
+      carryForward: ['', Validators.required],
+      carryMax: ['0'],
       status: ['', Validators.required]
     });
 
     this.addForm = this.fb.group({
       _id: [''],
-      leavetype: ['', Validators.required],
-      leavedays: ['', Validators.required],
-      carryforward: ['', Validators.required],
-      carrymax: ['0'],
+      leaveType: ['', Validators.required],
+      leaveDays: ['', Validators.required],
+      carryForward: ['', Validators.required],
+      carryMax: ['0'],
       status: ['', Validators.required]
     });
   }
@@ -90,17 +90,17 @@ export class LeaveTypeComponent implements OnInit, OnDestroy {
   addLeavetype(f) {
     this.registerLeaveTypeGQL
       .mutate({
-        leavetype: f.value.leavetype,
-        leavedays: f.value.leavedays,
-        carryforward: f.value.carryforward,
-        carrymax: f.value.carrymax,
+        leaveType: f.value.leaveType,
+        leaveDays: f.value.leaveDays,
+        carryForward: f.value.carryForward,
+        carryMax: f.value.carryMax,
         status: f.value.status,
         created_by: JSON.parse(sessionStorage.getItem('user')).username,
         created_at: Date.now(),
       })
       .subscribe((val: any) => {
         if (val.data.createLeaveType) {
-          $('#add_leavetype').modal('hide');
+          $('#add_leaveType').modal('hide');
           this.toastr.success('Leave type is added', 'Success');
           this.getLeaveTypes();
         }
@@ -113,10 +113,10 @@ export class LeaveTypeComponent implements OnInit, OnDestroy {
     this.updateLeaveTypeGQL
       .mutate({
         id: f.value._id,
-        leavetype: f.value.leavetype,
-        leavedays: f.value.leavedays,
-        carryforward: f.value.carryforward,
-        carrymax: f.value.carrymax,
+        leaveType: f.value.leaveType,
+        leaveDays: f.value.leaveDays,
+        carryForward: f.value.carryForward,
+        carryMax: f.value.carryMax,
         status: f.value.status,
         modified: {
           modified_by: JSON.parse(sessionStorage.getItem('user')).username,
@@ -125,7 +125,7 @@ export class LeaveTypeComponent implements OnInit, OnDestroy {
       })
       .subscribe((val: any) => {
         if (val.data.updateLeaveType) {
-          $('#edit_leavetype').modal('hide');
+          $('#edit_leaveType').modal('hide');
           this.toastr.success('Leave type is edited', 'Success');
           this.getLeaveTypes();
         }
@@ -134,8 +134,8 @@ export class LeaveTypeComponent implements OnInit, OnDestroy {
   }
 
   onCarryChange(form) {
-    const carryInput = form.controls['carryforward'] as FormControl;
-    const maxCarryInput = form.controls['carrymax'] as FormControl;
+    const carryInput = form.controls['carryForward'] as FormControl;
+    const maxCarryInput = form.controls['carryMax'] as FormControl;
     if (carryInput.value === 'Yes') {
       maxCarryInput.setValidators([Validators.required]);
     } else {
@@ -172,7 +172,7 @@ deleteLeave() {
     })
     .subscribe( (val: any) => {
       if (val.data.deleteLeaveType) {
-        $('#delete_leavetype').modal('hide');
+        $('#delete_leaveType').modal('hide');
         this.toastr.success('Leave type is deleted', 'Success');
         this.getLeaveTypes();
       }

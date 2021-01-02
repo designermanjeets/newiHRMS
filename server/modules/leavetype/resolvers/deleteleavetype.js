@@ -1,4 +1,4 @@
-const LeaveType = require('../../../models/leavetype');
+const LeaveType = require('../../../models/leaveType');
 const Audit = require('../../../models/Audit');
 
 const deleteLeaveType = (_, { id, modified },{me,secret}) => new Promise(async (resolve, reject) => {
@@ -12,7 +12,7 @@ const deleteLeaveType = (_, { id, modified },{me,secret}) => new Promise(async (
           // Update Designation Assigned Leave Types
 
           const modifiedObj = {
-            leave_ID: ltype._id,
+            leaveID: ltype._id,
             modified_by: modified[0].modified_by,
             modified_at: modified[0].modified_at,
             action: 'Leave Type Deleted!',

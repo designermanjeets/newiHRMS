@@ -38,13 +38,13 @@
               <div class="col-sm-4">
                 <div class="form-group"
                      [class.has-error]="
-                  companyForm.controls['corporateid'].invalid &&
-                  companyForm.controls['corporateid'].touched"
-                     [class.has-success]="companyForm.controls['corporateid'].valid"
+                  companyForm.controls['corporateID'].invalid &&
+                  companyForm.controls['corporateID'].touched"
+                     [class.has-success]="companyForm.controls['corporateID'].valid"
                 >
                   <label class="control-label">Corporate ID <span class="text-danger">*</span></label>
-                  <input class="form-control" type="text" formControlName="corporateid">
-                  <span class="help-block" *ngIf="companyForm.controls['corporateid'].errors && companyForm.controls['corporateid'].touched">
+                  <input class="form-control" type="text" formControlName="corporateID">
+                  <span class="help-block" *ngIf="companyForm.controls['corporateID'].errors && companyForm.controls['corporateID'].touched">
                   Corporate ID is invalid
               </span>
                 </div>

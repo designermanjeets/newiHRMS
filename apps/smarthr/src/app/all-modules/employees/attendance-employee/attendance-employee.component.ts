@@ -227,7 +227,7 @@ export class AttendanceEmployeeComponent implements OnInit {
       delete r.__typename;
     });
 
-    const uniqArrByUserID = _.difference(rowData, _.uniqBy(rowData, 'user_ID'), 'user_ID');
+    const uniqArrByUserID = _.difference(rowData, _.uniqBy(rowData, 'userID'), 'userID');
     const uniqArrByDate = _.difference(rowData, _.uniqBy(rowData, 'date'), 'date');
 
     if (uniqArrByUserID.length) {

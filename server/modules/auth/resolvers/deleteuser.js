@@ -9,7 +9,7 @@ const deleteUser = (_, { email, modified },{me,secret}) => new Promise(async (re
     if(user && user !== 'superadmin') {
       await User.deleteOne({ "email": email }, {new: true})
       const modifiedObj = {
-        user_ID: user._id,
+        userID: user._id,
         modified_by: modified[0].modified_by,
         modified_at: modified[0].modified_at,
         action: 'User Deleted!',

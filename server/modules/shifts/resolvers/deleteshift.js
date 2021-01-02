@@ -25,7 +25,7 @@ const deleteShift = (_, { id, modified }, {me,secret}) => new Promise(async (res
           })
 
           const modifiedObj = {
-            shift_ID: shft._id,
+            shiftID: shft._id,
             modified_by: modified[0].modified_by,
             modified_at: modified[0].modified_at,
             action: 'Shift Deleted!',

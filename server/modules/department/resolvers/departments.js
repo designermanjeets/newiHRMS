@@ -1,5 +1,5 @@
 const Department = require('../../../models/department');
-const paramHandler = require('../../../utils/paramhandler');
+const { paramHandler } = require('../../../utils/paramhandler');
 
 const getDepartments = async (_, args, { me })  => new Promise(async (resolve, reject) => {
   const param = paramHandler(args.query)

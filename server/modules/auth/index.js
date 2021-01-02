@@ -19,23 +19,20 @@ const typeDefs = gql`
       username: String!,
       email: String!,
       password: String!,
-      role: String,
       firstname: String,
       lastname: String,
-      role: String,
-      emmpid:String!,
-      corporateid: String!,
-      mobile: String,
-      joiningdate: ISODate,
+      mobile: String
+      joiningDate: ISODate!
+      roleID: String!
+      shiftIDs: [String]
+      employeeID:String!
+      corporateID: String!
+      departmentID: String
+      designationID: String
+      created_at: ISODate!
+      created_by: String
       department: String,
-      department_ID: String,
-      designation: designationInputs,
-      designation_ID: String,
-      shift_ID: String,
-      shift: [ShiftInput],
-      created_by: String,
-      created_at: ISODate
-      Role: RoleInput
+      designation: String,
     ): User
 
     uploadFile(file: Upload!): [User]
@@ -45,23 +42,19 @@ const typeDefs = gql`
     updateUser(
       id:ID,
       username: String!,
-      email: String,
+      email: String!,
       password: String,
       firstname: String,
       lastname: String,
-      role: String,
-      emmpid:String,
-      corporateid: String,
+      employeeID:String!,
+      corporateID: String,
       mobile: String,
-      joiningdate: ISODate,
-      department: String,
-      department_ID: String,
-      designation: designationInputs,
-      designation_ID: String,
-      shift_ID: String,
-      shift: [ShiftInput],
+      joiningDate: ISODate,
+      departmentID: String,
+      designationID: String,
+      shiftIDs: [String],
       modified: [modifiedInputs]
-      Role: RoleInput
+      roleID: String,
       ): User
 
       deleteUser (email: String!, modified: [modifiedInputs]): User,
@@ -81,6 +74,7 @@ const typeDefs = gql`
 
   type AuthData {
     user: User
+    role: Role
     token: String!
     tokenExpiration: String!
   }
@@ -92,22 +86,20 @@ const typeDefs = gql`
     firstname: String,
     lastname: String,
     password: String,
-    role: String,
-    emmpid:String,
-    corporateid: String,
+    employeeID:String,
+    corporateID: String,
     mobile: String,
-    joiningdate: ISODate,
-    department: String,
-    department_ID: String,
-    designation: Designation,
-    designation_ID: String,
+    joiningDate: ISODate,
+    departmentID: String,
+    designationID: String,
     created_at: ISODate,
     created_by: String,
     modified: [modifiedTypes],
-    Role: Role
-    leaveApplied: [LeaveApplied]
-    shift_ID: String
-    shift: [Shift]
+    roleID: String,
+    shiftIDs: [String]
+    department: String,
+    designation: String,
+    role: String
   }
 
   type ChangePasswordUser{
@@ -133,19 +125,19 @@ const typeDefs = gql`
     lastname: String,
     password: String,
     role: String,
-    emmpid:String,
-    corporateid: String,
-    department: String,
-    department_ID: String,
-    designation: designationInputs,
-    designation_ID: String,
+    employeeID:String,
+    corporateID: String,
+    departmentID: String,
+    designationID: String,
     mobile: String,
-    joiningdate: ISODate,
+    joiningDate: ISODate,
     created_at: ISODate,
     created_by: String
     Role: RoleInput
-    shift_ID: String
+    shiftID: String
     shift: [ShiftInput]
+    department: String,
+    designation: String,
   }
 
   input modifiedInputs {
@@ -154,23 +146,23 @@ const typeDefs = gql`
   }
 
   input leaveTypesInputs {
-    leavetype: String,
-    leave_ID: String,
-    leavedays: Int!,
-    carryforward: String,
+    leaveType: String,
+    leaveID: String,
+    leaveDays: Int!,
+    carryForward: String,
     status: String,
-    carrymax: Int,
-    remainingleaves: Int
+    carryMax: Int,
+    remainingLeaves: Int
   },
 
   input designationInputs {
     _id: String,
     designation: String,
     department: String,
-    department_ID: String,
+    departmentID: String,
     created_at: ISODate,
     created_by: String,
-    leavetype: [leaveTypesInputs]
+    leaveType: [leaveTypesInputs]
   }
 
   input Pagination {
@@ -183,8 +175,11 @@ const typeDefs = gql`
     descending:Int,
     search:String
     dates:Dates,
-    department_ID: String
-    designation_ID: String,
+    departmentID: String
+    designationID: String,
+    department: String,
+    designation: String,
+    role: String
   }
 
   input Dates{
@@ -193,14 +188,14 @@ const typeDefs = gql`
     bool:Boolean
   }
 
-  type leavetypes {
-    leavetype: String,
-    leave_ID: String,
-    leavedays: Int,
-    carryforward: String,
-    carrymax: Int,
+  type leaveTypes {
+    leaveType: String,
+    leaveID: String,
+    leaveDays: Int,
+    carryForward: String,
+    carryMax: Int,
     status: String,
-    remainingleaves: Int
+    remainingLeaves: Int
   },
 
   type permissions {

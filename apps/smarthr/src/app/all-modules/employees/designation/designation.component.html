@@ -94,23 +94,23 @@
                 </div>
                 <div class="form-group"
                      [class.has-error]="
-                  editForm.controls['department'].invalid &&
-                  editForm.controls['department'].touched"
-                       [class.has-success]="editForm.controls['department'].valid"
+                  editForm.controls['departmentID'].invalid &&
+                  editForm.controls['departmentID'].touched"
+                       [class.has-success]="editForm.controls['departmentID'].valid"
                   >
                     <label for="department">Departments <span class="text-danger">*</span></label>
-                    <select id="department" class="select floating form-control" formControlName="department">
+                    <select id="department" class="select floating form-control" formControlName="departmentID">
                       <option *ngFor="let opt of departments" [value]="opt._id">{{opt.department}}</option>
                     </select>
-                    <span class="help-block" *ngIf="editForm.controls['department'].errors && editForm.controls['department'].touched">
+                    <span class="help-block" *ngIf="editForm.controls['departmentID'].errors && editForm.controls['departmentID'].touched">
                     Departments Name is invalid
                 </span>
                   </div>
                   <label>Assign Leave Types</label>
-                  <div formArrayName="leavetype" *ngFor="let creds of editForm?.controls?.leavetype?.value; let i = index">
+                  <div formArrayName="leaveType" *ngFor="let creds of editForm?.controls?.leaveType?.value; let i = index">
                     <ng-container [formGroupName]="i">
                       <div>
-                        <input aria-label="checkbox" [id]=i type="checkbox" formControlName="leavechecked">&nbsp;{{creds.leavetype}}
+                        <input aria-label="checkbox" [id]=i type="checkbox" [checked]="creds?.checked" formControlName="checked">&nbsp;{{creds.leaveType}}
                       </div>
                     </ng-container>
                   </div>
@@ -151,23 +151,23 @@
                 </div>
                 <div class="form-group"
                      [class.has-error]="
-                  editForm.controls['department'].invalid &&
-                  editForm.controls['department'].touched"
-                     [class.has-success]="editForm.controls['department'].valid"
+                  editForm.controls['departmentID'].invalid &&
+                  editForm.controls['departmentID'].touched"
+                     [class.has-success]="editForm.controls['departmentID'].valid"
                 >
                   <label for="department1">Departments <span class="text-danger">*</span></label>
-                  <select id="department1" class="select floating form-control" formControlName="department">
+                  <select id="department1" class="select floating form-control" formControlName="departmentID">
                     <option *ngFor="let opt of departments" [value]="opt._id">{{opt.department}}</option>
                   </select>
-                  <span class="help-block" *ngIf="editForm.controls['department'].errors && editForm.controls['department'].touched">
+                  <span class="help-block" *ngIf="editForm.controls['departmentID'].errors && editForm.controls['departmentID'].touched">
                     Departments Name is invalid
                 </span>
                 </div>
                 <label>Assign Leave Types</label>
-                <div formArrayName="leavetype" *ngFor="let creds of editForm.controls.leavetype?.value; let i = index">
+                <div formArrayName="leaveType" *ngFor="let creds of editForm.controls.leaveType?.value; let i = index">
                   <ng-container [formGroupName]="i">
                     <div>
-                      <input aria-label="checkbox" [id]=i type="checkbox" formControlName="leavechecked">{{creds.leavetype}}
+                      <input aria-label="checkbox" [id]=i type="checkbox" [checked]="creds?.checked" formControlName="checked">&nbsp;{{creds.leaveType}}
                     </div>
                   </ng-container>
                 </div>

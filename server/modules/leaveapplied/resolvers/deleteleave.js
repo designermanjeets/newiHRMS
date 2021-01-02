@@ -3,12 +3,12 @@ const Audit = require('../../../models/Audit');
 
 const deleteLeave = (_, {
   id,
-  user_ID,
+  userID,
   modified,
   status
 },{me,secret}) => new Promise(async (resolve, reject) => {
   const user = await User.findOne(
-    { $and: [ {_id: user_ID }, { 'leaveApplied._id': id} ] },
+    { $and: [ {_id: userID }, { 'leaveApplied._id': id} ] },
   )
   if (!user) reject (new Error('No User Leave Found!'))
   if (user) {
@@ -22,22 +22,22 @@ const deleteLeave = (_, {
           lprms = va;
 
           if(status !== 'rejected') {
-            remn = va.remainingleaves + va.nofdays;
+            remn = va.remainingLeaves + va.numberOfDays;
           } else {
-            remn = va.remainingleaves
+            remn = va.remainingLeaves
           }
 
           // Update Designation Remaining Leaves
-          user.designation.leavetype.forEach(va => {
-            if(va.leave_ID === lprms.leave_ID) {
-              va.remainingleaves = remn;
+          user.designation.leaveType.forEach(va => {
+            if(va.leaveID === lprms.leaveID) {
+              va.remainingLeaves = remn;
             }
           });
 
           // // Loop for All
           user.leaveApplied.forEach(va => {
-            if(va.leave_ID === lprms.leave_ID) {
-              va.remainingleaves = remn;
+            if(va.leaveID === lprms.leaveID) {
+              va.remainingLeaves = remn;
             }
           });
 
@@ -48,7 +48,7 @@ const deleteLeave = (_, {
       });
 
       const modifiedObj = {
-        user_ID: user._id,
+        userID: user._id,
         action: 'Leave Deleted for User',
         modified_by: modified[0].modified_by,
         modified_at: modified[0].modified_at,

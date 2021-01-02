@@ -8,26 +8,26 @@ import gql from 'graphql-tag';
 export class CreateShiftGQL extends Mutation {
   document = gql`
     mutation createShift(
-        $shiftname: String!,
-        $shiftimeFrom: String!,
-        $shiftimeTo: String!,
-        $maxshifts: Int!,
+        $shiftName: String!,
+        $shiftTmeFrom: String!,
+        $shiftTimeTo: String!,
+        $maxShifts: Int!,
         $created_at: ISODate!
         $created_by: String
     ) {
       createShift(
-        shiftname: $shiftname,
-        shiftimeFrom: $shiftimeFrom,
-        shiftimeTo: $shiftimeTo,
-        maxshifts: $maxshifts,
+        shiftName: $shiftName,
+        shiftTmeFrom: $shiftTmeFrom,
+        shiftTimeTo: $shiftTimeTo,
+        maxShifts: $maxShifts,
         created_at: $created_at
         created_by: $created_by
       ) {
         _id
-        shiftname
-        shiftimeFrom
-        shiftimeTo
-        maxshifts
+        shiftName
+        shiftTmeFrom
+        shiftTimeTo
+        maxShifts
       }
     }
   `;
@@ -40,25 +40,25 @@ export class UpdateShiftGQL extends Mutation {
   document = gql`
     mutation updateShift(
         $id: ID!,
-        $shiftname: String!,
-        $shiftimeFrom: String,
-        $shiftimeTo: String,
-        $maxshifts: Int,
+        $shiftName: String!,
+        $shiftTmeFrom: String,
+        $shiftTimeTo: String,
+        $maxShifts: Int,
         $modified: [modifiedInputs]
     ) {
       updateShift(
         id: $id,
-        shiftname: $shiftname,
-        shiftimeFrom: $shiftimeFrom,
-        shiftimeTo: $shiftimeTo,
-        maxshifts: $maxshifts,
+        shiftName: $shiftName,
+        shiftTmeFrom: $shiftTmeFrom,
+        shiftTimeTo: $shiftTimeTo,
+        maxShifts: $maxShifts,
         modified: $modified
       ) {
         _id
-        shiftname
-        shiftimeFrom
-        shiftimeTo
-        maxshifts
+        shiftName
+        shiftTmeFrom
+        shiftTimeTo
+        maxShifts
       }
     }
   `;
@@ -71,19 +71,19 @@ export class DeleteShiftGQL extends Mutation {
   document = gql`
     mutation deleteShift(
         $id: ID!,
-        $shiftname: String!,
+        $shiftName: String!,
         $modified: [modifiedInputs]
     ) {
       deleteShift(
         id: $id,
-        shiftname: $shiftname,
+        shiftName: $shiftName,
         modified: $modified
       ) {
         _id
-        shiftname
-        shiftimeTo
-        shiftimeFrom
-        maxshifts
+        shiftName
+        shiftTimeTo
+        shiftTmeFrom
+        maxShifts
       }
     }
   `;
@@ -97,10 +97,10 @@ export const GET_SHIFTS_QUERY = gql`
         query: $pagination
       ) {
         _id
-        shiftname
-        shiftimeFrom
-        shiftimeTo
-        maxshifts
+        shiftName
+        shiftTmeFrom
+        shiftTimeTo
+        maxShifts
       }
     }
 `;

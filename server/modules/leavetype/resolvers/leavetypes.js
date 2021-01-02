@@ -1,5 +1,5 @@
-const LeaveType = require('../../../models/leavetype');
-const paramHandler = require('../../../utils/paramhandler');
+const LeaveType = require('../../../models/leaveType');
+const { paramHandler } = require('../../../utils/paramhandler');
 
 const getLeaveTypes = async (_, args, { me })  => new Promise(async (resolve, reject) => {
   const param = paramHandler(args.query)

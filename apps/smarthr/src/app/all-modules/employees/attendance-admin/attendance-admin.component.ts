@@ -84,7 +84,7 @@ export class AttendanceAdminComponent implements OnInit {
 
   getAttendPerUser(arr) {
     return _.chain(arr)
-      .groupBy('user_ID')
+      .groupBy('userID')
       .map((usrattendance) => ({ usrattendance }))
       .value();
   }
@@ -109,7 +109,7 @@ export class AttendanceAdminComponent implements OnInit {
         _.each(curruser, crr => { // Kinda Reset
           crr.firstname = attusr[0].username;
           crr.lastname = attusr[0].lastname;
-          crr.user_ID = attusr[0].user_ID;
+          crr.userID = attusr[0].userID;
           crr.user_email = attusr[0].user_email;
           crr.punchIn = null;
           crr.punchOut = null;
@@ -243,7 +243,7 @@ export class AttendanceAdminComponent implements OnInit {
     //   delete r.__typename;
     // });
     //
-    // const uniqArrByUserID = _.difference(rowData, _.uniqBy(rowData, 'user_ID'), 'user_ID');
+    // const uniqArrByUserID = _.difference(rowData, _.uniqBy(rowData, 'userID'), 'userID');
     // const uniqArrByDate = _.difference(rowData, _.uniqBy(rowData, 'date'), 'date');
     //
     // if (uniqArrByUserID.length) {

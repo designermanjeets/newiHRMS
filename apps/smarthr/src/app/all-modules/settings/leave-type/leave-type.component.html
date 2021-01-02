@@ -12,7 +12,7 @@
                 </ul>
             </div>
             <div class="col-auto float-right ml-auto">
-                <a  class="btn add-btn" data-toggle="modal" data-target="#add_leavetype" (click)="addReset()"><i
+                <a  class="btn add-btn" data-toggle="modal" data-target="#add_leaveType" (click)="addReset()"><i
                         class="fa fa-plus"></i> Add Leave Type</a>
             </div>
         </div>
@@ -38,12 +38,12 @@
                     {{rowIndex + 1}}
                   </ng-template>
                 </ngx-datatable-column>
-                <ngx-datatable-column name="Leave Type" prop="leavetype">
+                <ngx-datatable-column name="Leave Type" prop="leaveType">
                   <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
                     <a class="btn btn-block btn-white btn-sm btn-rounded">{{value}}</a>
                   </ng-template>
                 </ngx-datatable-column>
-                <ngx-datatable-column name="Leave Days" prop="leavedays">
+                <ngx-datatable-column name="Leave Days" prop="leaveDays">
                   <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
                     {{value}}
                   </ng-template>
@@ -57,11 +57,11 @@
                 <ngx-datatable-column name="Actions" sortable="false" prop="_id">
                   <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
                     <button class="btn btn-default" data-toggle="modal"
-                            data-target="#edit_leavetype" (click)="edit(row._id)">
+                            data-target="#edit_leaveType" (click)="edit(row._id)">
                       <i class="fa fa-pencil-square" aria-hidden="true"></i>
                     </button>
                     <button class="btn btn-default" data-toggle="modal"
-                            data-target="#delete_leavetype" (click)="tempId = row._id">
+                            data-target="#delete_leaveType" (click)="tempId = row._id">
                       <i class="fa fa-trash" aria-hidden="true"></i>
                     </button>
                   </ng-template>
@@ -74,7 +74,7 @@
 <!-- /Page Content -->
 
 <!-- Add Leavetype Modal -->
-<div id="add_leavetype" class="modal custom-modal fade" role="dialog">
+<div id="add_leaveType" class="modal custom-modal fade" role="dialog">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -88,42 +88,42 @@
                 <input id="lid" type="hidden" formControlName="_id">
                 <div class="form-group"
                      [class.has-error]="
-                      addForm.controls['leavetype'].invalid &&
-                      addForm.controls['leavetype'].touched"
-                     [class.has-success]="addForm.controls['leavetype'].valid"
+                      addForm.controls['leaveType'].invalid &&
+                      addForm.controls['leaveType'].touched"
+                     [class.has-success]="addForm.controls['leaveType'].valid"
                 >
-                  <label for="leavetype1">Leave Type <span class="text-danger">*</span></label>
-                  <input id="leavetype1" class="form-control" required type="text" formControlName="leavetype">
+                  <label for="leaveType1">Leave Type <span class="text-danger">*</span></label>
+                  <input id="leaveType1" class="form-control" required type="text" formControlName="leaveType">
                 </div>
                 <div class="form-group"
                      [class.has-error]="
-                      addForm.controls['leavedays'].invalid &&
-                      addForm.controls['leavedays'].touched"
-                     [class.has-success]="addForm.controls['leavedays'].valid"
+                      addForm.controls['leaveDays'].invalid &&
+                      addForm.controls['leaveDays'].touched"
+                     [class.has-success]="addForm.controls['leaveDays'].valid"
                 >
                   <label for="numberofdays1">Number of days <span class="text-danger">*</span></label>
-                  <input id="numberofdays1" class="form-control" required type="number" formControlName="leavedays">
+                  <input id="numberofdays1" class="form-control" required type="number" formControlName="leaveDays">
                 </div>
                 <div class="form-group"
                      [class.has-error]="
-                      addForm.controls['carryforward'].invalid &&
-                      addForm.controls['carryforward'].touched"
-                     [class.has-success]="addForm.controls['carryforward'].valid"
+                      addForm.controls['carryForward'].invalid &&
+                      addForm.controls['carryForward'].touched"
+                     [class.has-success]="addForm.controls['carryForward'].valid"
                 >
-                  <label for="carryforward1">Carry Forward <span class="text-danger">*</span></label>
-                  <select id="carryforward1" class="form-control" formControlName="carryforward" (change)="onCarryChange(addForm)">
+                  <label for="carryForward1">Carry Forward <span class="text-danger">*</span></label>
+                  <select id="carryForward1" class="form-control" formControlName="carryForward" (change)="onCarryChange(addForm)">
                     <option value="Yes">Yes</option>
                     <option value="No">No</option>
                   </select>
                 </div>
-                <div *ngIf="addForm.controls['carryforward'].value === 'Yes'" class="form-group"
+                <div *ngIf="addForm.controls['carryForward'].value === 'Yes'" class="form-group"
                      [class.has-error]="
-                      addForm.controls['carrymax'].invalid &&
-                      addForm.controls['carrymax'].touched"
-                     [class.has-success]="addForm.controls['carrymax'].valid"
+                      addForm.controls['carryMax'].invalid &&
+                      addForm.controls['carryMax'].touched"
+                     [class.has-success]="addForm.controls['carryMax'].valid"
                 >
-                  <label for="carrymax1">Max Carryforward <span class="text-danger">*</span></label>
-                  <input id="carrymax1" required class="form-control" type="number" value="0" formControlName="carrymax">
+                  <label for="carryMax1">Max Carryforward <span class="text-danger">*</span></label>
+                  <input id="carryMax1" required class="form-control" type="number" value="0" formControlName="carryMax">
                 </div>
                 <div class="form-group"
                      [class.has-error]="
@@ -148,7 +148,7 @@
 <!-- /Add Leavetype Modal -->
 
 <!-- Edit Leavetype Modal -->
-<div id="edit_leavetype" class="modal custom-modal fade" role="dialog">
+<div id="edit_leaveType" class="modal custom-modal fade" role="dialog">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -162,42 +162,42 @@
                 <input id="lid1" type="hidden" formControlName="_id">
                 <div class="form-group"
                    [class.has-error]="
-                    uptForm.controls['leavetype'].invalid &&
-                    uptForm.controls['leavetype'].touched"
-                   [class.has-success]="uptForm.controls['leavetype'].valid"
+                    uptForm.controls['leaveType'].invalid &&
+                    uptForm.controls['leaveType'].touched"
+                   [class.has-success]="uptForm.controls['leaveType'].valid"
                 >
-                  <label for="leavetype2">Leave Type <span class="text-danger">*</span></label>
-                  <input id="leavetype2" class="form-control" required type="text" formControlName="leavetype">
+                  <label for="leaveType2">Leave Type <span class="text-danger">*</span></label>
+                  <input id="leaveType2" class="form-control" required type="text" formControlName="leaveType">
                 </div>
                 <div class="form-group"
                      [class.has-error]="
-                    uptForm.controls['leavedays'].invalid &&
-                    uptForm.controls['leavedays'].touched"
-                     [class.has-success]="uptForm.controls['leavedays'].valid"
+                    uptForm.controls['leaveDays'].invalid &&
+                    uptForm.controls['leaveDays'].touched"
+                     [class.has-success]="uptForm.controls['leaveDays'].valid"
                 >
                   <label for="numberofdays2">Number of days <span class="text-danger">*</span></label>
-                  <input id="numberofdays2" class="form-control" required type="number" formControlName="leavedays">
+                  <input id="numberofdays2" class="form-control" required type="number" formControlName="leaveDays">
                 </div>
                 <div class="form-group"
                      [class.has-error]="
-                    uptForm.controls['carryforward'].invalid &&
-                    uptForm.controls['carryforward'].touched"
-                     [class.has-success]="uptForm.controls['carryforward'].valid"
+                    uptForm.controls['carryForward'].invalid &&
+                    uptForm.controls['carryForward'].touched"
+                     [class.has-success]="uptForm.controls['carryForward'].valid"
                 >
-                  <label for="carryforward2">Carry Forward <span class="text-danger">*</span></label>
-                  <select id="carryforward2" class="form-control" formControlName="carryforward" (change)="onCarryChange(uptForm)">
+                  <label for="carryForward2">Carry Forward <span class="text-danger">*</span></label>
+                  <select id="carryForward2" class="form-control" formControlName="carryForward" (change)="onCarryChange(uptForm)">
                     <option value="Yes">Yes</option>
                     <option value="No">No</option>
                   </select>
                 </div>
-                <div *ngIf="uptForm.controls['carryforward'].value === 'Yes'" class="form-group"
+                <div *ngIf="uptForm.controls['carryForward'].value === 'Yes'" class="form-group"
                      [class.has-error]="
-                    uptForm.controls['carrymax'].invalid &&
-                    uptForm.controls['carrymax'].touched"
-                     [class.has-success]="uptForm.controls['carrymax'].valid"
+                    uptForm.controls['carryMax'].invalid &&
+                    uptForm.controls['carryMax'].touched"
+                     [class.has-success]="uptForm.controls['carryMax'].valid"
                 >
-                  <label for="carrymax2">Max Carryforward <span class="text-danger">*</span></label>
-                  <input id="carrymax2" required class="form-control" type="number" value="0" formControlName="carrymax">
+                  <label for="carryMax2">Max Carryforward <span class="text-danger">*</span></label>
+                  <input id="carryMax2" required class="form-control" type="number" value="0" formControlName="carryMax">
                 </div>
                 <div class="form-group"
                      [class.has-error]="
@@ -222,7 +222,7 @@
 <!-- /Edit Leavetype Modal -->
 
 <!-- Delete Leavetype Modal -->
-<div class="modal custom-modal fade" id="delete_leavetype" role="dialog">
+<div class="modal custom-modal fade" id="delete_leaveType" role="dialog">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-body">

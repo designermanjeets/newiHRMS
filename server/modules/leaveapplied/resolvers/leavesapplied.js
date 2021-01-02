@@ -1,5 +1,5 @@
 const User = require('../../../models/user');
-const paramHandler = require('../../../utils/paramhandler');
+const { paramHandler } = require('../../../utils/paramhandler');
 
 const getLeavesApplied = async (_, args, { me })  => new Promise(async (resolve, reject) => {
   const param = paramHandler(args.query)

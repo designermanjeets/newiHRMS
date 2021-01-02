@@ -3,7 +3,7 @@ const User = require('../../../models/user');
 const Audit = require('../../../models/Audit');
 
 const createAttendance = (_, {
-  user_ID,
+  userID,
   user_email,
   date,
   punchIn,
@@ -15,13 +15,13 @@ const createAttendance = (_, {
   try {
 
     const exists = await Attendance.find({$and:[
-        {user_ID }, {date}, {punchIn}, {punchOut}
+        {userID }, {date}, {punchIn}, {punchOut}
       ]})
 
     if(exists.length) return reject(new Error('Attendance already exist for the same Date!'));
 
     const newAttend= await Attendance.create({
-      user_ID,
+      userID,
       user_email,
       date,
       punchIn,
@@ -30,7 +30,7 @@ const createAttendance = (_, {
       created_by
     });
 
-    User.findByIdAndUpdate({ _id: user_ID})
+    User.findByIdAndUpdate({ _id: userID})
       .then((user) => {
         if(!user) { reject (new Error('No User Found!')) }
         else {

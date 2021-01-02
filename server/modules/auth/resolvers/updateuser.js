@@ -4,45 +4,41 @@ const Designation = require('../../../models/designation');
 const Role = require('../../../models/role');
 const Shift = require('../../../models/shift');
 const bcrypt = require('bcrypt')
-const paramHandler = require('../../../utils/paramhandler');
+const { paramHandler } = require('../../../utils/paramhandler');
 
 const updateUser = (_, {
   id,
   username,
   email,
   password,
-  role,
+  roleID,
   firstname,
   lastname,
-  emmpid,
-  corporateid,
+  employeeID,
+  corporateID,
   mobile,
-  joiningdate,
-  department,
-  department_ID,
-  designation,
-  designation_ID,
-  shift,
+  joiningDate,
+  departmentID,
+  designationID,
+  shiftIDs,
   permissions,
   modified
 },{me,secret}) => new Promise(async (resolve, reject) => {
   try{
-    const getuser = await User.findOne({$or:[ { email},{username}, {emmpid} ]})
+    const getuser = await User.findOne({$or:[ { email},{username}, {employeeID} ]})
     let param ={
-      username,
       email,
       password,
-      role,
+      roleID,
       firstname,
       lastname,
-      emmpid,
-      corporateid,
+      employeeID,
+      corporateID,
       mobile,
-      joiningdate,
-      department,
-      department_ID,
+      joiningDate,
       permissions,
-      shift
+      shiftIDs,
+      designationID
     }
 
     let changeFields = {};
@@ -58,10 +54,10 @@ const updateUser = (_, {
         } else {
           // Hash Password Here
           changeFields[item] = param[item];
-          if(item === 'joiningdate' && JSON.stringify(param[item]) !== JSON.stringify(getuser[item])) {
+          if(item === 'joiningDate' && JSON.stringify(param[item]) !== JSON.stringify(getuser[item])) {
             changeFields[item] = param[item];
           } else {
-            delete changeFields['joiningdate']
+            delete changeFields['joiningDate']
           }
         }
       }
@@ -80,24 +76,24 @@ const updateUser = (_, {
         if(result) {
 
           // Designation Update
-          Designation.findById({_id: designation_ID}).then(async val => {
-            result.designation = {}; // Because only one Designation
-            result.designation = val;
-            await result.save();
-            resolve(result);
+          // Designation.findById({_id: designationID}).then(async val => {
+          //   result.designation = {}; // Because only one Designation
+          //   result.designation = val;
+          //   await result.save();
+          //   resolve(result);
 
-          }).then(_ => {
+          // }).then(_ => {
 
             // Role Update
-            Role.findById({_id: role}).then(async val => {
-              if(val) {
-                result.Role = {};
-                result.Role = val;
-                await result.save();
-                resolve(result);
-              }
+            // Role.findById({_id: role}).then(async val => {
+            //   if(val) {
+            //     result.Role = {};
+            //     result.Role = val;
+            //     await result.save();
+            //     resolve(result);
+            //   }
 
-            }).then(_ => {
+            // }).then(_ => {
 
               // Shift Update || Multiple
               // result.shift = []; // Because we're getting all in once
@@ -126,7 +122,7 @@ const updateUser = (_, {
               if(result && Object.keys(changeFields).length !== 0) {
                 // Audit Below
                 const modifiedObj = {
-                  user_ID: getuser._id,
+                  userID: getuser._id,
                   modified_by: modified[0].modified_by,
                   modified_at: modified[0].modified_at,
                   action: 'Changed',
@@ -147,9 +143,6 @@ const updateUser = (_, {
                   resolve(result);
                 });
               }
-
-            });
-          });
         }
       }, error => {
         reject(error)

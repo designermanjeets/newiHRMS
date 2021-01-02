@@ -75,11 +75,11 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
 
     this.editLeaveadminForm = this.formBuilder.group({
       _id: [''],
-      leavetype: ['', [Validators.required]],
+      leaveType: ['', [Validators.required]],
       from: ['', [Validators.required]],
       to: ['', [Validators.required]],
-      nofdays: ['', [Validators.required]],
-      remainingleaves: ['', [Validators.required]],
+      numberOfDays: ['', [Validators.required]],
+      remainingLeaves: ['', [Validators.required]],
       reason: ['', [Validators.required]],
     }); // ,{ validator: this.checkLeaveDays }
     this.calcRemainingOnFly();
@@ -93,8 +93,8 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
   }
 
   calcRemainingOnFly() { // Not in Use currently
-    const reminCtr = this.editLeaveadminForm.get('remainingleaves') as FormControl;
-    this.nofSub = this.editLeaveadminForm.get('nofdays').valueChanges
+    const reminCtr = this.editLeaveadminForm.get('remainingLeaves') as FormControl;
+    this.nofSub = this.editLeaveadminForm.get('numberOfDays').valueChanges
       .pipe(
         // debounceTime(100),
         distinctUntilChanged(),
@@ -102,7 +102,7 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
       )
       .subscribe(([oldValue, newValue]) => {
         if (newValue >= Number(this.remainTemp)) {
-          this.editLeaveadminForm.get('nofdays').patchValue(this.remainTemp);
+          this.editLeaveadminForm.get('numberOfDays').patchValue(this.remainTemp);
           // reminCtr.patchValue(this.remainTemp);
         } else {
           // reminCtr.patchValue(this.remainTemp - newValue);
@@ -139,7 +139,7 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
     this.isEdit = false;
     this.editLeaveadminForm.reset();
     this.tempEditUserID = JSON.parse(sessionStorage.getItem('user')).userid;
-    this.editLeaveadminForm.get('leavetype').enable();
+    this.editLeaveadminForm.get('leaveType').enable();
     this.getUserPendingLeaves();
   }
 
@@ -149,39 +149,39 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
 
   calculatePendingLeaves(leaveID) { // In case of Loop Through
     if (this.checkPendingLeaveForUser) {
-      const f = _.filter(this.checkPendingLeaveForUser, v => v.leave_ID === leaveID);
+      const f = _.filter(this.checkPendingLeaveForUser, v => v.leaveID === leaveID);
       console.log(f[0]); // Get User's Designation's Assigned Leave Type :: CL, PL ETC
-      this.editLeaveadminForm.get('remainingleaves').patchValue(f[0].remainingleaves);
-      this.remainTemp = JSON.parse(JSON.stringify(f[0].remainingleaves));
+      this.editLeaveadminForm.get('remainingLeaves').patchValue(f[0].remainingLeaves);
+      this.remainTemp = JSON.parse(JSON.stringify(f[0].remainingLeaves));
     }
   }
 
   getUserPendingLeaves(l?) { // Para for Edit Only
-    this.checkPendingLeaveForUser = this.currUser.designation.leavetype;
+    this.checkPendingLeaveForUser = this.currUser.designation.leaveType;
     _.forEach(this.checkPendingLeaveForUser, vl => {
-      if (vl.remainingleaves === null || vl.remainingleaves === 'undefined') {
-        vl.remainingleaves = vl.leavedays;
+      if (vl.remainingLeaves === null || vl.remainingLeaves === 'undefined') {
+        vl.remainingLeaves = vl.leaveDays;
       }
     });
-    (this.isEdit && l) && this.onltypechange({value: l.leave_ID}); // Only After Response
+    (this.isEdit && l) && this.onltypechange({value: l.leaveID}); // Only After Response
     this.cdRef.detectChanges();
   }
 
   // Add leaves for admin Modal Api Call
   addleaves(f) {
 
-    const lv = _.filter(this.currUser.designation.leavetype, p => p.leave_ID === f.value.leavetype);
+    const lv = _.filter(this.currUser.designation.leaveType, p => p.leaveID === f.value.leaveType);
 
     this.registerLeaveGQL
       .mutate({
-        user_ID: JSON.parse(sessionStorage.getItem('user')).userid,
+        userID: JSON.parse(sessionStorage.getItem('user')).userid,
         username: JSON.parse(sessionStorage.getItem('user')).username,
         email: JSON.parse(sessionStorage.getItem('user')).email,
-        emmpid: JSON.parse(sessionStorage.getItem('user')).emmpid,
-        leavetype: lv[0].leavetype,
-        leave_ID: lv[0].leave_ID,
-        nofdays: f.value.nofdays,
-        remainingleaves: f.value.remainingleaves,
+        employeeID: JSON.parse(sessionStorage.getItem('user')).employeeID,
+        leaveType: lv[0].leaveType,
+        leaveID: lv[0].leaveID,
+        numberOfDays: f.value.numberOfDays,
+        remainingLeaves: f.value.remainingLeaves,
         reason: f.value.reason,
         from: f.value.from,
         to: f.value.to,
@@ -214,14 +214,14 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
     this.updateLeaveGQL
       .mutate({
         id: lv[0]._id,
-        user_ID: JSON.parse(sessionStorage.getItem('user')).userid,
+        userID: JSON.parse(sessionStorage.getItem('user')).userid,
         username: JSON.parse(sessionStorage.getItem('user')).username,
         email: JSON.parse(sessionStorage.getItem('user')).email,
-        emmpid: JSON.parse(sessionStorage.getItem('user')).emmpid,
-        leavetype: lv[0].leavetype,
-        leave_ID: lv[0].leave_ID,
-        nofdays: f.value.nofdays,
-        remainingleaves: f.value.remainingleaves,
+        employeeID: JSON.parse(sessionStorage.getItem('user')).employeeID,
+        leaveType: lv[0].leaveType,
+        leaveID: lv[0].leaveID,
+        numberOfDays: f.value.numberOfDays,
+        remainingLeaves: f.value.remainingLeaves,
         reason: f.value.reason,
         from: f.value.from,
         to: f.value.to,
@@ -249,7 +249,7 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
         .mutate({
           id: this.tempId._id,
           status: this.tempId.status,
-          user_ID: JSON.parse(sessionStorage.getItem('user')).userid,
+          userID: JSON.parse(sessionStorage.getItem('user')).userid,
           modified: {
             modified_by: JSON.parse(sessionStorage.getItem('user')).username,
             modified_at: Date.now()
@@ -277,10 +277,10 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
     this.editLeaveadminForm.reset();
     const l = this.currUser.leaveApplied.find((item) => item._id === id);
     console.log(l);
-    this.tempEditUserID = l.user_ID;
+    this.tempEditUserID = l.userID;
     this.editLeaveadminForm.patchValue(l);
-    this.editLeaveadminForm.get('leavetype').patchValue(l.leave_ID);
-    this.editLeaveadminForm.get('leavetype').disable();
+    this.editLeaveadminForm.get('leaveType').patchValue(l.leaveID);
+    this.editLeaveadminForm.get('leaveType').disable();
     this.cdRef.detectChanges();
 
     // On Load get the Select Assigned Leave Type
@@ -297,10 +297,10 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
       this.approveorejectLeave
         .mutate({
           id: this.tempLv._id,
-          user_ID: JSON.parse(sessionStorage.getItem('user')).userid,
-          leavetype: this.tempLv.leavetype,
-          leave_ID: this.tempLv.leave_ID,
-          nofdays: this.tempLv.nofdays,
+          userID: JSON.parse(sessionStorage.getItem('user')).userid,
+          leaveType: this.tempLv.leaveType,
+          leaveID: this.tempLv.leaveID,
+          numberOfDays: this.tempLv.numberOfDays,
           status: status,
           approvedBy: {
             approvedByID: JSON.parse(sessionStorage.getItem('user')).userid,
@@ -332,10 +332,10 @@ export class LeavesEmployeeComponent implements OnInit, OnDestroy {
     this.approveorejectLeave
       .mutate({
         id: this.tempLv._id,
-        user_ID: JSON.parse(sessionStorage.getItem('user')).userid,
-        leavetype: this.tempLv.leavetype,
-        leave_ID: this.tempLv.leave_ID,
-        nofdays: this.tempLv.nofdays,
+        userID: JSON.parse(sessionStorage.getItem('user')).userid,
+        leaveType: this.tempLv.leaveType,
+        leaveID: this.tempLv.leaveID,
+        numberOfDays: this.tempLv.numberOfDays,
         status: status,
         rejectedBy: {
           rejectedByID: JSON.parse(sessionStorage.getItem('user')).userid,

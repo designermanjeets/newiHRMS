@@ -6,7 +6,7 @@ const updateCompany = (_, {
   address1,
   address2,
   countryid,
-  corporateid,
+  corporateID,
   stateid,
   cityid,
   zipcode,
@@ -52,12 +52,12 @@ const updateCompany = (_, {
       modifiedip,
       alias
     }
-    console.log(corporateid)
-    const comp = await Company.findOne({ "corporateid": corporateid });
+    console.log(corporateID)
+    const comp = await Company.findOne({ "corporateID": corporateID });
     if (!comp)throw new Error('Company not found!!')
     if(comp) {
       await Company.findOneAndUpdate({
-        "corporateid": corporateid
+        "corporateID": corporateID
       },{$set:{...param}},{new: true})
         .then((result) => { resolve(result) })
     }

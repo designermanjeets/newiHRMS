@@ -10,45 +10,45 @@ import { Role } from '../../../_helpers/_models/user';
 export class RegisterLeaveGQL extends Mutation {
   document = gql`
     mutation createLeave (
-      $user_ID: String
+      $userID: String
       $username: String
       $email: String
-      $emmpid: String
-      $leavetype: String!
-      $leave_ID: String!
+      $employeeID: String
+      $leaveType: String!
+      $leaveID: String!
       $from: ISODate
       $to: ISODate
-      $nofdays: Int
-      $remainingleaves: Int
+      $numberOfDays: Int
+      $remainingLeaves: Int
       $reason: String
       $created_at: ISODate
       $created_by: String
     ) {
       createLeave(
-        user_ID: $user_ID
+        userID: $userID
         username: $username
         email: $email
-        emmpid: $emmpid
-        leavetype: $leavetype
-        leave_ID: $leave_ID
+        employeeID: $employeeID
+        leaveType: $leaveType
+        leaveID: $leaveID
         from: $from
         to: $to
-        nofdays: $nofdays
-        remainingleaves: $remainingleaves
+        numberOfDays: $numberOfDays
+        remainingLeaves: $remainingLeaves
         reason: $reason
         created_at: $created_at
         created_by: $created_by
       ) {
-          user_ID
+          userID
           username
           email
-          emmpid
-          leavetype
-          leave_ID
+          employeeID
+          leaveType
+          leaveID
           from
           to
-          nofdays
-          remainingleaves
+          numberOfDays
+          remainingLeaves
           reason
           created_at
           created_by
@@ -65,16 +65,16 @@ export class UpdateLeaveGQL extends Mutation {
   document = gql`
     mutation updateLeave (
       $id: ID!
-      $user_ID: String!
+      $userID: String!
       $username: String
       $email: String
-      $emmpid: String
-      $leavetype: String!
-      $leave_ID: String!
+      $employeeID: String
+      $leaveType: String!
+      $leaveID: String!
       $from: ISODate
       $to: ISODate
-      $nofdays: Int
-      $remainingleaves: Int
+      $numberOfDays: Int
+      $remainingLeaves: Int
       $reason: String
       $approvers: [approversInput]
       $approvedBy: approvedByInput
@@ -85,16 +85,16 @@ export class UpdateLeaveGQL extends Mutation {
     ) {
       updateLeave(
         id: $id
-        user_ID: $user_ID
+        userID: $userID
         username: $username
         email: $email
-        emmpid: $emmpid
-        leavetype: $leavetype
-        leave_ID: $leave_ID
+        employeeID: $employeeID
+        leaveType: $leaveType
+        leaveID: $leaveID
         from: $from
         to: $to
-        nofdays: $nofdays
-        remainingleaves: $remainingleaves
+        numberOfDays: $numberOfDays
+        remainingLeaves: $remainingLeaves
         reason: $reason
         approvers: $approvers
         approvedBy: $approvedBy
@@ -103,16 +103,16 @@ export class UpdateLeaveGQL extends Mutation {
         declinedByBy: $declinedByBy
         modified: $modified
       ) {
-          user_ID
+          userID
           username
           email
-          emmpid
-          leavetype
-          leave_ID
+          employeeID
+          leaveType
+          leaveID
           from
           to
-          nofdays
-          remainingleaves
+          numberOfDays
+          remainingLeaves
           reason
       }
     }
@@ -126,12 +126,12 @@ export class DeleteLeaveGQL extends Mutation {
   document = gql`
     mutation deleteLeave(
       $id: ID!,
-      $user_ID: String!
+      $userID: String!
       $modified: [modifiedInputs]
     ) {
       deleteLeave(
         id: $id,
-        user_ID: $user_ID
+        userID: $userID
         modified: $modified
       ) {
         _id
@@ -148,16 +148,16 @@ export const GET_USERLEAVES_QUERY = gql`
       query: $pagination,
     ) {
         _id
-        leave_ID
-        leavetype
-        user_ID
+        leaveID
+        leaveType
+        userID
         email
         username
-        emmpid
+        employeeID
         from
         to
-        nofdays
-        remainingleaves
+        numberOfDays
+        remainingLeaves
         reason
         status
         approvers {
@@ -196,11 +196,11 @@ export const GET_USER_QUERY = gql`
         designation {
           _id
           designation
-          leavetype {
-            leavetype
-            leave_ID
-            leavedays
-            remainingleaves
+          leaveType {
+            leaveType
+            leaveID
+            leaveDays
+            remainingLeaves
           }
         }
       }

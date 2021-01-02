@@ -25,11 +25,11 @@ const updateDepartment = (_, {
           if(result && Object.keys(changeFields).length !== 0) {
 
             Designation.updateMany(
-              {"department_ID": id},
+              {"departmentID": id},
               { $set: { department: department}  }, { new: true }).then();
 
             User.updateMany(
-              {"department_ID": id},
+              {"departmentID": id},
               { $set: { department: department}  }, { new: true }).then();
 
             const modifiedObj = {

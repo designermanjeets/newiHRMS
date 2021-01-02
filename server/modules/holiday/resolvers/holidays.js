@@ -1,5 +1,5 @@
 const Holiday = require('../../../models/holiday');
-const paramHandler = require('../../../utils/paramhandler');
+const { paramHandler } = require('../../../utils/paramhandler');
 
 const getHolidays = async (_, args, { me })  => new Promise(async (resolve, reject) => {
   const param = paramHandler(args.query)

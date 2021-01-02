@@ -11,24 +11,24 @@ const typeDefs = gql`
   extend type Mutation {
 
     createLeaveType (
-      leavetype: String,
-      leavedays: Int,
-      carryforward: String,
-      carrymax: Int,
+      leaveType: String,
+      leaveDays: Int,
+      carryForward: String,
+      carryMax: Int,
       status: String,
       created_at: ISODate,
       created_by: String,
-      remainingleaves: Int
+      remainingLeaves: Int
     ): LeaveType
 
     updateLeaveType(
       id: ID!,
-      leavetype: String,
-      leavedays: Int,
-      carryforward: String,
-      carrymax: Int,
+      leaveType: String,
+      leaveDays: Int,
+      carryForward: String,
+      carryMax: Int,
       status: String,
-      remainingleaves: Int,
+      remainingLeaves: Int,
       modified: [modifiedInputs]
     ): LeaveType
 
@@ -38,14 +38,14 @@ const typeDefs = gql`
 
   type LeaveType {
     _id: ID,
-    leavetype: String!,
-    leavedays: Int!,
-    carryforward: String,
-    carrymax: Int,
+    leaveType: String!,
+    leaveDays: Int!,
+    carryForward: String,
+    carryMax: Int,
     status: String,
     created_at: ISODate,
     created_by: String,
-    remainingleaves: Int,
+    remainingLeaves: Int,
     modified: [modifiedTypes]
   }
 

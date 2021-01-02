@@ -122,7 +122,7 @@ export class HeaderComponent implements OnInit {
         }
       },
     }).valueChanges.pipe(
-      map((val: any) => val.data.getSysparameters[0].sysparams)
+      map((val: any) => val.data.getSysparameters[0] && val.data.getSysparameters[0].sysparams)
     ).subscribe((response: any) => {
       if (response) {
         this.allSysParams = response;

@@ -13,7 +13,7 @@ const createRole = (_, {
   created_at,
   permissions
   },{me,secret}) => new Promise(async (resolve, reject) => {
-  const rol = await Role.findOne({ "role_name": role_name })
+  const rol = await Role.findOne({ $or: [{ role_name }] })
   if (rol) {
     reject('Role already exist!');
   } else {
@@ -37,6 +37,7 @@ const createRole = (_, {
       created_at: created_at,
       createdRole: newRole
     }
+
     Audit.find({}).then(val => {
       if(val.length) {
         Audit.findOneAndUpdate(
@@ -46,7 +47,6 @@ const createRole = (_, {
       } else {
         Audit.create({ roleAudit: modifiedObj }).then();
       }
-      resolve(newRole);
     });
     resolve(newRole);
   }

@@ -24,7 +24,7 @@ const createHoliday = (_, {
       created_at
     });
 
-    const nmodified = {
+    const modifiedObj = {
       newHoliday_ID: newHoliday._id,
       action: 'Holiday Created',
       created_by: created_by,
@@ -35,10 +35,10 @@ const createHoliday = (_, {
       if(val.length) {
         Audit.findOneAndUpdate(
           { },
-          { $push: { holidayAudit: nmodified  }  }, { new: true })
+          { $push: { holidayAudit: modifiedObj  }  }, { new: true })
           .then();
       } else {
-        Audit.create({ holidayAudit: nmodified }).then();
+        Audit.create({ holidayAudit: modifiedObj }).then();
       }
       resolve(result);
     });

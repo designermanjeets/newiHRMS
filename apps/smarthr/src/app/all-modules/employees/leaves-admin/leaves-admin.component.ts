@@ -110,9 +110,9 @@ export class LeavesAdminComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
 
-    this.loadallLeaveTypes();
-    this.loadallLeaveApplied();
-    // this.loadAllUsers();
+    this.loadAllLeaveTypes();
+    this.loadAllLeaveApplied();
+    this.loadAllUsers();
 
     this.isAdmin = this.getUserRoles.isAdmin;
     this.isHRManager = this.getUserRoles.isHRManager;
@@ -175,7 +175,6 @@ export class LeavesAdminComponent implements OnInit, OnDestroy {
   onSelectionChanged(event: MatAutocompleteSelectedEvent) {
     this.selectedUser = _.filter(this.allusers, v => v.email === event.option.value)[0];
     // this.getUserPendingLeaves();
-    console.log(this.selectedUser.designationID);
     this.LoadDesignation(this.selectedUser.designationID);
   }
 
@@ -211,7 +210,7 @@ export class LeavesAdminComponent implements OnInit, OnDestroy {
     };
   }
 
-  loadallLeaveApplied() {
+  loadAllLeaveApplied() {
     this.apollo.watchQuery({
       query: GET_USERLEAVES_QUERY,
       variables: {
@@ -248,7 +247,7 @@ export class LeavesAdminComponent implements OnInit, OnDestroy {
     const age = moment().diff(startDate, 'months'); return isNaN(age) ? null : age;
   }
 
-  loadallLeaveTypes() {
+  loadAllLeaveTypes() {
     this.apollo.watchQuery({
       query: GET_LEAVETYPES_QUERY,
       variables: {
@@ -285,8 +284,8 @@ export class LeavesAdminComponent implements OnInit, OnDestroy {
   addReset() {
     this.isEdit = false;
     this.editLeaveAdminForm.reset();
-    // this.tempEditUserID = JSON.parse(sessionStorage.getItem('user')).userid;
-    this.editLeaveAdminForm.get('leaveType').enable();
+    this.editLeaveAdminForm.get('leaveTypeID').enable();
+    this.cdRef.detectChanges();
   }
 
   onTypeChange() {
@@ -333,7 +332,7 @@ export class LeavesAdminComponent implements OnInit, OnDestroy {
           this.editLeaveAdminForm.reset();
           $('#add_leave').modal('hide');
           this.toastr.success('Leave Applied added successfully...!', 'Success');
-          this.loadallLeaveApplied();
+          this.loadAllLeaveApplied();
           this.cdRef.detectChanges();
         }
       }, error => this.toastr.error(error, 'Error'));
@@ -373,7 +372,7 @@ export class LeavesAdminComponent implements OnInit, OnDestroy {
           this.editLeaveAdminForm.reset();
           $('#edit_leave').modal('hide');
           this.toastr.success('Leave Updated sucessfully...!', 'Success');
-          this.loadallLeaveApplied();
+          this.loadAllLeaveApplied();
           this.cdRef.detectChanges();
         }
       }, error => this.toastr.error(error, 'Error'));
@@ -397,7 +396,7 @@ export class LeavesAdminComponent implements OnInit, OnDestroy {
           if (val.data.deleteLeave) {
             $('#delete_approve').modal('hide');
             this.toastr.success('Leave deleted', 'Success');
-            this.loadallLeaveApplied();
+            this.loadAllLeaveApplied();
           }
         }, error =>
           this.toastr.error(error, 'Error')
@@ -512,7 +511,7 @@ export class LeavesAdminComponent implements OnInit, OnDestroy {
             this.editLeaveAdminForm.reset();
             $('#approverejectmodal').modal('hide');
             this.toastr.success('Leave Updated sucessfully...!', 'Success');
-            this.loadallLeaveApplied();
+            this.loadAllLeaveApplied();
             this.cdRef.detectChanges();
           }
         }, error => this.toastr.error(error, 'Error'));
@@ -543,7 +542,7 @@ export class LeavesAdminComponent implements OnInit, OnDestroy {
             this.editLeaveAdminForm.reset();
             $('#authdeclinemodal').modal('hide');
             this.toastr.success('Leave Updated sucessfully...!', 'Success');
-            this.loadallLeaveApplied();
+            this.loadAllLeaveApplied();
             this.cdRef.detectChanges();
           }
         }, error => this.toastr.error(error, 'Error'));
@@ -577,7 +576,7 @@ export class LeavesAdminComponent implements OnInit, OnDestroy {
             this.editLeaveAdminForm.reset();
             $('#approverejectmodal').modal('hide');
             this.toastr.success('Leave Updated successfully...!', 'Success');
-            this.loadallLeaveApplied();
+            this.loadAllLeaveApplied();
             this.cdRef.detectChanges();
           }
         }, error => this.toastr.error(error, 'Error'));
@@ -609,7 +608,7 @@ export class LeavesAdminComponent implements OnInit, OnDestroy {
             this.editLeaveAdminForm.reset();
             $('#authdeclinemodal').modal('hide');
             this.toastr.success('Leave Updated sucessfully...!', 'Success');
-            this.loadallLeaveApplied();
+            this.loadAllLeaveApplied();
             this.cdRef.detectChanges();
           }
         }, error => this.toastr.error(error, 'Error'));

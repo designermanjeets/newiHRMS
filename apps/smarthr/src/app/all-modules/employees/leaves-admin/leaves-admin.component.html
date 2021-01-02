@@ -12,7 +12,7 @@
                 </ul>
             </div>
             <div class="col-auto float-right ml-auto">
-                <a class="btn add-btn" data-toggle="modal" data-target="#add_leave"><i class="fa fa-plus"></i>
+                <a class="btn add-btn" (click)="addReset()" data-toggle="modal" data-target="#add_leave"><i class="fa fa-plus"></i>
                     Add Leave</a>
             </div>
         </div>
@@ -225,7 +225,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Add Leave</h5>
-        <button (click)="addReset()" type="button" class="close" data-dismiss="modal" aria-label="Close" data-target="#add_leave">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" data-target="#add_leave">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>

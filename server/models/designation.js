@@ -6,16 +6,6 @@ const subSchema = mongoose.Schema({
   modified_at: Date
 });
 
-const leaveTypeSchema = mongoose.Schema({
-  leaveType: String,
-  leaveID: String,
-  leaveDays: Number,
-  carryForward: String,
-  carryMax: Number,
-  status: String,
-  remainingLeaves: Number
-}, { strict: false});
-
 const designationSchema = new Schema({
   designation: String,
   // department: String,

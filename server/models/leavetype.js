@@ -18,6 +18,7 @@ const LeaveTypeSchema = new Schema({
   created_by: String,
   remainingLeaves: Number,
   modified : [subSchema],
-}, {collection:'LeaveType'});
+}, {collection:'LeaveType'}, { strict: false });
 
-module.exports = mongoose.model('LeaveType', LeaveTypeSchema);
+// module.exports = mongoose.model('LeaveType', LeaveTypeSchema);
+module.exports = mongoose.models['LeaveType'] || mongoose.model('LeaveType', LeaveTypeSchema);

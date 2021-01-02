@@ -1,6 +1,8 @@
 const Designation = require('./../models/designation');
 const Department = require('./../models/department');
 const Role = require('./../models/role');
+const User = require('./../models/user');
+const LeaveType = require('./../models/leavetype');
 
 const paramHandler= (qry)  => {
   let param = {};
@@ -56,4 +58,28 @@ findRole = function findRole(ID, callback){
   });
 }
 
-module.exports = { paramHandler, findDesignation, findDepartment, findRole };
+findUser = function findUser(ID, callback){
+  const foundUser = User.findById(ID, (err, obj) => {
+    if(err){
+      callback(err)
+    } else if (obj){
+      callback(null,obj)
+    } else {
+      callback(new Error('Some strange thing has happened'));
+    }
+  });
+}
+
+findLeaveType = function findLeaveType(ID, callback){
+  const foundLeaveType = LeaveType.findById(ID, (err, obj) => {
+    if(err){
+      callback(err)
+    } else if (obj){
+      callback(null,obj)
+    } else {
+      callback(new Error('Some strange thing has happened'));
+    }
+  });
+}
+
+module.exports = { paramHandler, findDesignation, findDepartment, findRole, findUser, findLeaveType };

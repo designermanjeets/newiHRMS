@@ -9,44 +9,29 @@ export class RegisterLeaveGQL extends Mutation {
   document = gql`
     mutation createLeave (
       $userID: String
-      $username: String
-      $email: String
-      $employeeID: String
-      $leaveType: String!
-      $leaveID: String!
-      $from: ISODate
-      $to: ISODate
+      $leaveTypeID: String!
+      $leaveFrom: ISODate
+      $leaveTo: ISODate
       $numberOfDays: Int
-      $remainingLeaves: Int
       $reason: String
       $created_at: ISODate
       $created_by: String
     ) {
       createLeave(
         userID: $userID
-        username: $username
-        email: $email
-        employeeID: $employeeID
-        leaveType: $leaveType
-        leaveID: $leaveID
-        from: $from
-        to: $to
+        leaveTypeID: $leaveTypeID
+        leaveFrom: $leaveFrom
+        leaveTo: $leaveTo
         numberOfDays: $numberOfDays
-        remainingLeaves: $remainingLeaves
         reason: $reason
         created_at: $created_at
         created_by: $created_by
       ) {
           userID
-          username
-          email
-          employeeID
-          leaveType
-          leaveID
-          from
-          to
+          leaveTypeID
+          leaveFrom
+          leaveTo
           numberOfDays
-          remainingLeaves
           reason
           created_at
           created_by
@@ -111,27 +96,25 @@ export class UpdateLeaveGQL extends Mutation {
 })
 export class ApproveORejectLeaveGQL extends Mutation {
   document = gql`
-    mutation approveorejectLeave (
+    mutation approveORejectLeave (
       $id: ID!
       $userID: String!
-      $leaveType: String
-      $leaveID: String
-      $status: String
+      $leaveTypeID: String
+      $leaveStatus: String
       $numberOfDays: Int
-      $approvers: [approversInput]
+      $approvers: approversInput
       $approvedBy: approvedByInput
       $rejectedBy: rejectedByInput
       $authorizedBy: authorizedByInput
       $declinedBy: declinedByInput
       $modified: [modifiedInputs]
     ) {
-      approveorejectLeave(
+      approveORejectLeave(
         id: $id
         userID: $userID
-        leaveType: $leaveType
-        leaveID: $leaveID
+        leaveTypeID: $leaveTypeID
         numberOfDays: $numberOfDays
-        status: $status
+        leaveStatus: $leaveStatus
         approvers: $approvers
         approvedBy: $approvedBy
         rejectedBy: $rejectedBy
@@ -140,9 +123,8 @@ export class ApproveORejectLeaveGQL extends Mutation {
         modified: $modified
       ) {
         _id
-        leaveType
-        leaveID
-        status
+        leaveTypeID
+        leaveStatus
         approvers {
           approverID
           approverUserName
@@ -199,18 +181,17 @@ export const GET_USERLEAVES_QUERY = gql`
       query: $pagination,
     ) {
         _id
-        leaveID
+        leaveTypeID
         leaveType
         userID
-        email
-        username
-        employeeID
-        from
-        to
+        leaveFrom
+        leaveTo
         numberOfDays
-        remainingLeaves
         reason
-        status
+        leaveStatus
+        firstname
+        lastname
+        username
         approvers {
           approverID
           approverUserName
@@ -243,46 +224,9 @@ export const GET_USER_QUERY = gql`
       query: $query,
     ) {
         _id
-        username,
-        designation {
-          _id
-          designation
-          leaveType {
-            leaveType
-            leaveID
-            leaveDays
-            remainingLeaves
-          }
-        }
-        leaveApplied {
-          _id
-          userID
-          username
-          email
-          employeeID
-          leaveType
-          reason
-          leaveID
-          numberOfDays
-          status
-          created_at
-          created_by
-          from
-          to
-          remainingLeaves
-          approvers {
-            approverID
-            approverUserName
-          }
-          approvedBy {
-            approvedByID
-            approvedByUserName
-          }
-          rejectedBy {
-            rejectedByID
-            rejectedByUserName
-          }
-        }
+        userID,
+        designationID
+        departmentID
       }
   }
 `;

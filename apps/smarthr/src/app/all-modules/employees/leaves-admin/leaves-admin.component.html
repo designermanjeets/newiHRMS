@@ -60,7 +60,7 @@
             <div class="form-group form-focus select-focus">
                 <select class="select floating form-control" (change)="searchType($event.target.value)">
                     <option value=""> -- Select -- </option>
-                    <option *ngFor="let l of allLeaveTypes" [value]="l.leaveType">{{l.leaveType}}</option>
+                    <option *ngFor="let l of allLeaveTypes" [value]="l.leaveTypeID">{{l.leaveTypeID}}</option>
                 </select>
                 <label class="focus-label">Leave Type</label>
             </div>
@@ -135,12 +135,12 @@
                     {{value}}
                   </ng-template>
                 </ngx-datatable-column>
-                <ngx-datatable-column name="From" prop="from">
+                <ngx-datatable-column name="From" prop="leaveFrom">
                   <ng-template let-row="row" let-value="value" ngx-datatable-cell-template let-rowIndex="rowIndex">
                     {{value | date}}
                   </ng-template>
                 </ngx-datatable-column>
-                <ngx-datatable-column name="To" prop="to">
+                <ngx-datatable-column name="To" prop="leaveTo">
                   <ng-template let-row="row" let-value="value" ngx-datatable-cell-template let-rowIndex="rowIndex">
                     {{value | date}}
                   </ng-template>
@@ -155,7 +155,7 @@
                     {{value}}
                   </ng-template>
                 </ngx-datatable-column>
-                <ngx-datatable-column name="Status" prop="status">
+                <ngx-datatable-column name="Status" prop="leaveStatus">
                   <ng-template let-row="row" let-value="value" ngx-datatable-cell-template let-rowIndex="rowIndex">
                     <a class="btn btn-block btn-white btn-sm btn-rounded"
                        data-toggle="modal"
@@ -243,8 +243,8 @@
                      formControlName="selectEmp"
                      [matAutocomplete]="auto">
               <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onSelectionChanged($event)">
-                <mat-option *ngFor="let option of filteredOptions | async" [value]="option.email">
-                  {{option.email}}
+                <mat-option *ngFor="let option of filteredOptions | async" [value]="option?.email">
+                  {{option?.email}}
                 </mat-option>
               </mat-autocomplete>
             </mat-form-field>
@@ -257,16 +257,16 @@
           </div>
           <div class="form-group">
             <label>Leave Type <span class="text-danger">*</span></label>
-            <select class="select form-control" (change)="onltypechange(editLeaveadminForm.get('leaveType'))"
-                    [class.invalid]="editLeaveadminForm.get('leaveType').invalid && editLeaveadminForm.get('leaveType').touched"
-                    formControlName="leaveType">
+            <select class="select form-control" (change)="onTypeChange()"
+                    [class.invalid]="editLeaveadminForm.get('leaveTypeID').invalid && editLeaveadminForm.get('leaveTypeID').touched"
+                    formControlName="leaveTypeID">
               <option value=''>--Select--</option>
-              <option *ngFor="let l of checkPendingLeaveForUser" [value]=l.leaveID>{{l.leaveType}}</option>
+              <option *ngFor="let l of userAssignedLeaves" [value]=l._id>{{l.leaveType}}</option>
             </select>
             <div
-              *ngIf="editLeaveadminForm.get('leaveType').invalid && editLeaveadminForm.get('leaveType').touched">
+              *ngIf="editLeaveadminForm.get('leaveTypeID').invalid && editLeaveadminForm.get('leaveTypeID').touched">
               <small
-                *ngIf="editLeaveadminForm.get('leaveType').invalid && editLeaveadminForm.get('leaveType').touched"
+                *ngIf="editLeaveadminForm.get('leaveTypeID').invalid && editLeaveadminForm.get('leaveTypeID').touched"
                 class="text-danger"> *Leave type is required</small>
             </div>
           </div>
@@ -277,13 +277,13 @@
                   <label>From <span class="text-danger">*</span></label>
                   <input class="form-control datecolor"
                          [matDatepicker]="picker3"
-                         [class.invalid]="editLeaveadminForm.get('from').invalid && editLeaveadminForm.get('from').touched"
-                         formControlName="from">
+                         [class.invalid]="editLeaveadminForm.get('leaveFrom').invalid && editLeaveadminForm.get('leaveFrom').touched"
+                         formControlName="leaveFrom">
                   <mat-datepicker-toggle class="formpicker" matSuffix [for]="picker3"></mat-datepicker-toggle>
                   <mat-datepicker #picker3></mat-datepicker>
-                  <div *ngIf="editLeaveadminForm.get('from').invalid && editLeaveadminForm.get('from').touched">
+                  <div *ngIf="editLeaveadminForm.get('leaveFrom').invalid && editLeaveadminForm.get('leaveFrom').touched">
                     <small
-                      *ngIf="editLeaveadminForm.get('from').invalid && editLeaveadminForm.get('from').touched"
+                      *ngIf="editLeaveadminForm.get('leaveFrom').invalid && editLeaveadminForm.get('leaveFrom').touched"
                       class="text-danger"> *From is required</small>
                   </div>
                 </div>
@@ -294,13 +294,13 @@
                   <label>To <span class="text-danger">*</span></label>
                   <input class="form-control datecolor"
                          [matDatepicker]="picker4"
-                         [class.invalid]="editLeaveadminForm.get('to').invalid && editLeaveadminForm.get('to').touched"
-                         formControlName="to">
+                         [class.invalid]="editLeaveadminForm.get('leaveTo').invalid && editLeaveadminForm.get('leaveTo').touched"
+                         formControlName="leaveTo">
                   <mat-datepicker-toggle class="formpicker" matSuffix [for]="picker4"></mat-datepicker-toggle>
                   <mat-datepicker #picker4></mat-datepicker>
-                  <div *ngIf="editLeaveadminForm.get('to').invalid && editLeaveadminForm.get('to').touched">
+                  <div *ngIf="editLeaveadminForm.get('leaveTo').invalid && editLeaveadminForm.get('leaveTo').touched">
                     <small
-                      *ngIf="editLeaveadminForm.get('to').invalid && editLeaveadminForm.get('to').touched"
+                      *ngIf="editLeaveadminForm.get('leaveTo').invalid && editLeaveadminForm.get('leaveTo').touched"
                       class="text-danger"> *To is required</small>
                   </div>
                   <small class="help-block" *ngIf="editLeaveadminForm.hasError('notSame')">
@@ -381,15 +381,15 @@
           <input type="hidden" formControlName="_id">
           <div class="form-group">
             <label>Leave Type <span class="text-danger">*</span></label>
-            <select class="select form-control" (change)="onltypechange(editLeaveadminForm.get('leaveType'))"
-                    [class.invalid]="editLeaveadminForm.get('leaveType').invalid && editLeaveadminForm.get('leaveType').touched"
-                    formControlName="leaveType">
-              <option *ngFor="let l of checkPendingLeaveForUser" [value]=l.leaveID>{{l.leaveType}}</option>
+            <select class="select form-control" (change)="onTypeChange()"
+                    [class.invalid]="editLeaveadminForm.get('leaveTypeID').invalid && editLeaveadminForm.get('leaveTypeID').touched"
+                    formControlName="leaveTypeID">
+              <option *ngFor="let l of userAssignedLeaves" [value]=l._id>{{l.leaveTypeID}}</option>
             </select>
             <div
-              *ngIf="editLeaveadminForm.get('leaveType').invalid && editLeaveadminForm.get('leaveType').touched">
+              *ngIf="editLeaveadminForm.get('leaveTypeID').invalid && editLeaveadminForm.get('leaveTypeID').touched">
               <small
-                *ngIf="editLeaveadminForm.get('leaveType').invalid && editLeaveadminForm.get('leaveType').touched"
+                *ngIf="editLeaveadminForm.get('leaveTypeID').invalid && editLeaveadminForm.get('leaveTypeID').touched"
                 class="text-danger"> *Leave type is required</small>
             </div>
           </div>
@@ -400,13 +400,13 @@
                   <label>From <span class="text-danger">*</span></label>
                   <input class="form-control datecolor"
                          [matDatepicker]="picker1"
-                         [class.invalid]="editLeaveadminForm.get('from').invalid && editLeaveadminForm.get('from').touched"
-                         formControlName="from">
+                         [class.invalid]="editLeaveadminForm.get('leaveFrom').invalid && editLeaveadminForm.get('leaveFrom').touched"
+                         formControlName="leaveFrom">
                   <mat-datepicker-toggle class="formpicker" matSuffix [for]="picker1"></mat-datepicker-toggle>
                   <mat-datepicker #picker1></mat-datepicker>
-                  <div *ngIf="editLeaveadminForm.get('from').invalid && editLeaveadminForm.get('from').touched">
+                  <div *ngIf="editLeaveadminForm.get('leaveFrom').invalid && editLeaveadminForm.get('leaveFrom').touched">
                     <small
-                      *ngIf="editLeaveadminForm.get('from').invalid && editLeaveadminForm.get('from').touched"
+                      *ngIf="editLeaveadminForm.get('leaveFrom').invalid && editLeaveadminForm.get('leaveFrom').touched"
                       class="text-danger"> *From is required</small>
                   </div>
                 </div>
@@ -417,13 +417,13 @@
                   <label>To <span class="text-danger">*</span></label>
                   <input class="form-control datecolor"
                          [matDatepicker]="picker2"
-                         [class.invalid]="editLeaveadminForm.get('to').invalid && editLeaveadminForm.get('to').touched"
-                         formControlName="to">
+                         [class.invalid]="editLeaveadminForm.get('leaveTo').invalid && editLeaveadminForm.get('leaveTo').touched"
+                         formControlName="leaveTo">
                   <mat-datepicker-toggle class="formpicker" matSuffix [for]="picker2"></mat-datepicker-toggle>
                   <mat-datepicker #picker2></mat-datepicker>
-                  <div *ngIf="editLeaveadminForm.get('to').invalid && editLeaveadminForm.get('to').touched">
+                  <div *ngIf="editLeaveadminForm.get('leaveTo').invalid && editLeaveadminForm.get('leaveTo').touched">
                     <small
-                      *ngIf="editLeaveadminForm.get('to').invalid && editLeaveadminForm.get('to').touched"
+                      *ngIf="editLeaveadminForm.get('leaveTo').invalid && editLeaveadminForm.get('leaveTo').touched"
                       class="text-danger"> *To is required</small>
                   </div>
                   <small class="help-block" *ngIf="editLeaveadminForm.hasError('notSame')">

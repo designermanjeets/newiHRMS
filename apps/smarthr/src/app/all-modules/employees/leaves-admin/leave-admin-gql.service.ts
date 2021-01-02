@@ -76,7 +76,7 @@ export class UpdateLeaveGQL extends Mutation {
       $numberOfDays: Int
       $remainingLeaves: Int
       $reason: String
-      $approvers: [approversInput]
+      $approvers: approversInput
       $approvedBy: approvedByInput
       $rejectedBy: rejectedByInput
       $modified: [modifiedInputs]

@@ -22,6 +22,7 @@ import * as moment from 'moment';
 import { GET_USERS_QUERY } from '../all-employees/employee-gql.service';
 import { MatAutocompleteSelectedEvent } from '@angular/material';
 import { GetUserRoles } from './leave-admin-gql.service';
+import { GET_DESIGNATIONS_QUERY } from '../designation/designation-gql.service';
 
 // Returns an array of dates between the two dates
 export const getDatesBetween = (startDate, endDate) => {
@@ -92,6 +93,7 @@ export class LeavesAdminComponent implements OnInit, OnDestroy {
   todaysleaves: any;
   approvedleaves: any;
   pendingleaves: any;
+  userAssignedLeaves: any;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -101,7 +103,7 @@ export class LeavesAdminComponent implements OnInit, OnDestroy {
     private registerLeaveGQL: RegisterLeaveGQL,
     private updateLeaveGQL: UpdateLeaveGQL,
     private deleteLeaveGQL: DeleteLeaveGQL,
-    private approveorejectLeave: ApproveORejectLeaveGQL,
+    private approveORejectLeave: ApproveORejectLeaveGQL,
     private cdRef: ChangeDetectorRef,
     private getUserRoles: GetUserRoles
   ) {}
@@ -110,7 +112,7 @@ export class LeavesAdminComponent implements OnInit, OnDestroy {
 
     this.loadallLeaveTypes();
     this.loadallLeaveApplied();
-    this.loadallUsers();
+    // this.loadallUsers();
 
     this.isAdmin = this.getUserRoles.isAdmin;
     this.isHRManager = this.getUserRoles.isHRManager;
@@ -119,12 +121,12 @@ export class LeavesAdminComponent implements OnInit, OnDestroy {
     this.editLeaveadminForm = this.formBuilder.group({
       _id: [''],
       selectEmp: ['', [Validators.required]],
-      leaveType: ['', [Validators.required]],
-      from: ['', [Validators.required]],
-      to: ['', [Validators.required]],
+      leaveTypeID: ['', [Validators.required]],
+      leaveFrom: ['', [Validators.required]],
+      leaveTo: ['', [Validators.required]],
       numberOfDays: ['', [Validators.required]],
-      remainingLeaves: ['', [Validators.required]],
-      reason: ['', [Validators.required]],
+      remainingLeaves: ['', []],
+      reason: ['', []],
     }, { validator: this.checkLeaveDays });
 
     this.calcRemainingOnFly();
@@ -144,15 +146,42 @@ export class LeavesAdminComponent implements OnInit, OnDestroy {
     }
   }
 
+  LoadDesignation(designationID) {
+
+    this.apollo.watchQuery({
+      query: GET_DESIGNATIONS_QUERY,
+      variables: {
+        pagination: {
+          limit: 100
+        }
+      }
+    }).valueChanges.subscribe((response: any) => {
+      if (response.data && response.data.getDesignations) {
+        this.checkPendingLeaveForUser = _.filter(response.data.getDesignations, v => v._id === designationID)[0];
+        this.userAssignedLeaves = [];
+        _.forEach(this.checkPendingLeaveForUser.leaveType, lt => {
+          _.forEach(this.allLeaveTypes, alt => {
+            if (lt === alt._id) {
+              this.userAssignedLeaves.push({ _id: alt._id,  leaveType: alt.leaveType});
+            }
+          });
+        });
+        this.cdRef.detectChanges();
+      }
+    });
+
+  }
+
   onSelectionChanged(event: MatAutocompleteSelectedEvent) {
-    const usr = _.filter(this.allusers, v => v.email === event.option.value);
-    this.selectedUser = usr[0];
-    this.getUserPendingLeaves();
+    this.selectedUser = _.filter(this.allusers, v => v.email === event.option.value)[0];
+    // this.getUserPendingLeaves();
+    console.log(this.selectedUser.designationID);
+    this.LoadDesignation(this.selectedUser.designationID);
   }
 
   checkLeaveDays(group: FormGroup) {
-    const fromCtrl = group.controls.from.value;
-    const toCtrl = group.controls.to.value;
+    const fromCtrl = group.controls.leaveFrom.value;
+    const toCtrl = group.controls.leaveTo.value;
 
     return fromCtrl <= toCtrl ? null : { notSame: true };
   }
@@ -247,7 +276,7 @@ export class LeavesAdminComponent implements OnInit, OnDestroy {
       if (response.data.users) {
         this.allusers = response.data.users;
         this.useroptions = [];
-        _.forEach(this.allusers, val => this.useroptions.push({ _id: val._id ,email: val.email }));
+        _.forEach(this.allusers, val => this.useroptions.push({ _id: val._id , email: val.email }));
         this.cdRef.detectChanges();
       }
     });
@@ -260,17 +289,9 @@ export class LeavesAdminComponent implements OnInit, OnDestroy {
     this.editLeaveadminForm.get('leaveType').enable();
   }
 
-  onltypechange(value) {
-    this.calculatePendingLeaves(value.value); // Select Option - LeaveID
-  }
-
-  calculatePendingLeaves(leaveID) { // In case of Loop Through
-    if (this.checkPendingLeaveForUser) {
-      const f = _.filter(this.checkPendingLeaveForUser, v => v.leaveID === leaveID);
-      console.log(f[0]); // Get User's Designation's Assigned Leave Type :: CL, PL ETC
-      this.editLeaveadminForm.get('remainingLeaves').patchValue(f[0].remainingLeaves);
-      this.remainTemp = JSON.parse(JSON.stringify(f[0].remainingLeaves));
-    }
+  onTypeChange() {
+    console.log(this.selectedUser); // USER
+    // this.getUserPendingLeaves(value.value); // Select Option - LeaveID
   }
 
   getUserPendingLeaves(l?) { // Para for Edit Only
@@ -284,12 +305,12 @@ export class LeavesAdminComponent implements OnInit, OnDestroy {
     }).valueChanges.subscribe((response: any) => {
       if (response.data.users) {
         this.checkPendingLeaveForUser = response.data.users[0].designation.leaveType;
-        _.forEach(this.checkPendingLeaveForUser, vl => {
-          if (vl.remainingLeaves === null || vl.remainingLeaves === 'undefined') {
-            vl.remainingLeaves = vl.leaveDays;
-          }
-        });
-        (this.isEdit && l) && this.onltypechange({value: l.leaveID}); // Only After Response
+        // _.forEach(this.checkPendingLeaveForUser, vl => {
+        //   if (vl.remainingLeaves === null || vl.remainingLeaves === 'undefined') {
+        //     vl.remainingLeaves = vl.leaveDays;
+        //   }
+        // });
+        // (this.isEdit && l) && this.onltypechange({value: l.leaveID}); // Only After Response
         this.cdRef.detectChanges();
       }
     }, error => this.toastr.error(error, 'Error'));
@@ -304,16 +325,12 @@ export class LeavesAdminComponent implements OnInit, OnDestroy {
     this.registerLeaveGQL
       .mutate({
         userID: us[0]._id,
-        username: us[0].username,
-        email: us[0].email,
-        employeeID: us[0].employeeID,
-        leaveType: lv[0].leaveType,
-        leaveID: lv[0]._id,
+        leaveTypeID: f.value.leaveTypeID,
         numberOfDays: f.value.numberOfDays,
         remainingLeaves: f.value.remainingLeaves,
         reason: f.value.reason,
-        from: f.value.from,
-        to: f.value.to,
+        leaveFrom: f.value.leaveFrom,
+        leaveTo: f.value.leaveTo,
         created_at: Date.now(),
         created_by: JSON.parse(sessionStorage.getItem('user')).username
       })
@@ -321,7 +338,7 @@ export class LeavesAdminComponent implements OnInit, OnDestroy {
         if (val.data) {
           this.editLeaveadminForm.reset();
           $('#add_leave').modal('hide');
-          this.toastr.success('Leave Applied added sucessfully...!', 'Success');
+          this.toastr.success('Leave Applied added successfully...!', 'Success');
           this.loadallLeaveApplied();
           this.cdRef.detectChanges();
         }
@@ -480,15 +497,14 @@ export class LeavesAdminComponent implements OnInit, OnDestroy {
   }
 
   approveleave(status) {
-    if (this.tempLv.status === 'pending') {
-      this.approveorejectLeave
+    if (this.tempLv.leaveStatus === 'pending') {
+      this.approveORejectLeave
         .mutate({
           id: this.tempLv._id,
           userID: this.tempLv.userID,
-          leaveType: this.tempLv.leaveType,
-          leaveID: this.tempLv.leaveID,
+          leaveTypeID: this.tempLv.leaveTypeID,
           numberOfDays: this.tempLv.numberOfDays,
-          status: status,
+          leaveStatus: status,
           approvedBy: {
             approvedByID: JSON.parse(sessionStorage.getItem('user')).userid,
             approvedByUserName: JSON.parse(sessionStorage.getItem('user')).username
@@ -513,14 +529,13 @@ export class LeavesAdminComponent implements OnInit, OnDestroy {
     }
 
     if (status === 'authorized') {
-      this.approveorejectLeave
+      this.approveORejectLeave
         .mutate({
           id: this.tempLv._id,
           userID: this.tempLv.userID,
-          leaveType: this.tempLv.leaveType,
-          leaveID: this.tempLv.leaveID,
+          leaveTypeID: this.tempLv.leaveTypeID,
           numberOfDays: this.tempLv.numberOfDays,
-          status: status,
+          leaveStatus: status,
           authorizedBy: {
             authorizedByID: JSON.parse(sessionStorage.getItem('user')).userid,
             authorizedByUserName: JSON.parse(sessionStorage.getItem('user')).username
@@ -547,15 +562,14 @@ export class LeavesAdminComponent implements OnInit, OnDestroy {
   }
 
   rejectleave(status) {
-    if (this.tempLv.status === 'pending') {
-      this.approveorejectLeave
+    if (this.tempLv.leaveStatus === 'pending') {
+      this.approveORejectLeave
         .mutate({
           id: this.tempLv._id,
           userID: this.tempLv.userID,
-          leaveType: this.tempLv.leaveType,
-          leaveID: this.tempLv.leaveID,
+          leaveTypeID: this.tempLv.leaveTypeID,
           numberOfDays: this.tempLv.numberOfDays,
-          status: status,
+          leaveStatus: status,
           rejectedBy: {
             rejectedByID: JSON.parse(sessionStorage.getItem('user')).userid,
             rejectedByUserName: JSON.parse(sessionStorage.getItem('user')).username
@@ -570,7 +584,7 @@ export class LeavesAdminComponent implements OnInit, OnDestroy {
             this.tempLv = null;
             this.editLeaveadminForm.reset();
             $('#approverejectmodal').modal('hide');
-            this.toastr.success('Leave Updated sucessfully...!', 'Success');
+            this.toastr.success('Leave Updated successfully...!', 'Success');
             this.loadallLeaveApplied();
             this.cdRef.detectChanges();
           }
@@ -580,7 +594,7 @@ export class LeavesAdminComponent implements OnInit, OnDestroy {
     }
 
     if (status === 'declined') {
-      this.approveorejectLeave
+      this.approveORejectLeave
         .mutate({
           id: this.tempLv._id,
           userID: this.tempLv.userID,

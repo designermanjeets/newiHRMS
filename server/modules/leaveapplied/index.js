@@ -12,20 +12,15 @@ const typeDefs = gql`
 
     createLeave (
       userID: String,
-      username: String,
-      email: String,
-      employeeID: String,
-      leaveType: String,
-      leaveID: String,
+      leaveTypeID: String,
       numberOfDays: Int,
-      status: String,
+      leaveStatus: String,
       reason: String,
       created_at: ISODate,
       created_by:String,
-      from: ISODate,
-      to: ISODate,
-      approvers: [approversInput],
-      remainingLeaves: Int
+      leaveFrom: ISODate,
+      leaveTo: ISODate,
+      approvers: approversInput,
     ): LeaveApplied,
 
     updateLeave(
@@ -37,14 +32,14 @@ const typeDefs = gql`
       leaveType: String
       leaveID: String
       numberOfDays: Int
-      status: String
+      leaveStatus: String
       reason: String
       created_at: ISODate
       created_by:String
-      from: ISODate
-      to: ISODate
+      leaveFrom: ISODate
+      leaveTo: ISODate
       remainingLeaves: Int
-      approvers: [approversInput]
+      approvers: approversInput
       approvedBy: approvedByInput
       rejectedBy: rejectedByInput
       authorizedBy: authorizedByInput
@@ -52,14 +47,13 @@ const typeDefs = gql`
       modified: [modifiedInputs]
     ): LeaveApplied,
 
-    approveorejectLeave(
+    approveORejectLeave(
       id: ID!
       userID: String!
-      leaveType: String
-      leaveID: String
+      leaveTypeID: String
       numberOfDays: Int
-      status: String
-      approvers: [approversInput]
+      leaveStatus: String
+      approvers: approversInput
       approvedBy: approvedByInput
       rejectedBy: rejectedByInput
       authorizedBy: authorizedByInput
@@ -73,20 +67,19 @@ const typeDefs = gql`
   type LeaveApplied{
     _id: ID
     userID: String
-    username: String
-    email: String
-    employeeID: String
+    leaveTypeID: String
     leaveType: String
-    leaveID: String
     numberOfDays: Int
-    status: String
+    leaveStatus: String
     reason: String
     created_at: ISODate
     created_by:String
-    from: ISODate
-    to: ISODate
-    remainingLeaves: Int
-    approvers: [approversType]
+    leaveFrom: ISODate
+    leaveTo: ISODate
+    username: String
+    firstname: String
+    lastname: String
+    approvers: approversType
     approvedBy: approvedByType
     rejectedBy: rejectedByType
     authorizedBy: authorizedByType

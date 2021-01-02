@@ -9,7 +9,7 @@ const auditSchema = mongoose.Schema({
   modified_at: Date
 }, {strict: false}); //,{ _id : false }
 
-const userSchema = new Schema({
+const AuditSchema = new Schema({
   userAudit : [auditSchema],
   desigAudit : [auditSchema],
   departAudit : [auditSchema],
@@ -23,4 +23,4 @@ const userSchema = new Schema({
 }, {collection:'Audit'});
 
 
-module.exports = mongoose.model('Audit', userSchema);
+module.exports = mongoose.model('Audit', AuditSchema);

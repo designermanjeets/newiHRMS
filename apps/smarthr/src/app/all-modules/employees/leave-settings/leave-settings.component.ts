@@ -182,8 +182,6 @@ export class LeaveSettingsComponent implements OnInit {
     });
   }
 
-
-
   getLeaveTypes() {
     this.apollo.watchQuery({
       query: GET_LEAVETYPES_QUERY,

@@ -1,105 +1,74 @@
 const User = require('../../../models/user');
 const Audit = require('../../../models/Audit');
+const LeaveApplied = require('../../../models/leaveapplied');
 
 const createLeave = (_, {
-  leaveType,
-  leaveID,
+  leaveTypeID,
   userID,
-  username,
-  email,
-  employeeID,
   numberOfDays,
-  status,
-  approver,
+  leaveStatus,
   reason,
-  created_at,
   created_by,
-  from,
-  to,
-  remainingLeaves
-},{me,secret}) => new Promise(async (resolve, reject) => {
+  leaveFrom,
+  leaveTo
+}, { me, secret }) => new Promise(async (resolve, reject) => {
   let params = {
     userID,
-    username,
-    email,
-    employeeID,
-    leaveType,
-    leaveID,
+    leaveTypeID,
     numberOfDays,
-    status,
-    approver,
+    leaveStatus,
     reason,
-    created_at,
     created_by,
-    from,
-    to,
-    remainingLeaves
-  }
-  params.status = 'pending';
+    leaveFrom,
+    leaveTo
+  };
 
-  const user = await User.findById({_id: userID})
-  if (!user) reject (new Error('No User Found!'))
+  const user = await User.findById({ _id: userID });
+
+  if (!user) reject(new Error('No User Found!'));
+
   if (user) {
-    if (!user.leaveApplied)
-      user['leaveApplied'] = []; // If Done here
 
-      let found = false;
-      user.leaveApplied.forEach(l => {
-      if((new Date(l.from) <= new Date(to)) && (new Date(from) <= new Date(l.to))) {
-        if (l.status !== 'declined' && l.status !== 'rejected') {
-          // overlapping dates
-          // console.log('Overlapping);
-          // console.log(l);
-          found = true;
-          reject(new Error(`Leave within selected time period is already exists! Choose another slot.`));
-        }
+    const userSpecificOverlapCheck = await LeaveApplied.find({
+        $and: [
+          { userID },
+          { leaveTypeID },
+          {
+            $or: [
+              { leaveFrom: { $lte: new Date(leaveFrom) }, leaveTo: { $gte: new Date(leaveTo) } },
+              { leaveFrom: { $lte: new Date(leaveFrom) }, leaveTo: { $gte: new Date(leaveTo) } },
+              { leaveFrom: { $gt: new Date(leaveFrom) }, leaveTo: { $lt: new Date(leaveTo) } }
+            ]
+          }
+        ]
       }
-    });
-    if (!found) {
-      user.leaveApplied.push(params);
+    );
 
-      let remn = 0;
-
-      // Below Update User Leaves
-      user.designation.leaveType.forEach(val => {
-        if (val.leaveID === params.leaveID) {
-          if (!val.remainingLeaves) {
-            val.remainingLeaves = val.leaveDays - params.numberOfDays;
-          } else {
-            val.remainingLeaves = val.remainingLeaves - params.numberOfDays;
-          }
-          remn = val.remainingLeaves;
-        }
-
-        user.leaveApplied.forEach(va => {
-          if(va.leaveID === leaveID) {
-            va.remainingLeaves = remn;
-          }
-        });
-      });
+    if (!userSpecificOverlapCheck || !userSpecificOverlapCheck.length) {
+      const newLeaveApplied = await LeaveApplied.create({ ...params });
 
       const modified = {
-        leaveID: leaveID,
+        leaveTypeID: leaveTypeID,
         action: 'User Applied Leave',
         created_by: created_by,
-        created_at: created_at,
-        createdLeave: params
-      }
+        created_at: Date.now(),
+        createdLeave: newLeaveApplied
+      };
+
       Audit.find({}).then(val => {
-        if(val.length) {
+        if (val.length) {
           Audit.findOneAndUpdate(
-            { },
-            { $push: { leaveAppliedAudit: modified  }  }, { new: true })
-            .then();
+            {},
+            { $push: { leaveAppliedAudit: modified } }, { new: true });
         } else {
-          Audit.create({ leaveAppliedAudit: modified })
-            .then();
+          Audit.create({ leaveAppliedAudit: modified });
         }
       });
 
-      user.save();
+      resolve(newLeaveApplied);
+    } else {
+      reject(new Error('Overlapping Leave!'));
     }
-    resolve(user);
   }
 });
 

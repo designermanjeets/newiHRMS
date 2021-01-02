@@ -26,16 +26,10 @@ const typeDefs = gql`
     updateLeave(
       id: ID!
       userID: String!
-      username: String
-      email: String
-      employeeID: String
-      leaveType: String
-      leaveID: String
+      leaveTypeID: String
       numberOfDays: Int
       leaveStatus: String
       reason: String
-      created_at: ISODate
-      created_by:String
       leaveFrom: ISODate
       leaveTo: ISODate
       remainingLeaves: Int

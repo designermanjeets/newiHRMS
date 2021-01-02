@@ -201,7 +201,7 @@
                     ></div>
 <!--                    <button *ngIf="(row.status !== 'authorized' && row.status !== 'declined')" class="btn btn-block btn-primary btn-sm btn-rounded" (click)="authLeave(row)">Authorize</button>-->
                     <button *ngIf="(row.status !== 'rejected' && row.status !== 'approved')"  class="btn btn-default" data-toggle="modal"
-                            data-target="#edit_leave" (click)="edit(row._id)">
+                            data-target="#edit_leave" (click)="edit(row)">
                       <i class="fa fa-pencil-square" aria-hidden="true"></i>
                     </button>
                     <button [ngClass]="{'pos-rel': isAdmin}" *ngIf="(row.status !== 'rejected' && row.status !== 'approved') || isAdmin"  class="btn btn-default" data-toggle="modal"
@@ -230,7 +230,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <form (ngSubmit)="addleaves(editLeaveadminForm)" [formGroup]="editLeaveadminForm">
+        <form (ngSubmit)="addLeaves(editLeaveAdminForm)" [formGroup]="editLeaveAdminForm">
 
           <div class="form-group">
             <label>Select Employee <span class="text-danger">*</span></label>
@@ -249,24 +249,24 @@
               </mat-autocomplete>
             </mat-form-field>
             <div
-              *ngIf="editLeaveadminForm.get('selectEmp').invalid && editLeaveadminForm.get('selectEmp').touched">
+              *ngIf="editLeaveAdminForm.get('selectEmp').invalid && editLeaveAdminForm.get('selectEmp').touched">
               <small
-                *ngIf="editLeaveadminForm.get('selectEmp').invalid && editLeaveadminForm.get('selectEmp').touched"
+                *ngIf="editLeaveAdminForm.get('selectEmp').invalid && editLeaveAdminForm.get('selectEmp').touched"
                 class="text-danger"> *Employee is required</small>
             </div>
           </div>
           <div class="form-group">
             <label>Leave Type <span class="text-danger">*</span></label>
             <select class="select form-control" (change)="onTypeChange()"
-                    [class.invalid]="editLeaveadminForm.get('leaveTypeID').invalid && editLeaveadminForm.get('leaveTypeID').touched"
+                    [class.invalid]="editLeaveAdminForm.get('leaveTypeID').invalid && editLeaveAdminForm.get('leaveTypeID').touched"
                     formControlName="leaveTypeID">
               <option value=''>--Select--</option>
               <option *ngFor="let l of userAssignedLeaves" [value]=l._id>{{l.leaveType}}</option>
             </select>
             <div
-              *ngIf="editLeaveadminForm.get('leaveTypeID').invalid && editLeaveadminForm.get('leaveTypeID').touched">
+              *ngIf="editLeaveAdminForm.get('leaveTypeID').invalid && editLeaveAdminForm.get('leaveTypeID').touched">
               <small
-                *ngIf="editLeaveadminForm.get('leaveTypeID').invalid && editLeaveadminForm.get('leaveTypeID').touched"
+                *ngIf="editLeaveAdminForm.get('leaveTypeID').invalid && editLeaveAdminForm.get('leaveTypeID').touched"
                 class="text-danger"> *Leave type is required</small>
             </div>
           </div>
@@ -277,33 +277,33 @@
                   <label>From <span class="text-danger">*</span></label>
                   <input class="form-control datecolor"
                          [matDatepicker]="picker3"
-                         [class.invalid]="editLeaveadminForm.get('leaveFrom').invalid && editLeaveadminForm.get('leaveFrom').touched"
+                         [class.invalid]="editLeaveAdminForm.get('leaveFrom').invalid && editLeaveAdminForm.get('leaveFrom').touched"
                          formControlName="leaveFrom">
                   <mat-datepicker-toggle class="formpicker" matSuffix [for]="picker3"></mat-datepicker-toggle>
                   <mat-datepicker #picker3></mat-datepicker>
-                  <div *ngIf="editLeaveadminForm.get('leaveFrom').invalid && editLeaveadminForm.get('leaveFrom').touched">
+                  <div *ngIf="editLeaveAdminForm.get('leaveFrom').invalid && editLeaveAdminForm.get('leaveFrom').touched">
                     <small
-                      *ngIf="editLeaveadminForm.get('leaveFrom').invalid && editLeaveadminForm.get('leaveFrom').touched"
+                      *ngIf="editLeaveAdminForm.get('leaveFrom').invalid && editLeaveAdminForm.get('leaveFrom').touched"
                       class="text-danger"> *From is required</small>
                   </div>
                 </div>
               </div>
               <div class="col-6">
                 <div class="form-group pos-rel"
-                     [class.has-error]="editLeaveadminForm.hasError('notSame')">
+                     [class.has-error]="editLeaveAdminForm.hasError('notSame')">
                   <label>To <span class="text-danger">*</span></label>
                   <input class="form-control datecolor"
                          [matDatepicker]="picker4"
-                         [class.invalid]="editLeaveadminForm.get('leaveTo').invalid && editLeaveadminForm.get('leaveTo').touched"
+                         [class.invalid]="editLeaveAdminForm.get('leaveTo').invalid && editLeaveAdminForm.get('leaveTo').touched"
                          formControlName="leaveTo">
                   <mat-datepicker-toggle class="formpicker" matSuffix [for]="picker4"></mat-datepicker-toggle>
                   <mat-datepicker #picker4></mat-datepicker>
-                  <div *ngIf="editLeaveadminForm.get('leaveTo').invalid && editLeaveadminForm.get('leaveTo').touched">
+                  <div *ngIf="editLeaveAdminForm.get('leaveTo').invalid && editLeaveAdminForm.get('leaveTo').touched">
                     <small
-                      *ngIf="editLeaveadminForm.get('leaveTo').invalid && editLeaveadminForm.get('leaveTo').touched"
+                      *ngIf="editLeaveAdminForm.get('leaveTo').invalid && editLeaveAdminForm.get('leaveTo').touched"
                       class="text-danger"> *To is required</small>
                   </div>
-                  <small class="help-block" *ngIf="editLeaveadminForm.hasError('notSame')">
+                  <small class="help-block" *ngIf="editLeaveAdminForm.hasError('notSame')">
                     To date should be greater than or equal to from date
                   </small>
                 </div>
@@ -316,13 +316,13 @@
                 <div class="form-group">
                   <label>Number of days <span class="text-danger">*</span></label>
                   <input class="form-control" type="number"
-                         [class.invalid]="editLeaveadminForm.get('numberOfDays').invalid && editLeaveadminForm.get('numberOfDays').touched"
+                         [class.invalid]="editLeaveAdminForm.get('numberOfDays').invalid && editLeaveAdminForm.get('numberOfDays').touched"
                          formControlName="numberOfDays" min="0"
                   >
                   <div
-                    *ngIf="editLeaveadminForm.get('numberOfDays').invalid && editLeaveadminForm.get('numberOfDays').touched">
+                    *ngIf="editLeaveAdminForm.get('numberOfDays').invalid && editLeaveAdminForm.get('numberOfDays').touched">
                     <small
-                      *ngIf="editLeaveadminForm.get('numberOfDays').invalid && editLeaveadminForm.get('numberOfDays').touched"
+                      *ngIf="editLeaveAdminForm.get('numberOfDays').invalid && editLeaveAdminForm.get('numberOfDays').touched"
                       class="text-danger"> *No.of days is required</small>
                   </div>
                 </div>
@@ -331,12 +331,12 @@
                 <div class="form-group">
                   <label>Remaining Leaves <span class="text-danger">*</span></label>
                   <input class="form-control" readonly type="number"
-                         [class.invalid]="editLeaveadminForm.get('remainingLeaves').invalid && editLeaveadminForm.get('remainingLeaves').touched"
+                         [class.invalid]="editLeaveAdminForm.get('remainingLeaves').invalid && editLeaveAdminForm.get('remainingLeaves').touched"
                          formControlName="remainingLeaves">
                   <div
-                    *ngIf="editLeaveadminForm.get('remainingLeaves').invalid && editLeaveadminForm.get('remainingLeaves').touched">
+                    *ngIf="editLeaveAdminForm.get('remainingLeaves').invalid && editLeaveAdminForm.get('remainingLeaves').touched">
                     <small
-                      *ngIf="editLeaveadminForm.get('remainingLeaves').invalid && editLeaveadminForm.get('remainingLeaves').touched"
+                      *ngIf="editLeaveAdminForm.get('remainingLeaves').invalid && editLeaveAdminForm.get('remainingLeaves').touched"
                       class="text-danger"> *Remaining Leaves is required</small>
                   </div>
                 </div>
@@ -346,17 +346,17 @@
           <div class="form-group">
             <label>Leave Reason <span class="text-danger">*</span></label>
             <textarea rows="4" class="form-control"
-                      [class.invalid]="editLeaveadminForm.get('reason').invalid && editLeaveadminForm.get('reason').touched"
+                      [class.invalid]="editLeaveAdminForm.get('reason').invalid && editLeaveAdminForm.get('reason').touched"
                       formControlName="reason"></textarea>
             <div
-              *ngIf="editLeaveadminForm.get('reason').invalid && editLeaveadminForm.get('reason').touched">
+              *ngIf="editLeaveAdminForm.get('reason').invalid && editLeaveAdminForm.get('reason').touched">
               <small
-                *ngIf="editLeaveadminForm.get('reason').invalid && editLeaveadminForm.get('reason').touched"
+                *ngIf="editLeaveAdminForm.get('reason').invalid && editLeaveAdminForm.get('reason').touched"
                 class="text-danger"> *Leave Reason is required</small>
             </div>
           </div>
           <div class="submit-section">
-            <button class="btn btn-primary submit-btn" type="submit" [disabled]="editLeaveadminForm.invalid">Submit</button>
+            <button class="btn btn-primary submit-btn" type="submit" [disabled]="editLeaveAdminForm.invalid">Submit</button>
           </div>
         </form>
       </div>
@@ -377,19 +377,19 @@
         </button>
       </div>
       <div class="modal-body">
-        <form (ngSubmit)="editLeaves(editLeaveadminForm)" [formGroup]="editLeaveadminForm">
+        <form (ngSubmit)="editLeaves(editLeaveAdminForm)" [formGroup]="editLeaveAdminForm">
           <input type="hidden" formControlName="_id">
           <div class="form-group">
             <label>Leave Type <span class="text-danger">*</span></label>
             <select class="select form-control" (change)="onTypeChange()"
-                    [class.invalid]="editLeaveadminForm.get('leaveTypeID').invalid && editLeaveadminForm.get('leaveTypeID').touched"
+                    [class.invalid]="editLeaveAdminForm.get('leaveTypeID').invalid && editLeaveAdminForm.get('leaveTypeID').touched"
                     formControlName="leaveTypeID">
-              <option *ngFor="let l of userAssignedLeaves" [value]=l._id>{{l.leaveTypeID}}</option>
+              <option *ngFor="let l of allLeaveTypes" [value]=l._id>{{l.leaveType}}</option>
             </select>
             <div
-              *ngIf="editLeaveadminForm.get('leaveTypeID').invalid && editLeaveadminForm.get('leaveTypeID').touched">
+              *ngIf="editLeaveAdminForm.get('leaveTypeID').invalid && editLeaveAdminForm.get('leaveTypeID').touched">
               <small
-                *ngIf="editLeaveadminForm.get('leaveTypeID').invalid && editLeaveadminForm.get('leaveTypeID').touched"
+                *ngIf="editLeaveAdminForm.get('leaveTypeID').invalid && editLeaveAdminForm.get('leaveTypeID').touched"
                 class="text-danger"> *Leave type is required</small>
             </div>
           </div>
@@ -400,33 +400,33 @@
                   <label>From <span class="text-danger">*</span></label>
                   <input class="form-control datecolor"
                          [matDatepicker]="picker1"
-                         [class.invalid]="editLeaveadminForm.get('leaveFrom').invalid && editLeaveadminForm.get('leaveFrom').touched"
+                         [class.invalid]="editLeaveAdminForm.get('leaveFrom').invalid && editLeaveAdminForm.get('leaveFrom').touched"
                          formControlName="leaveFrom">
                   <mat-datepicker-toggle class="formpicker" matSuffix [for]="picker1"></mat-datepicker-toggle>
                   <mat-datepicker #picker1></mat-datepicker>
-                  <div *ngIf="editLeaveadminForm.get('leaveFrom').invalid && editLeaveadminForm.get('leaveFrom').touched">
+                  <div *ngIf="editLeaveAdminForm.get('leaveFrom').invalid && editLeaveAdminForm.get('leaveFrom').touched">
                     <small
-                      *ngIf="editLeaveadminForm.get('leaveFrom').invalid && editLeaveadminForm.get('leaveFrom').touched"
+                      *ngIf="editLeaveAdminForm.get('leaveFrom').invalid && editLeaveAdminForm.get('leaveFrom').touched"
                       class="text-danger"> *From is required</small>
                   </div>
                 </div>
               </div>
               <div class="col-6">
                 <div class="form-group pos-rel"
-                     [class.has-error]="editLeaveadminForm.hasError('notSame')">
+                     [class.has-error]="editLeaveAdminForm.hasError('notSame')">
                   <label>To <span class="text-danger">*</span></label>
                   <input class="form-control datecolor"
                          [matDatepicker]="picker2"
-                         [class.invalid]="editLeaveadminForm.get('leaveTo').invalid && editLeaveadminForm.get('leaveTo').touched"
+                         [class.invalid]="editLeaveAdminForm.get('leaveTo').invalid && editLeaveAdminForm.get('leaveTo').touched"
                          formControlName="leaveTo">
                   <mat-datepicker-toggle class="formpicker" matSuffix [for]="picker2"></mat-datepicker-toggle>
                   <mat-datepicker #picker2></mat-datepicker>
-                  <div *ngIf="editLeaveadminForm.get('leaveTo').invalid && editLeaveadminForm.get('leaveTo').touched">
+                  <div *ngIf="editLeaveAdminForm.get('leaveTo').invalid && editLeaveAdminForm.get('leaveTo').touched">
                     <small
-                      *ngIf="editLeaveadminForm.get('leaveTo').invalid && editLeaveadminForm.get('leaveTo').touched"
+                      *ngIf="editLeaveAdminForm.get('leaveTo').invalid && editLeaveAdminForm.get('leaveTo').touched"
                       class="text-danger"> *To is required</small>
                   </div>
-                  <small class="help-block" *ngIf="editLeaveadminForm.hasError('notSame')">
+                  <small class="help-block" *ngIf="editLeaveAdminForm.hasError('notSame')">
                     To date should be greater than or equal to from date
                   </small>
                 </div>
@@ -440,12 +440,12 @@
                 <div class="form-group">
                   <label>Number of days <span class="text-danger">*</span></label>
                   <input class="form-control" type="number"
-                         [class.invalid]="editLeaveadminForm.get('numberOfDays').invalid && editLeaveadminForm.get('numberOfDays').touched"
+                         [class.invalid]="editLeaveAdminForm.get('numberOfDays').invalid && editLeaveAdminForm.get('numberOfDays').touched"
                          formControlName="numberOfDays" min="0">
                   <div
-                    *ngIf="editLeaveadminForm.get('numberOfDays').invalid && editLeaveadminForm.get('numberOfDays').touched">
+                    *ngIf="editLeaveAdminForm.get('numberOfDays').invalid && editLeaveAdminForm.get('numberOfDays').touched">
                     <small
-                      *ngIf="editLeaveadminForm.get('numberOfDays').invalid && editLeaveadminForm.get('numberOfDays').touched"
+                      *ngIf="editLeaveAdminForm.get('numberOfDays').invalid && editLeaveAdminForm.get('numberOfDays').touched"
                       class="text-danger"> *No.of days is required</small>
                   </div>
                 </div>
@@ -454,12 +454,12 @@
                 <div class="form-group">
                   <label>Remaining Leaves <span class="text-danger">*</span></label>
                   <input class="form-control" readonly type="number"
-                         [class.invalid]="editLeaveadminForm.get('remainingLeaves').invalid && editLeaveadminForm.get('remainingLeaves').touched"
+                         [class.invalid]="editLeaveAdminForm.get('remainingLeaves').invalid && editLeaveAdminForm.get('remainingLeaves').touched"
                          formControlName="remainingLeaves">
                   <div
-                    *ngIf="editLeaveadminForm.get('remainingLeaves').invalid && editLeaveadminForm.get('remainingLeaves').touched">
+                    *ngIf="editLeaveAdminForm.get('remainingLeaves').invalid && editLeaveAdminForm.get('remainingLeaves').touched">
                     <small
-                      *ngIf="editLeaveadminForm.get('remainingLeaves').invalid && editLeaveadminForm.get('remainingLeaves').touched"
+                      *ngIf="editLeaveAdminForm.get('remainingLeaves').invalid && editLeaveAdminForm.get('remainingLeaves').touched"
                       class="text-danger"> *Remaining Leaves is required</small>
                   </div>
                 </div>
@@ -469,17 +469,17 @@
           <div class="form-group">
             <label>Leave Reason <span class="text-danger">*</span></label>
             <textarea rows="4" class="form-control"
-                      [class.invalid]="editLeaveadminForm.get('reason').invalid && editLeaveadminForm.get('reason').touched"
+                      [class.invalid]="editLeaveAdminForm.get('reason').invalid && editLeaveAdminForm.get('reason').touched"
                       formControlName="reason"></textarea>
             <div
-              *ngIf="editLeaveadminForm.get('reason').invalid && editLeaveadminForm.get('reason').touched">
+              *ngIf="editLeaveAdminForm.get('reason').invalid && editLeaveAdminForm.get('reason').touched">
               <small
-                *ngIf="editLeaveadminForm.get('reason').invalid && editLeaveadminForm.get('reason').touched"
+                *ngIf="editLeaveAdminForm.get('reason').invalid && editLeaveAdminForm.get('reason').touched"
                 class="text-danger"> *Leave Reason is required</small>
             </div>
           </div>
           <div class="submit-section">
-            <button class="btn btn-primary submit-btn" type="submit" [disabled]="editLeaveadminForm.invalid">Submit</button>
+            <button class="btn btn-primary submit-btn" type="submit" [disabled]="editLeaveAdminForm.invalid">Submit</button>
           </div>
         </form>
       </div>
@@ -501,7 +501,7 @@
           <div class="row">
             <div class="col-6">
               <a  class="btn btn-primary continue-btn"
-                  (click)="deleteleave()">Delete</a>
+                  (click)="deleteLeave()">Delete</a>
             </div>
             <div class="col-6">
               <a  data-dismiss="modal"

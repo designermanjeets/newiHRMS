@@ -1,4 +1,4 @@
-const { getAttendances, getUserAttendances } = require('./attendances')
+const { getAttendances } = require('./attendances')
 const createAttendance  = require('./createattendance')
 const updateAttendance = require('./updateattendance')
 const deleteAttendance = require('./deleteattendance')
@@ -9,7 +9,6 @@ const insertManyAttendances = require('./insertmanyattendances')
 const resolvers = {
   Query: {
     getAttendances,
-    getUserAttendances
   },
   Mutation: {
     createAttendance,

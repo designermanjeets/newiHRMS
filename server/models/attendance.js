@@ -8,19 +8,17 @@ const subSchema = mongoose.Schema({
 });
 
 const attendanceSchema = new Schema({
-  id: String,
-  userID: String,
-  user_email: String,
-  username: String,
-  firstname: String,
-  lastname: String,
-  date: Date,
-  punchIn: String,
-  punchOut: String,
-  created_at: Date,
-  created_by: String,
-  modified : [subSchema],
-
+  attendanceDate: [
+    {
+      userID: String,
+      date: Date,
+      punchIn: String,
+      punchOut: String,
+      created_at: Date,
+      created_by: String,
+      modified : [subSchema],
+    }
+  ]
 }, { collection:'Attendance' });
 
 module.exports = mongoose.model('Attendance', attendanceSchema);

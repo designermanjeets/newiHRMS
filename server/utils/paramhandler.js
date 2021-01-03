@@ -3,6 +3,9 @@ const Department = require('./../models/department');
 const Role = require('./../models/role');
 const User = require('./../models/user');
 const LeaveType = require('./../models/leavetype');
+const Attendance = require('./../models/attendance');
+const mongoose = require('mongoose'); // ES5 or below
+var ObjectId = mongoose.Types.ObjectId;
 
 const paramHandler= (qry)  => {
   let param = {};
@@ -82,4 +85,33 @@ findLeaveType = function findLeaveType(ID, callback){
   });
 }
 
-module.exports = { paramHandler, findDesignation, findDepartment, findRole, findUser, findLeaveType };
+findAttendance = function findAttendance(ID, callback){
+
+  const foundAttendance = Attendance.find(
+    {
+      $and: [
+        { 'attendanceDate._id': ID }
+      ]
+    }
+  , (err, obj) => {
+      if(err){
+        callback(err)
+      } else if (obj){
+        callback(null,obj)
+      } else {
+        callback(new Error('Some strange thing has happened'));
+      }
+    });
+
+  // const foundAttendance = Attendance.findById(ID , (err, obj) => {
+  //   if(err){
+  //     callback(err)
+  //   } else if (obj){
+  //     callback(null,obj)
+  //   } else {
+  //     callback(new Error('Some strange thing has happened'));
+  //   }
+  // });
+}
+
+module.exports = { paramHandler, findDesignation, findDepartment, findRole, findUser, findLeaveType, findAttendance };

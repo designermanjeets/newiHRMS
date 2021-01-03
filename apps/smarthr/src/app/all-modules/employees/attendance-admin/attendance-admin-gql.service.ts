@@ -87,14 +87,12 @@ export class DeleteAttendanceAdminGQL extends Mutation {
         $id: ID!,
         $date: ISODate!
         $userID: String!
-        $user_email: String!
         $modified: [modifiedInputs]
     ) {
       deleteAttendance(
         id:  $id,
         date: $date
         userID: $userID
-        user_email: $user_email
         modified: $modified
       ) {
           _id
@@ -112,17 +110,7 @@ export const GET_ATTENDANCES_ADMIN_QUERY = gql`
     ) {
       getAttendances(
         query: $pagination
-      ) {
-          _id
-          userID
-          user_email
-          username
-          firstname
-          lastname
-          punchIn
-          punchOut
-          date
-        }
+      )
     }
 `;
 
@@ -135,7 +123,6 @@ export const GET_USER_ATTENDANCES_ADMIN_QUERY = gql`
       ) {
           _id
           userID
-          user_email
           username
           firstname
           lastname

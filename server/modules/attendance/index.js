@@ -4,7 +4,7 @@ const { gql } = require('apollo-server-express')
 const typeDefs = gql`
   extend type Query {
 
-    getAttendances(query: Pagination!): [Attendance]
+    getAttendances(query: Pagination!): Void
     getUserAttendances(query: Pagination!): [Attendance]
 
   }
@@ -12,25 +12,12 @@ const typeDefs = gql`
   extend type Mutation {
 
     createAttendance (
-      userID: String!,
-      user_email: String!,
-      username: String,
-      firstname: String,
-      lastname: String,
-      date: ISODate!,
-      punchIn: String!,
-      punchOut: String!,
-      created_at: ISODate!,
-      created_by: String,
+      attendanceDate : [AttendanceDateInput]
     ): Attendance,
 
     updateAttendance (
       id: ID!,
       userID: String!,
-      user_email: String!,
-      username: String,
-      firstname: String,
-      lastname: String,
       date: ISODate!,
       punchIn: String,
       punchOut: String,
@@ -40,7 +27,6 @@ const typeDefs = gql`
     deleteAttendance(
       id: ID!,
       userID: String!,
-      user_email: String!,
       date: ISODate!,
       modified: [modifiedInputs]
     ): Attendance,
@@ -53,25 +39,13 @@ const typeDefs = gql`
 
   type Attendance {
     _id: ID,
-    userID: String!,
-    user_email: String!,
-    employeeID: String,
-    username: String,
-    firstname: String,
-    lastname: String,
-    date: ISODate!,
-    punchIn: String!,
-    punchOut: String!,
-    created_by: String,
-    created_at: ISODate,
-    modified: [modifiedTypes]
+    attendanceDate: [AttendanceDateType]
   }
-
 
   input AttendanceInput {
     _id: ID,
     userID: String!,
-    user_email: String,
+    email: String,
     username: String,
     firstname: String,
     lastname: String,
@@ -85,6 +59,34 @@ const typeDefs = gql`
 
   type UploadAttendancesPayload {
     attendances: [Attendance]
+  }
+
+  type AttendanceDateType {
+      userID: String!,
+      email: String,
+      username: String,
+      firstname: String,
+      lastname: String,
+      date: ISODate!,
+      punchIn: String!,
+      punchOut: String!,
+      created_by: String,
+      created_at: ISODate,
+      modified: [modifiedTypes]
+  }
+
+  input AttendanceDateInput {
+      userID: String!,
+      email: String,
+      username: String,
+      firstname: String,
+      lastname: String,
+      date: ISODate!,
+      punchIn: String!,
+      punchOut: String!,
+      created_by: String,
+      created_at: ISODate,
+      modified: [modifiedInputs]
   }
 
 `

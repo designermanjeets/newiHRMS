@@ -66,13 +66,9 @@ export class UpdateLeaveGQL extends Mutation {
     mutation updateLeave (
       $id: ID!
       $userID: String!
-      $username: String
-      $email: String
-      $employeeID: String
-      $leaveType: String!
-      $leaveID: String!
-      $from: ISODate
-      $to: ISODate
+      $leaveTypeID: String!
+      $leaveFrom: ISODate
+      $leaveTo: ISODate
       $numberOfDays: Int
       $remainingLeaves: Int
       $reason: String
@@ -86,13 +82,9 @@ export class UpdateLeaveGQL extends Mutation {
       updateLeave(
         id: $id
         userID: $userID
-        username: $username
-        email: $email
-        employeeID: $employeeID
-        leaveType: $leaveType
-        leaveID: $leaveID
-        from: $from
-        to: $to
+        leaveTypeID: $leaveTypeID
+        leaveFrom: $leaveFrom
+        leaveTo: $leaveTo
         numberOfDays: $numberOfDays
         remainingLeaves: $remainingLeaves
         reason: $reason
@@ -107,10 +99,9 @@ export class UpdateLeaveGQL extends Mutation {
           username
           email
           employeeID
-          leaveType
-          leaveID
-          from
-          to
+          leaveTypeID
+          leaveFrom
+          leaveTo
           numberOfDays
           remainingLeaves
           reason

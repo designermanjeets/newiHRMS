@@ -41,7 +41,7 @@ const updateShift = (_, {
       const updatedShift = await Shift.findByIdAndUpdate(id,
         {$set:{ ...param}},
         {new: true}).then(result => {
-          updateresr(result, changeFields, modified, shft);
+          // updateresr(result, changeFields, modified, shft);
           resolve(result);
         })
 

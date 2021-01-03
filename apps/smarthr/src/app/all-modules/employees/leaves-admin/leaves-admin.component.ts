@@ -353,25 +353,23 @@ export class LeavesAdminComponent implements OnInit, OnDestroy {
     this.updateLeaveGQL
       .mutate({
         id: lv[0]._id,
-        userID: JSON.parse(sessionStorage.getItem('user')).userid,
-        username: JSON.parse(sessionStorage.getItem('user')).username,
-        email: JSON.parse(sessionStorage.getItem('user')).email,
-        employeeID: JSON.parse(sessionStorage.getItem('user')).employeeID,
-        leaveType: lv[0].leaveType,
-        leaveID: lv[0].leaveID,
+        userID: f.value.selectEmp,
+        leaveTypeID: lv[0].leaveTypeID,
         numberOfDays: f.value.numberOfDays,
         remainingLeaves: f.value.remainingLeaves,
         reason: f.value.reason,
-        from: f.value.from,
-        to: f.value.to,
-        created_at: Date.now(),
-        created_by: JSON.parse(sessionStorage.getItem('user')).username
+        leaveFrom: f.value.leaveFrom,
+        leaveTo: f.value.leaveTo,
+        modified: {
+          modified_at: Date.now(),
+          modified_by: JSON.parse(sessionStorage.getItem('user')).username
+        }
       })
       .subscribe( (val: any) => {
         if (val.data) {
           this.editLeaveAdminForm.reset();
           $('#edit_leave').modal('hide');
-          this.toastr.success('Leave Updated sucessfully...!', 'Success');
+          this.toastr.success('Leave Updated successfully...!', 'Success');
           this.loadAllLeaveApplied();
           this.cdRef.detectChanges();
         }
@@ -414,6 +412,7 @@ export class LeavesAdminComponent implements OnInit, OnDestroy {
     this.tempEditUserID = leave.userID;
     this.editLeaveAdminForm.patchValue(leave);
     this.editLeaveAdminForm.get('leaveTypeID').patchValue(leave.leaveTypeID);
+    this.editLeaveAdminForm.get('selectEmp').patchValue(this.tempEditUserID);
     this.editLeaveAdminForm.get('leaveTypeID').disable();
     this.cdRef.detectChanges();
 

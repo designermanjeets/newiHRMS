@@ -379,6 +379,7 @@
       <div class="modal-body">
         <form (ngSubmit)="editLeaves(editLeaveAdminForm)" [formGroup]="editLeaveAdminForm">
           <input type="hidden" formControlName="_id">
+          <input type="hidden" formControlName="selectEmp">
           <div class="form-group">
             <label>Leave Type <span class="text-danger">*</span></label>
             <select class="select form-control" (change)="onTypeChange()"
@@ -479,7 +480,7 @@
             </div>
           </div>
           <div class="submit-section">
-            <button class="btn btn-primary submit-btn" type="submit" [disabled]="editLeaveAdminForm.invalid">Submit</button>
+            <button class="btn btn-primary submit-btn" type="submit">Submit</button>
           </div>
         </form>
       </div>

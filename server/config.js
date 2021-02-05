@@ -2,8 +2,8 @@
 
 const env = {
   "PORT": "5000",
-  "MONGODB_URI_IHRMS": "mongodb://localhost:27017/newihrms",
-  // "MONGODB_URI_IHRMS": "mongodb+srv://manjeet:Lucky%4011@mscreativepixel.e2tyh.mongodb.net/msv4?retryWrites=true&w=majority",
+  // "MONGODB_URI_IHRMS": "mongodb://localhost:27017/newihrms",
+  "MONGODB_URI_IHRMS": "mongodb+srv://manjeet:Lucky%4011@mscreativepixel.e2tyh.mongodb.net/msv4?retryWrites=true&w=majority",
   "JWT_SECRET": "mscreativepixelms",
   "secret": "mscreativepixelms",
   "JWT_LIFE_TIME": "1d",

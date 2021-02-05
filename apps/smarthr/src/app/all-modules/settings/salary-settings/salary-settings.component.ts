@@ -10,7 +10,10 @@ import { ToastrService } from 'ngx-toastr';
 export class SalarySettingsComponent implements OnInit {
 
   public salarySettings: FormGroup;
-  constructor(private formBuilder: FormBuilder,private toastr: ToastrService) { }
+  constructor(
+    private formBuilder: FormBuilder,
+    private toastr: ToastrService
+  ) { }
 
   ngOnInit() {
     this.salarySettings = this.formBuilder.group({
@@ -26,13 +29,15 @@ export class SalarySettingsComponent implements OnInit {
       annualSalaryFrom2: ['', [Validators.required]],
       annualSalaryTo2: ['', [Validators.required]],
       annualpercentage2: ['', [Validators.required]],
+
+      componentName: ['', [Validators.required]],
     });
   }
 
   submitSalarySettings() {
     if (this.salarySettings.valid) {
-      
-      this.toastr.success("Salary settings is added", 'Success')
+
+      this.toastr.success('Salary settings is added', 'Success')
     }
   }
 

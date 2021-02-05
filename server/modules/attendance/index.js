@@ -21,6 +21,7 @@ const typeDefs = gql`
       date: ISODate!,
       punchIn: String,
       punchOut: String,
+      employeeID: String,
       modified: [modifiedInputs]
     ): Attendance,
 
@@ -46,6 +47,7 @@ const typeDefs = gql`
     _id: ID,
     userID: String!,
     email: String,
+    employeeID: String,
     username: String,
     firstname: String,
     lastname: String,
@@ -64,6 +66,7 @@ const typeDefs = gql`
   type AttendanceDateType {
       userID: String!,
       email: String,
+      employeeID: String,
       username: String,
       firstname: String,
       lastname: String,
@@ -78,6 +81,7 @@ const typeDefs = gql`
   input AttendanceDateInput {
       userID: String!,
       email: String,
+      employeeID: String,
       username: String,
       firstname: String,
       lastname: String,

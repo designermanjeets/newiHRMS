@@ -11,6 +11,7 @@ const attendanceSchema = new Schema({
   attendanceDate: [
     {
       userID: String,
+      employeeID: String,
       date: Date,
       punchIn: String,
       punchOut: String,

@@ -20,6 +20,7 @@ const AuditSchema = new Schema({
   sysParaAudit : [auditSchema],
   attendanceAudit : [auditSchema],
   shiftAudit : [auditSchema],
+  salaryHeadAudit : [auditSchema],
 }, {collection:'Audit'});
 
 

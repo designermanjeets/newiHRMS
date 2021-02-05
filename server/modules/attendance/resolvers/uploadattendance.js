@@ -30,7 +30,7 @@ const uploadAttendanceFile =  async (_, { file },{me,secret}) => new Promise(asy
         // File path.
         readXlsxFile(upload.path).then((rowsArr ) => {
           // console.log(rowsArr)
-          const newArr= printArray(rowsArr);
+          const newArr= printAttendanceArray(rowsArr);
           resolve(newArr);
           // `rows` is an array of rows
           // each row being an array of cells.
@@ -62,50 +62,21 @@ const processUpload = async (upload) => {
   return await storeUpload({ stream, filename, mimetype });
 };
 
-const printArray = function(parentArray) {
+const printAttendanceArray = function(parentArray) {
   let newAttendanceArray = [];
-  newAttendanceArray.push({EmployeesData: []}); // Insert an Empty Object of Arrays
-  let METADATA = [];
-  let EMPINDIVIDUAL = [];
-  parentArray.forEach( function(childArray, index) {
-    let emmps = [];
+  // console.log(parentArray);
 
-    childArray.forEach(function(item){
-
-      if(item && (typeof item === 'string' || item instanceof String) &&
-        ( item.includes('Company Name') ||
-          item.includes('Run Date & Time') ||
-          item.includes('Monthly Performance from') ||
-          item.includes('Department Code & Name')
-        )) {
-        childArray = childArray.filter( el => el != null);
-        METADATA.push(...childArray)
-      }
-      if(item && (typeof item === 'string' || item instanceof String) &&
-        ( item === ('** Code & Name :-'))) {
-        childArray = childArray.filter( el => el != null);
-        emmps = [];
-        emmps.push({ 'Code & Name' : { ...childArray } })
-      }
-      if(item && (typeof item === 'string' || item instanceof String) &&
-        ( item === ('DATE') || item === ('Day') ||
-          item === ('SHIFT') || item === ('IN') ||
-          item === ('OUT') || item === ('LATE') ||
-          item === ('EARLY DEPAT.') || item === ('W.HOUR') ||
-          item === ('OT') || item === ('STATUS') || item === ('SHIFT ATTENDED')
-        )) {
-        childArray.splice(0, 2);
-        emmps.push({ [item] : { ...childArray } })
-      }
+  parentArray.forEach( function(childArray, parentIndex) {
+    let newChildArray = [];
+    childArray.forEach(function(item, childIndex){
+      console.log(item);
+      newChildArray.push(item)
     });
-    EMPINDIVIDUAL.push(...emmps);
+    console.log(newChildArray);
+    // newAttendanceArray.push( { [parentArray[0][childIndex]]: childIndex[childIndex]  })
   });
+  // console.log(newAttendanceArray);
 
-  newAttendanceArray[0]['EmployeesData'].push(...EMPINDIVIDUAL);
-  newAttendanceArray.push({ METADATA: { ...METADATA } })
-
-  return newAttendanceArray;
-
-}
+};
 
 module.exports = uploadAttendanceFile;

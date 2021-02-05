@@ -6,11 +6,12 @@ const holiday = require('./holiday')
 const leaveType = require('./leaveType')
 const designation = require('./designation')
 const department = require('./department')
-const leaveapplied = require('./leaveapplied')
+const leaveApplied = require('./leaveapplied')
 const roles = require('./roles')
 const parameters = require('./sysparameters')
 const attendances = require('./attendance')
 const shifts = require('./shifts')
+const salaryHead = require('./salaryhead')
 
 module.exports = makeExecutableSchemaFromModules({
   modules: [
@@ -20,10 +21,11 @@ module.exports = makeExecutableSchemaFromModules({
     leaveType,
     designation,
     department,
-    leaveapplied,
+    leaveApplied,
     roles,
     parameters,
     attendances,
-    shifts
+    shifts,
+    salaryHead
   ]
 })
